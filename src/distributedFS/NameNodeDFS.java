@@ -2,9 +2,9 @@
  * 
  * @author - Pranav Saxena/Vaibhav Suresh Kumar
  * 
- * NameNodeDFS class acts as the master for our own distributed file system and will be responsible
- * for dividing the file being read from the AFS into chunks with each chunk being assigned 
- * a unique identifier.
+ * NameNodeDFS class acts as the master for our own distributed file system 
+ * Functionality - 
+ * 
  * 
  ************************************************************************************************/
 
