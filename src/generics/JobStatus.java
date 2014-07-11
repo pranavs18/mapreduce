@@ -10,5 +10,5 @@ package generics;
 
 public enum JobStatus {
 
-	RUNNING, COMPLETE, AVAILABLE;
+	RUNNING, COMPLETE, AVAILABLE, Hello;
 }
