@@ -7,12 +7,10 @@
  * 
  ****************************************************************************************************/
 
-package worker;
+package master;
 
 import java.io.Serializable;
 import java.util.Map;
-
-import master.TaskDetails;
 
 public class WorkerMessageToMaster implements Serializable{
 

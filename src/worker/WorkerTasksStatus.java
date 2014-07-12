@@ -8,14 +8,14 @@
 
 package worker;
 
-import generics.JobStatus;
-import generics.TaskDetails;
-
 import java.net.InetAddress;
 import java.net.UnknownHostException;
 import java.util.Collections;
 import java.util.HashMap;
 import java.util.Map;
+
+import master.JobStatus;
+import master.TaskDetails;
 
 public class WorkerTasksStatus {
 
