@@ -7,7 +7,7 @@
  * 
  ****************************************************************************************************/
 
-package generics;
+package worker;
 
 import generics.TaskDetails;
 
