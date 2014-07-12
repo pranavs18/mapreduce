@@ -31,7 +31,7 @@ public class MapReduceConfiguration{
 	 * our folder which will be used as our dfs on each machine
 	 */
 	private String inputPath = "";
-	private String outPath = "";
+	private String outputPath = "";
 	
 	/* This field is used to set the name of job */	
 	private String jobName = "";
@@ -77,15 +77,47 @@ public class MapReduceConfiguration{
 	public void setInputPath(String inputPath) {
 		this.inputPath = inputPath;
 	}
-	
-	public String getOutPath() {
-		return outPath;
+
+	public Class<?> getInputKeyType() {
+		return inputKeyType;
+	}
+
+	public void setInputKeyType(Class<?> inputKeyType) {
+		this.inputKeyType = inputKeyType;
+	}
+
+	public Class<?> getInputValueType() {
+		return inputValueType;
+	}
+
+	public void setInputValueType(Class<?> inputValueType) {
+		this.inputValueType = inputValueType;
+	}
+
+	public Class<?> getOutputKeyType() {
+		return outputKeyType;
+	}
+
+	public void setOutputKeyType(Class<?> outputKeyType) {
+		this.outputKeyType = outputKeyType;
+	}
+
+	public Class<?> getOutputValueType() {
+		return outputValueType;
+	}
+
+	public void setOutputValueType(Class<?> outputValueType) {
+		this.outputValueType = outputValueType;
+	}
+
+	public String getOutputPath() {
+		return outputPath;
+	}
+
+	public void setOutputPath(String outputPath) {
+		this.outputPath = outputPath;
 	}
 	
-	public void setOutPath(String outPath) {
-		this.outPath = outPath;
-	}
-	
-	
+
 		
 }

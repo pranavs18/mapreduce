@@ -24,7 +24,11 @@ public class UserConsoleManager implements Runnable {
 			n = Integer.parseInt(br.readLine());
 			switch(n){
 			case 1:{
+				MapReduceConfiguration config = new MapReduceConfiguration();
+				/* Get all details and handle data
 				
+				/* Running Job */
+				MapReduceJobClient.runJob(config);
 			}
 			
 			case 2:{
