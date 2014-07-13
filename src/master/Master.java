@@ -13,8 +13,11 @@
 package master;
 
 import java.io.BufferedReader;
+import java.io.FileOutputStream;
 import java.io.IOException;
 import java.io.InputStreamReader;
+import java.io.ObjectInputStream;
+import java.io.ObjectOutputStream;
 import java.io.PrintStream;
 import java.net.InetAddress;
 import java.net.ServerSocket;
@@ -32,7 +35,7 @@ public class Master implements Runnable {
 		this.port = port;
 	}
     
-    public void createConnection() throws IOException{
+    public void createConnection() throws IOException, ClassNotFoundException{
 		ServerSocket ss = null;
 		try {
 			ss = new ServerSocket(this.port);
@@ -42,6 +45,7 @@ public class Master implements Runnable {
 			Socket clientSocket = ss.accept();
 			conn++;
 			slaveProcessConnection newconn = new slaveProcessConnection(clientSocket, conn, this);
+			saveFile(clientSocket);  
 			new Thread(newconn).start();
 		    }   
 		    catch (IOException e) {
@@ -65,10 +69,50 @@ public class Master implements Runnable {
 		Master mNode = new Master(Ipaddress,port);
 		try {
 			mNode.createConnection();
-		} catch (IOException e) {
+		} catch (IOException | ClassNotFoundException e) {
 			
 			e.printStackTrace();
 		}
+	}
+	
+	public void saveFile(Socket clientSocket) throws IOException, ClassNotFoundException{
+		ObjectOutputStream oos = new ObjectOutputStream(clientSocket.getOutputStream());  
+        ObjectInputStream ois = new ObjectInputStream(clientSocket.getInputStream());  
+        FileOutputStream fos = null;  
+        byte [] buffer = new byte[100];  
+  
+        // 1. Read file name.  
+        Object o = ois.readObject();  
+  
+        
+            fos = new FileOutputStream(o.toString());  
+        
+  
+        // 2. Read file to the end.  
+        Integer bytesRead = 0;  
+  
+        do {  
+            o = ois.readObject();  
+  
+       
+  
+            bytesRead = (Integer)o;  
+  
+            o = ois.readObject();  
+  
+            buffer = (byte[])o;  
+  
+            // 3. Write data to output file.  
+            fos.write(buffer, 0, bytesRead);  
+            
+        } while (bytesRead == 100);  
+          
+        System.out.println("File transfer success");  
+          
+        fos.close();  
+  
+        ois.close();  
+        oos.close();  
 	}
 	
 	class slaveProcessConnection implements Runnable {
