@@ -2,7 +2,6 @@ package worker;
 
 import java.io.BufferedWriter;
 import java.io.File;
-import java.io.FileNotFoundException;
 import java.io.FileWriter;
 import java.io.IOException;
 import java.rmi.RemoteException;
@@ -33,9 +32,29 @@ public class RemoteSplitterImpl extends UnicastRemoteObject implements SlaveRemo
 		Scanner scanner = null;
 	    
 	    scanner = new Scanner(file);
+		boolean result= false;
+		int index=0;
+		for(int i=filename.length()-1; i>=0;i--){
+			if(filename.charAt(i) == '/'){
+				    index = i;
+					break;
+		    }
+		}
+	
+		String chunkFileName = filename.substring(index+1, filename.length()-4);
+		String newChunkDirectory = filename.substring(0, index)+  "/chunks";
 		
-		String chunkFileName = filename.substring(0, filename.length()-4);
-		String newChunkName = chunkFileName + chunkNumber;
+		File dir = new File(newChunkDirectory);
+		if (!dir.exists()) {
+            result = dir.mkdirs();
+
+            if (result) {
+                System.out.println("Folder is created");
+                
+            } 
+        }
+		String newChunkName = filename.substring(0, index)+  "/chunks/" + chunkFileName  + chunkNumber + ".txt";
+		int chunkID = chunkNumber;
 		BufferedWriter bw = null;
 		while (scanner.hasNextLine()) {
 		  String line = scanner.nextLine();
@@ -58,7 +77,7 @@ public class RemoteSplitterImpl extends UnicastRemoteObject implements SlaveRemo
 				} catch (IOException e) {
 					e.printStackTrace();
 				}
-				newChunkName = chunkFileName + chunkNumber;
+				newChunkName = filename.substring(0, index)+ "/chunks/" +chunkFileName + chunkNumber + ".txt" ;
 				numberofLines = 0;
 				  
 		  }
