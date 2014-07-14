@@ -42,7 +42,7 @@ public class RemoteSplitterImpl extends UnicastRemoteObject implements SlaveRemo
 		}
 	
 		String chunkFileName = filename.substring(index+1, filename.length()-4);
-		String newChunkDirectory = filename.substring(0, index)+  "/chunks";
+		String newChunkDirectory = filename.substring(0, index)+  "/chunks" + chunkFileName;
 		
 		File dir = new File(newChunkDirectory);
 		if (!dir.exists()) {
@@ -53,7 +53,7 @@ public class RemoteSplitterImpl extends UnicastRemoteObject implements SlaveRemo
                 
             } 
         }
-		String newChunkName = filename.substring(0, index)+  "/chunks/" + chunkFileName  + chunkNumber + ".txt";
+		String newChunkName = newChunkDirectory + "/" + chunkFileName  + chunkNumber + ".txt";
 		int chunkID = chunkNumber;
 		BufferedWriter bw = null;
 		while (scanner.hasNextLine()) {
@@ -77,7 +77,7 @@ public class RemoteSplitterImpl extends UnicastRemoteObject implements SlaveRemo
 				} catch (IOException e) {
 					e.printStackTrace();
 				}
-				newChunkName = filename.substring(0, index)+ "/chunks/" +chunkFileName + chunkNumber + ".txt" ;
+				newChunkName = newChunkDirectory +"/" +chunkFileName + chunkNumber + ".txt" ;
 				numberofLines = 0;
 				  
 		  }
