@@ -1,12 +1,18 @@
 package worker;
 
+
 import java.io.BufferedReader;
 import java.io.IOException;
 import java.io.InputStreamReader;
 import java.net.ServerSocket;
 import java.net.Socket;
 import java.net.UnknownHostException;
-
+import java.net.MalformedURLException;
+import java.rmi.AlreadyBoundException;
+import java.rmi.Naming;
+import java.rmi.RemoteException;
+import java.rmi.registry.LocateRegistry;
+import java.rmi.registry.Registry;
 
 public class Slave implements Runnable {
 
@@ -53,25 +59,43 @@ public class Slave implements Runnable {
 	
 	@Override
 	public void run() {
-		try {
+	/*	try {
 			startSlaveHost(MasterIp,workerServerPort);
 		} catch (UnknownHostException e) {	
 			e.printStackTrace();
 		} catch (IOException e) {			
 			e.printStackTrace();
-		}
+		}*/
 		
 	}
 		
-    public static void main(String args[]){
-    	if(args.length != 3){
-			System.out.println("Please enter the Arguments of the form - HostIp port");
+    public static void main(String args[]) throws RemoteException, MalformedURLException{
+    //	if(args.length != 3){
+	//		System.out.println("Please enter the Arguments of the form - HostIp port");
 			
-		}
+	//	}
 		
-		String MasterIp = args[0]; 
-		int workerServerPort = Integer.parseInt(args[2]);
-	
+		String MasterIp = "127.0.0.1";
+		
+		int workerServerPort = Integer.parseInt("9999");
+		System.setProperty("java.security.policy","C:/Users/PRANAV/Documents/mapreduce/policy.txt");
+        System.setSecurityManager(new java.rmi.RMISecurityManager());
+        RemoteSplitterImpl remote = new RemoteSplitterImpl();
+		try {
+			remote = new RemoteSplitterImpl();
+		} catch (RemoteException e1) {
+			e1.printStackTrace();
+		}
+        try {
+			 
+        	Registry registry = LocateRegistry.createRegistry(9876);
+			registry.rebind("Remote", remote);
+			System.out.println("Remote bounded" + remote);
+		} catch (RemoteException e) {
+			
+			//Naming.rebind("//127.0.0.1:1234/Remote", remote);
+			//e.printStackTrace();
+		}
 		Slave worker = new Slave(MasterIp, workerServerPort);
 		//HeartBeat heartBeat = new HeartBeat(MasterIp, MasterPort,workerServerPort);
 		
