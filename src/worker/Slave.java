@@ -93,8 +93,6 @@ public class Slave implements Runnable {
 			System.out.println("Remote bounded" + remote);
 		} catch (RemoteException e) {
 			
-			//Naming.rebind("//127.0.0.1:1234/Remote", remote);
-			//e.printStackTrace();
 		}
 		Slave worker = new Slave(MasterIp, workerServerPort);
 		//HeartBeat heartBeat = new HeartBeat(MasterIp, MasterPort,workerServerPort);
