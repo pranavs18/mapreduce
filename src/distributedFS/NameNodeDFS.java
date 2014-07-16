@@ -19,7 +19,7 @@ import worker.SlaveRemoteInterface;
 
 public class NameNodeDFS extends Thread implements Runnable {
 	
-	static String filename = "C:/Users/PRANAV/Documents/mapreduce/src/pranav.txt";
+	static String filename = "C:/Users/PRANAV/Documents/mapreduce/pranav.txt";
 	
 	public static ConcurrentHashMap<String,ArrayList<fakeDistributedFile>> chunkIDtoMachines = new ConcurrentHashMap<String,ArrayList<fakeDistributedFile>>();
 	public static ConcurrentHashMap<String,ArrayList<fakeDistributedFile>> FiletoChunkList = new ConcurrentHashMap<String,ArrayList<fakeDistributedFile>>();
@@ -31,6 +31,7 @@ public class NameNodeDFS extends Thread implements Runnable {
 	public static void main(String args[]) throws IOException{
 		
         NameNodeDFS nn = new NameNodeDFS();
+        NameNodeHeartBeat nnhb = new NameNodeHeartBeat("127.0.0.1", 23333);
         // change to canonical path
         System.setProperty("java.security.policy","C:/Users/PRANAV/Documents/mapreduce/policy.txt");
         System.setSecurityManager(new java.rmi.RMISecurityManager());
@@ -55,7 +56,7 @@ public class NameNodeDFS extends Thread implements Runnable {
 		}
         new Thread(nn).start();
 		
-	
+        new Thread(nnhb).start();
 	}
 	
 	public void connectToSlave() throws IOException{

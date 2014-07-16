@@ -7,7 +7,7 @@ import java.rmi.registry.Registry;
 
 public class Master {
 
-	public static void main(String[] args) {
+	public static void main(String args[]) {
 
 		if(args[0].equals("")){
 			System.out.println("Please enter Ip of string");
