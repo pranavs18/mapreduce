@@ -6,6 +6,9 @@ import java.io.InputStreamReader;
 import java.net.ServerSocket;
 import java.net.Socket;
 import java.net.UnknownHostException;
+import java.rmi.RemoteException;
+import java.rmi.registry.LocateRegistry;
+import java.rmi.registry.Registry;
 
 
 public class Worker implements Runnable {
@@ -61,7 +64,7 @@ public class Worker implements Runnable {
 		
 	}
 		
-    public static void main(String args[]){
+    public static void main(String args[]) throws RemoteException{
     	if(args.length != 1){
 			System.out.println("Please enter the Arguments of the form - MasterIp");
 			
@@ -70,7 +73,25 @@ public class Worker implements Runnable {
     	
     	MasterInformation masterInfo = new MasterInformation(args[0]); 
 		String MasterIp = masterInfo.getMasterHost(); 
-	
+		
+		
+		System.setProperty("java.security.policy","C:/Users/PRANAV/Documents/mapreduce/policy.txt");
+        System.setSecurityManager(new java.rmi.RMISecurityManager());
+        RemoteSplitterImpl remote = new RemoteSplitterImpl();
+		try {
+			remote = new RemoteSplitterImpl();
+		} catch (RemoteException e1) {
+			e1.printStackTrace();
+		}
+        try {
+			 
+        	Registry registry = LocateRegistry.createRegistry(9876);
+			registry.rebind("Remote", remote);
+			System.out.println("Remote bounded" + remote);
+		} catch (RemoteException e) {
+			
+		}
+		
 		//Worker worker = new Worker(MasterIp);
 		
 		WorkerRegisterHeartBeat heartBeat = new WorkerRegisterHeartBeat(MasterIp);

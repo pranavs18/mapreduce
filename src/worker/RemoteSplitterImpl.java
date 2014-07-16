@@ -4,23 +4,28 @@ import java.io.BufferedWriter;
 import java.io.File;
 import java.io.FileWriter;
 import java.io.IOException;
+import java.net.InetAddress;
 import java.rmi.RemoteException;
 import java.rmi.server.UnicastRemoteObject;
 import java.util.ArrayList;
 import java.util.Scanner;
+
+import distributedFS.fakeDistributedFile;
 
 public class RemoteSplitterImpl extends UnicastRemoteObject implements SlaveRemoteInterface {
 	
 	
 	private static final long serialVersionUID = 1L;
 
-	public RemoteSplitterImpl()  throws RemoteException {
+	public RemoteSplitterImpl() throws RemoteException {
 		
 	}
 	
 	@SuppressWarnings("resource")
-	public ArrayList<String> splitFileIntoChunks(String filename) throws RemoteException,IOException{
-		ArrayList<String> chunkContainer = new ArrayList<String>();
+	public ArrayList<fakeDistributedFile> splitFileIntoChunks(String filename) throws RemoteException,IOException{
+		ArrayList<fakeDistributedFile> chunkContainer = new ArrayList<fakeDistributedFile>();
+		
+		
 		File file = new File(filename);
 		int numberofLines = 0;
 		int chunkSize = 25;
@@ -55,6 +60,7 @@ public class RemoteSplitterImpl extends UnicastRemoteObject implements SlaveRemo
         }
 		String newChunkName = newChunkDirectory + "/" + chunkFileName  + chunkNumber + ".txt";
 		int chunkID = chunkNumber;
+		String uniquechunkName = chunkFileName + chunkNumber;
 		BufferedWriter bw = null;
 		while (scanner.hasNextLine()) {
 		  String line = scanner.nextLine();
@@ -72,11 +78,18 @@ public class RemoteSplitterImpl extends UnicastRemoteObject implements SlaveRemo
 			if(numberofLines == chunkSize){
 				chunkNumber++;
 				try {
-					chunkContainer.add(newChunkName);
+					fakeDistributedFile fdf = new fakeDistributedFile();
+					fdf.setIpAddress(InetAddress.getLocalHost().getHostAddress());
+					fdf.setFilename(filename);
+					fdf.setReplicas(0);
+					fdf.setChunkID(uniquechunkName);
+					fdf.setChunkPath(newChunkName);
+					chunkContainer.add(fdf);
 					bw.close();
 				} catch (IOException e) {
 					e.printStackTrace();
 				}
+				 uniquechunkName = chunkFileName + chunkNumber;
 				newChunkName = newChunkDirectory +"/" +chunkFileName + chunkNumber + ".txt" ;
 				numberofLines = 0;
 				  

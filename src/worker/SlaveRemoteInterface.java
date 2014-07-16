@@ -7,8 +7,10 @@ import java.rmi.Remote;
 import java.rmi.RemoteException;
 import java.util.ArrayList;
 
+import distributedFS.fakeDistributedFile;
+
 public interface SlaveRemoteInterface extends Remote {
 	
-	public ArrayList<String> splitFileIntoChunks(String filename) throws RemoteException, FileNotFoundException, IOException;
+	public ArrayList<fakeDistributedFile> splitFileIntoChunks(String filename) throws RemoteException, FileNotFoundException, IOException;
 }
 
