@@ -1,0 +1,50 @@
+/***************************************************************************************************
+ * 
+ * @author - Pranav Saxena/ Vaibhav Suresh Kumar
+ * 
+ * WorkerMessageToMaster class is the message class whose object is sent to master with task detail maps
+ * The same class must be present in the master host 
+ * 
+ ****************************************************************************************************/
+
+package generics;
+
+import java.io.Serializable; 
+import java.util.concurrent.ConcurrentHashMap;
+import generics.TaskDetails;
+
+public class WorkerMessageToMaster implements Serializable{
+
+	private static final long serialVersionUID = 1L;
+	
+	private ConcurrentHashMap<String, TaskDetails> mapStatus;
+	private ConcurrentHashMap<String, TaskDetails> reduceStatus;
+		
+	public WorkerMessageToMaster(ConcurrentHashMap<String, TaskDetails> mapStatus,
+			ConcurrentHashMap<String, TaskDetails> reduceStatus) {
+		super();
+		this.mapStatus = mapStatus;
+		this.reduceStatus = reduceStatus;
+	}
+
+	public ConcurrentHashMap<String, TaskDetails> getMapStatus() {
+		return mapStatus;
+	}
+
+	public void setMapStatus(ConcurrentHashMap<String, TaskDetails> mapStatus) {
+		this.mapStatus = mapStatus;
+	}
+
+	public ConcurrentHashMap<String, TaskDetails> getReduceStatus() {
+		return reduceStatus;
+	}
+
+	public void setReduceStatus(ConcurrentHashMap<String, TaskDetails> reduceStatus) {
+		this.reduceStatus = reduceStatus;
+	}
+	
+
+	
+	
+
+}

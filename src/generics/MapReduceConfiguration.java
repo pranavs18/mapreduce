@@ -35,7 +35,17 @@ public class MapReduceConfiguration{
 	
 	/* This field is used to set the name of job */	
 	private String jobName = "";
+	
+	/* Use to store package name that contains the user defined map reduce files */
+	private String userProgramPackageName = "";
 
+	/* Path of user defined functions */
+	private String userJavaFilePath = "";
+	
+	/* Master Ip */
+	 private String MasterIp;
+	
+	
 	
 	/* Getters and setter of fields above */
 	public String getJobName() {
@@ -117,7 +127,33 @@ public class MapReduceConfiguration{
 	public void setOutputPath(String outputPath) {
 		this.outputPath = outputPath;
 	}
-	
 
+	public String getUserProgramPackageName() {
+		return userProgramPackageName;
+	}
+
+	public void setUserProgramPackageName(String userProgramPackageName) {
+		this.userProgramPackageName = userProgramPackageName;
+	}
+
+	public String getUserJavaFilePath() {
+		return userJavaFilePath;
+	}
+
+	public void setUserJavaFilePath(String userJavaFilePath) {
+		this.userJavaFilePath = userJavaFilePath;
+	}
+
+	public String getMasterIp() {
+		return MasterIp;
+	}
+
+	public void setMasterIp(String masterIp) {
+		MasterIp = masterIp;
+	}
+
+	
+	
+	
 		
 }

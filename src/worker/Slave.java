@@ -78,7 +78,7 @@ public class Slave implements Runnable {
 		String MasterIp = "127.0.0.1";
 		
 		int workerServerPort = Integer.parseInt("9999");
-		System.setProperty("java.security.policy","C:/Users/PRANAV/Documents/mapreduce/policy.txt");
+		System.setProperty("java.security.policy","/Users/VSK/Documents/Git/mapreduce/policy.txt");
         System.setSecurityManager(new java.rmi.RMISecurityManager());
         RemoteSplitterImpl remote = new RemoteSplitterImpl();
 		try {

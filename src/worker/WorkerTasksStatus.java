@@ -8,19 +8,18 @@
 
 package worker;
 
+import generics.TaskDetails;
+
 import java.net.InetAddress;
 import java.net.UnknownHostException;
-import java.util.Collections;
-import java.util.HashMap;
-import java.util.Map;
+import java.util.concurrent.ConcurrentHashMap;
 
 import master.JobStatus;
-import master.TaskDetails;
 
 public class WorkerTasksStatus {
 
-	private static Map<String,TaskDetails> taskStatusMap = Collections.synchronizedMap(new HashMap<String, TaskDetails>());
-	private static Map<String,TaskDetails> taskStatusReduce = Collections.synchronizedMap(new HashMap<String, TaskDetails>());
+	private static ConcurrentHashMap<String,TaskDetails> taskStatusMap = new ConcurrentHashMap<String, TaskDetails>();
+	private static ConcurrentHashMap<String,TaskDetails> taskStatusReduce = new ConcurrentHashMap<String, TaskDetails>();
 	private static int numberOfMaps;
 	private static int numberOfReduces;
 	private static int workerId;
@@ -41,11 +40,11 @@ public class WorkerTasksStatus {
 	 * system as described in the config file
 	 */ 
 
-     public static Map<String, TaskDetails> getTaskStatusMap() {
+     public static ConcurrentHashMap<String, TaskDetails> getTaskStatusMap() {
 		return taskStatusMap;
 	}
 
-	public static Map<String, TaskDetails> getTaskStatusReduce() {
+	public static ConcurrentHashMap<String, TaskDetails> getTaskStatusReduce() {
 		return taskStatusReduce;
 	}
 	
@@ -61,7 +60,7 @@ public class WorkerTasksStatus {
     	int availability = 0;
     	String returnValue = "";
  
-    	for(Map.Entry<String, TaskDetails> entry : taskStatusMap.entrySet()){
+    	for(ConcurrentHashMap.Entry<String, TaskDetails> entry : taskStatusMap.entrySet()){
     		if((entry.getValue().getStatus() == JobStatus.AVAILABLE) || entry.getValue().getStatus() == JobStatus.COMPLETE){
     			++availability;
     		}
@@ -85,7 +84,7 @@ public class WorkerTasksStatus {
     public static String putInStatusReduce(String jobId, TaskDetails taskDetails){
     	int availability = 0;
     	String returnValue = "";
-    	for(Map.Entry<String, TaskDetails> entry : taskStatusReduce.entrySet()){
+    	for(ConcurrentHashMap.Entry<String, TaskDetails> entry : taskStatusReduce.entrySet()){
     		if((entry.getValue().getStatus() == JobStatus.AVAILABLE) || entry.getValue().getStatus() == JobStatus.COMPLETE){
     			++availability;
     		}

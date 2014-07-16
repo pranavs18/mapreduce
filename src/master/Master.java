@@ -1,149 +1,42 @@
-/*************************************************************************************************
- * 
- * @author Pranav Saxena / Vaibhav Suresh Kumar
- * Master class 
- * Responsible for the following tasks - 
- * 1) Keep track of slave list 
- * 2) Migrate task from one slave to another
- * 3) Query each slave node
- * 4) Re-batch killed task to next available node ( fault-tolerant)
- * 5) Assign task to slave node 
- * 
- */
 package master;
 
-import java.io.BufferedReader;
-import java.io.FileOutputStream;
-import java.io.IOException;
-import java.io.InputStreamReader;
-import java.io.ObjectInputStream;
-import java.io.ObjectOutputStream;
-import java.io.PrintStream;
-import java.net.InetAddress;
-import java.net.ServerSocket;
-import java.net.Socket;
-import java.util.HashMap;
+import java.rmi.RemoteException;
+import java.rmi.registry.LocateRegistry;
+import java.rmi.registry.Registry;
 
 
-public class Master implements Runnable {
+public class Master {
 
-    private String Ipaddress;
-    private int port;
-    static int conn=0;
-    public Master(String ipAddress, int port) {
-		this.Ipaddress= ipAddress;
-		this.port = port;
-	}
-    
-    public void createConnection() throws IOException, ClassNotFoundException{
-		ServerSocket ss = null;
-		try {
-			ss = new ServerSocket(this.port);
-		
-		while ( true ) {
-		    try {
-			Socket clientSocket = ss.accept();
-			conn++;
-			slaveProcessConnection newconn = new slaveProcessConnection(clientSocket, conn, this);
-			saveFile(clientSocket);  
-			new Thread(newconn).start();
-		    }   
-		    catch (IOException e) {
-			System.out.println(e);
-		    }
-	
-		}
-	}
-		catch (IOException e1) {
-			e1.printStackTrace();
-		}
-		finally{
-			ss.close();
-		}
-	}
+	public static void main(String[] args) {
 
-    
-	@Override
-	public void run() {
-		System.out.println("\n Master started \n");
-		Master mNode = new Master(Ipaddress,port);
-		try {
-			mNode.createConnection();
-		} catch (IOException | ClassNotFoundException e) {
-			
-			e.printStackTrace();
+		if(args[0].equals("")){
+			System.out.println("Please enter Ip of string");
+
 		}
-	}
-	
-	public void saveFile(Socket clientSocket) throws IOException, ClassNotFoundException{
-		ObjectOutputStream oos = new ObjectOutputStream(clientSocket.getOutputStream());  
-        ObjectInputStream ois = new ObjectInputStream(clientSocket.getInputStream());  
-        FileOutputStream fos = null;  
-        byte [] buffer = new byte[100];  
-  
-        // 1. Read file name.  
-        Object o = ois.readObject();  
-  
-        
-            fos = new FileOutputStream(o.toString());  
-        
-  
-        // 2. Read file to the end.  
-        Integer bytesRead = 0;  
-  
-        do {  
-            o = ois.readObject();  
-  
-       
-  
-            bytesRead = (Integer)o;  
-  
-            o = ois.readObject();  
-  
-            buffer = (byte[])o;  
-  
-            // 3. Write data to output file.  
-            fos.write(buffer, 0, bytesRead);  
-            
-        } while (bytesRead == 100);  
-          
-        System.out.println("File transfer success");  
-          
-        fos.close();  
-  
-        ois.close();  
-        oos.close();  
-	}
-	
-	class slaveProcessConnection implements Runnable {
-		  Master server;
-		  Socket SOCK;
-		  int id;
-		  BufferedReader br = null;
-	      PrintStream ps = null;
-	      boolean done = false;
-		  
-	      HashMap<InetAddress,Integer> SocketTable = new HashMap<InetAddress,Integer>();
-	      public slaveProcessConnection(Socket client, int id, Master pm) {
-				this.SOCK = client;
-				this.id = id;
-				this.server = pm;
-				System.out.println( "Connection " + id + " established with: " + SOCK );
-				SocketTable.put(client.getInetAddress(), client.getPort());
-			 //	mNode.ProcessTable.put(id,SocketTable);
-			
-				try {
-				    br = new BufferedReader(new InputStreamReader(SOCK.getInputStream()));
-				    ps = new PrintStream(SOCK.getOutputStream());
-				} catch (IOException e) {
-				    System.out.println(e);
-				}
+
+		else{
+			if(args.length == 3){
+				MasterGlobalInformation.setMaxMapperPerSystem(Integer.parseInt(args[1]));
+				MasterGlobalInformation.setMaxReducesPerSystem(Integer.parseInt(args[2]));
+
 			}
-		@Override
-		public void run() {
-			// TODO Auto-generated method stub
+
+			Registry registry;
+			try {
+				registry = LocateRegistry.createRegistry(23390);
+				StartMapReduceJob startJob = new StartMapReduceJob(args[0]);
+				registry.rebind("launcher", startJob);
+			} catch (RemoteException e) {
+				System.out.println("Could not bind Objects to regstry");
+			}
 			
+
+			MasterHeartBeatReceiver hearbeatReceiver = new MasterHeartBeatReceiver();
+			new Thread(hearbeatReceiver).start();
+
 		}
-	} 
-	
+
+
+	}
+
 }

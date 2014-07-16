@@ -26,7 +26,7 @@ import worker.SlaveRemoteInterface;
 
 public class NameNodeDFS extends Thread implements Runnable {
 	
-	static String filename = "C:/Users/PRANAV/Documents/mapreduce/src/pranav.txt";
+	static String filename = "/Users/VSK/Documents/Git/mapreduce/pranav.txt";
 	private int chunkID = 0;  // unique chunk identifier
 	// map for storing filename and chunk ID
 	ConcurrentHashMap<String,String> chunkMap = new ConcurrentHashMap<String,String>();  
@@ -42,7 +42,7 @@ public class NameNodeDFS extends Thread implements Runnable {
 		
         NameNodeDFS nn = new NameNodeDFS();
         // change to canonical path
-        System.setProperty("java.security.policy","C:/Users/PRANAV/Documents/mapreduce/policy.txt");
+        System.setProperty("java.security.policy","/Users/VSK/Documents/Git/mapreduce/policy.txt");
         System.setSecurityManager(new java.rmi.RMISecurityManager());
        
         try {
