@@ -36,7 +36,7 @@ public class StartMapReduceJob extends UnicastRemoteObject implements MapReduceS
 		try {
 			MasterToNameNodeInterface fileChunkMapRequst = (MasterToNameNodeInterface)Naming.lookup("rmi://127.0.0.1:23392/split");
 			try {
-				ConcurrentHashMap<String, ArrayList<fakeDistributedFile>> fileChunkMap =  fileChunkMapRequst.sendChunkMap(config);
+				ConcurrentHashMap<String, fakeDistributedFile> fileChunkMap =  fileChunkMapRequst.sendChunkMap(config);
 				System.out.println(fileChunkMap);
 			} catch (Exception e) {
 

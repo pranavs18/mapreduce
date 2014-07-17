@@ -10,5 +10,5 @@ import java.util.concurrent.ConcurrentHashMap;
 
 public interface MasterToNameNodeInterface  extends Remote {
 
-	public ConcurrentHashMap<String, ArrayList<fakeDistributedFile>> sendChunkMap(MapReduceConfiguration config) throws RemoteException, NotBoundException, FileNotFoundException, IOException;
+	public ConcurrentHashMap<String, fakeDistributedFile> sendChunkMap(MapReduceConfiguration config) throws RemoteException, NotBoundException, FileNotFoundException, IOException;
 }

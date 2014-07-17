@@ -76,11 +76,8 @@ public class Worker implements Runnable {
 		System.setProperty("java.security.policy","C:/Users/PRANAV/Documents/mapreduce/policy.txt");
 		System.setSecurityManager(new java.rmi.RMISecurityManager());
 		RemoteSplitterImpl remote = new RemoteSplitterImpl();
-		try {
-			remote = new RemoteSplitterImpl();
-		} catch (RemoteException e1) {
-			e1.printStackTrace();
-		}
+		
+		
 		try {
 
 			Registry registry = LocateRegistry.createRegistry(9876);
