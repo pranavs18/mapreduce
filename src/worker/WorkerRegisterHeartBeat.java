@@ -69,7 +69,7 @@ public class WorkerRegisterHeartBeat implements Runnable {
 			/*Get configuration input from Master */
 			String args[];
 			String readString = "";
-			System.out.println("Server Response: "+readString);
+			
 			if(( readString = in.readLine()) != null){
 				/* args[] contains the config information (worker id, maxMappers, maxReduces) We store this in a 
 				 * global location for all the threads to read */
@@ -93,7 +93,7 @@ public class WorkerRegisterHeartBeat implements Runnable {
 
 			String readS = "";
 			while(true){
-				System.out.println("Server Response: "+readS);
+				
 				WorkerMessageToMaster message = new WorkerMessageToMaster(WorkerTasksStatus.getTaskStatusMap(), WorkerTasksStatus.getTaskStatusReduce());
 				oos = new ObjectOutputStream(taskManagerSocket.getOutputStream());
 				oos.writeObject(message);

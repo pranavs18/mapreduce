@@ -12,11 +12,11 @@ import java.net.Socket;
 public class MasterHeartBeatAnalyzer implements Runnable{
 
 	Socket clientSocket = null;
-	
-	
-	
+
+
+
 	public MasterHeartBeatAnalyzer(Socket clientSocket) {
-		
+
 		this.clientSocket = clientSocket;
 	}
 
@@ -30,53 +30,61 @@ public class MasterHeartBeatAnalyzer implements Runnable{
 			input = new InputStreamReader(clientSocket.getInputStream());
 			in = new BufferedReader(input);
 		} catch (IOException e) {
-			
+
 			System.out.println("Error Occured while trying to create io streams");
-		
+
 		}
 		String tempStr = "";
 		String ip = "";
 		if((tempStr = in.readLine())!=null){
-			
-			 ip = tempStr.substring(tempStr.indexOf(":")+1, tempStr.length());
-			 System.out.println("Connection requested by Worker with Ip: "+ip);
-			
+			if(tempStr.contains(":")){
+				ip = tempStr.substring(tempStr.indexOf(":")+1, tempStr.length());
+				System.out.println("Connection requested by Worker with Ip: "+ip);
+			}
+		}
+		if(tempStr.contains(":")){
+			int conn = MasterGlobalInformation.getConnectionNumber();
+
+			String outString =conn+" "+MasterGlobalInformation.getMaxMapperPerSystem()+" "+MasterGlobalInformation.getMaxReducesPerSystem();
+			System.out.println("Sending: "+outString);
+			out.println(outString);
+			out.flush();
+
+			String temp = in.readLine();
+			out.println("Start sending");
+			out.flush();
+
+			while (true ) {
+				ois = new ObjectInputStream(clientSocket.getInputStream());
+				WorkerMessageToMaster taskMapObject = (WorkerMessageToMaster)ois.readObject();
+				tempStr = "";
+				MasterGlobalInformation.getAllMapTaskDetails().put(clientSocket.getInetAddress().toString(), taskMapObject.getMapStatus());
+				MasterGlobalInformation.getAllReduceTaskDetails().put(clientSocket.getInetAddress().toString(), taskMapObject.getReduceStatus());
+				//System.out.println("System map info : "+MasterGlobalInformation.getAllMapTaskDetails()); //remove
+			}
 		}
 		
-		int conn = MasterGlobalInformation.getConnectionNumber();
-		
-		String outString =conn+" "+MasterGlobalInformation.getMaxMapperPerSystem()+" "+MasterGlobalInformation.getMaxReducesPerSystem();
-		System.out.println("Sending: "+outString);
-		out.println(outString);
-		out.flush();
-		
-		String temp = in.readLine();
-		out.println("Start sending");
-		out.flush();
-				
-		while (true ) {
-			ois = new ObjectInputStream(clientSocket.getInputStream());
-			WorkerMessageToMaster taskMapObject = (WorkerMessageToMaster)ois.readObject();
-			tempStr = "";
-			MasterGlobalInformation.getAllMapTaskDetails().put(clientSocket.getInetAddress().toString(), taskMapObject.getMapStatus());
-			MasterGlobalInformation.getAllReduceTaskDetails().put(clientSocket.getInetAddress().toString(), taskMapObject.getReduceStatus());
-			System.out.println("System map info : "+MasterGlobalInformation.getAllMapTaskDetails());
+		else{
+			while(true){
+				out.println("Start sending");
+				out.flush();
+				String temp =in.readLine();				
+			}
 		}
-		
-		
+
 	}
 
 	public void run() {
-		
+
 		try {
 			heartBeat();
 		} catch (ClassNotFoundException e) {
 			System.out.println("Object was not received");
-			
+
 		} catch (IOException e) {
 			System.out.println("Stream error");
 		}
-		
+
 	}
 
 }

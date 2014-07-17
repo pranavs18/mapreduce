@@ -19,6 +19,8 @@ public class WorkerMessageToMaster implements Serializable{
 	
 	private ConcurrentHashMap<String, TaskDetails> mapStatus;
 	private ConcurrentHashMap<String, TaskDetails> reduceStatus;
+	private Boolean mapFull;
+	private Boolean reduceFull;
 		
 	public WorkerMessageToMaster(ConcurrentHashMap<String, TaskDetails> mapStatus,
 			ConcurrentHashMap<String, TaskDetails> reduceStatus) {

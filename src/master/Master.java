@@ -9,23 +9,19 @@ public class Master {
 
 	public static void main(String args[]) {
 
-		if(args[0].equals("")){
-			System.out.println("Please enter Ip of string");
-
-		}
-
-		else{
-			if(args.length == 3){
-				MasterGlobalInformation.setMaxMapperPerSystem(Integer.parseInt(args[1]));
-				MasterGlobalInformation.setMaxReducesPerSystem(Integer.parseInt(args[2]));
+		if(args.length == 2 || args.length == 0){
+			if(args.length == 2){
+				MasterGlobalInformation.setMaxMapperPerSystem(Integer.parseInt(args[0]));
+				MasterGlobalInformation.setMaxReducesPerSystem(Integer.parseInt(args[1]));
 
 			}
 
 			Registry registry;
 			try {
 				registry = LocateRegistry.createRegistry(23390);
-				StartMapReduceJob startJob = new StartMapReduceJob(args[0]);
+				StartMapReduceJob startJob = new StartMapReduceJob();
 				registry.rebind("launcher", startJob);
+				System.out.println("object bounded " + startJob);
 			} catch (RemoteException e) {
 				System.out.println("Could not bind Objects to regstry");
 			}
@@ -33,8 +29,13 @@ public class Master {
 
 			MasterHeartBeatReceiver hearbeatReceiver = new MasterHeartBeatReceiver();
 			new Thread(hearbeatReceiver).start();
-
 		}
+		
+		else{
+			System.out.println("There should be either 2 arguments for max mappers and reduces "
+					+ "or no arguments to use default values");
+		}
+		
 
 
 	}

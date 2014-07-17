@@ -9,6 +9,8 @@ import java.io.FileInputStream;
 import java.io.IOException;
 import java.rmi.Naming;
 import java.rmi.NotBoundException;
+import java.rmi.registry.LocateRegistry;
+import java.rmi.registry.Registry;
 
 
 
@@ -26,9 +28,12 @@ public class MapReduceJobClient implements Runnable{
 	public static void runJob(MapReduceConfiguration config){
 
 		/* This would be a client function that will use an rmi call and transfer the config object to master */
-		if(config.getInputPath() == "" ||config.getOutputPath() == "" || 
-				config.getJobName()== "" || config.getMapperClass() == null || config.getReducerClass()==null){
+		if((config.getInputPath()).equals("")  ||(config.getOutputPath()).equals("") || 
+				(config.getJobName()).equals("") || config.getMapperClass() == null || config.getReducerClass()==null){
 
+			
+			System.out.println(config.getInputPath() +" "+ config.getOutputPath() +" "+ 
+			config.getJobName()+" "+config.getMapperClass()+" "+config.getReducerClass());
 			System.out.println("Some of the parameters have not been provided Correctly. Please read the documentation"
 					+ " to give inputs in the correct format");
 
@@ -50,7 +55,7 @@ public class MapReduceJobClient implements Runnable{
 			/* Create a .jar file will all user class files for transfer */
 			try {
 				Archiver jarMaker = new Archiver();
-				File directory = new File ("/Users/VSK/Documents/Git/mapreduce/src/master");  
+				File directory = new File (config.getUserJavaFilePath());  
 				File newJarCreated = new File(config.getUserProgramPackageName()+".jar");
 				File[] filesInDirectory = directory.listFiles();
 				if (filesInDirectory != null) {
@@ -73,15 +78,18 @@ public class MapReduceJobClient implements Runnable{
 						break;
 				}
 				
-				MapReduceStarterInterface jobStarter = (MapReduceStarterInterface)Naming.lookup("rmi://localhost:23390/launcher");		
+				/* Remote call to master to start job */
 				
+				MapReduceStarterInterface jobStarter = (MapReduceStarterInterface)Naming.lookup("rmi://127.0.0.1:23390/launcher");		
 				Boolean status = jobStarter.StartJob(config, JarFileByteArray); 
-
+				
+				System.out.println("Job "+config.getJobName()+" has Started");
+				
 				if(status == true){
-					System.out.println("Job has started");
+					System.out.println("Job "+config.getJobName()+" has Completed");
 				}
 				else{
-					System.out.println("Could not start job");
+					System.out.println("Error occured while running Job "+config.getJobName());
 				}
 				fis.close();
 

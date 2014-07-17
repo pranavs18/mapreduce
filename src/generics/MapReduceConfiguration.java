@@ -1,9 +1,17 @@
 package generics;
 
-public class MapReduceConfiguration{
+import java.io.Serializable;
+import java.net.InetAddress;
+
+public class MapReduceConfiguration implements Serializable{
 	
 	//Client Settings 
 	
+	/**
+	 * 
+	 */
+	private static final long serialVersionUID = 1L;
+
 	/* number reducers can be set by the user 
 	 * number of Mappers will depend on chunk 
 	 * size and and will use all available
@@ -44,6 +52,12 @@ public class MapReduceConfiguration{
 	
 	/* Master Ip */
 	 private String MasterIp;
+	
+	 /* Worker Ip */
+	 private String WorkerIpForSplit;
+	 
+	 /*Dfs Path */
+	 private String dfsPath;
 	
 	
 	
@@ -152,8 +166,20 @@ public class MapReduceConfiguration{
 		MasterIp = masterIp;
 	}
 
-	
-	
-	
+	public String getWorkerIpForSplit() {
+		return WorkerIpForSplit;
+	}
+
+	public void setWorkerIpForSplit(String workerIpForSplit) {
+		WorkerIpForSplit = workerIpForSplit;
+	}
+
+	public String getDfsPath() {
+		return dfsPath;
+	}
+
+	public void setDfsPath(String dfsPath) {
+		this.dfsPath = dfsPath;
+	}
 		
 }

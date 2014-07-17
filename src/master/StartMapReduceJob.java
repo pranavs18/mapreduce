@@ -2,10 +2,18 @@ package master;
 
 import generics.MapReduceConfiguration;
 import generics.MapReduceStarterInterface;
+import generics.MasterToNameNodeInterface;
 
+import java.io.IOException;
+import java.net.MalformedURLException;
 import java.rmi.Naming;
+import java.rmi.NotBoundException;
 import java.rmi.RemoteException;
 import java.rmi.server.UnicastRemoteObject;
+import java.util.ArrayList;
+import java.util.concurrent.ConcurrentHashMap;
+
+import distributedFS.fakeDistributedFile;
 
 public class StartMapReduceJob extends UnicastRemoteObject implements MapReduceStarterInterface{
 
@@ -13,23 +21,38 @@ public class StartMapReduceJob extends UnicastRemoteObject implements MapReduceS
 	 * 
 	 */
 	private static final long serialVersionUID = 1L;
-	private String nameNodeIp;
+	private String nameNodeIp = "127.0.0.1";
 	
-	protected StartMapReduceJob(String nameNodeIp) throws RemoteException {
-		this.nameNodeIp = nameNodeIp;
+	protected StartMapReduceJob() throws RemoteException {
+		
 	}
 
 	@Override
 	public Boolean StartJob(MapReduceConfiguration config, byte[] jarBytes)
-			throws RemoteException {
+			throws RemoteException, MalformedURLException {
 		 
 		/* Here we first call an rmi function asking name node for the map of splits and their respective locations(IP) */
-	//	MapReduceStarterInterface jobStarter = (MapReduceStarterInterface)Naming.lookup("rmi://localhost:23390/launcher");		
 		
-		//Boolean status = jobStarter.StartJob(config, JarFileByteArray);
+		System.out.println("Reached here");
+		try {
+			MasterToNameNodeInterface fileChunkMapRequst = (MasterToNameNodeInterface)Naming.lookup("rmi://127.0.0.1:23392/split");
+			try {
+				ConcurrentHashMap<String, ArrayList<fakeDistributedFile>> fileChunkMap =  fileChunkMapRequst.sendChunkMap(config);
+				System.out.println(fileChunkMap);
+			} catch (Exception e) {
+
+				e.printStackTrace();
+			}
+		} catch (NotBoundException | IOException e) {
+			System.out.println("URL not found or not bound");
+			e.printStackTrace();
+		}
 		
 		
-		return null;
+		
+		
+		
+		return true;
 	}
 
 }

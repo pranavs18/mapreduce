@@ -119,5 +119,15 @@ public class WorkerTasksStatus {
     		putInStatusReduce(jobId, taskDetails);
     	}
     }
+
+	public static int getNumberOfMaps() {
+		return numberOfMaps;
+	}
+
+	public static int getNumberOfReduces() {
+		return numberOfReduces;
+	}
+    
+    
 	
 }

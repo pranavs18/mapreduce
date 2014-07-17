@@ -2,15 +2,14 @@ package worker;
 
 public class MasterInformation {
 	
-	private String masterHost;
-	
-	public MasterInformation(String masterHost) {
-		this.masterHost = masterHost;
+	private static String masterHost;
 
-	}
-	public String getMasterHost() {
+	public static String getMasterHost() {
 		return masterHost;
 	}
 
+	public static void setMasterHost(String masterHost) {
+		MasterInformation.masterHost = masterHost;
+	}
 
 }

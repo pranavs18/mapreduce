@@ -10,8 +10,9 @@ import generics.MapReduceConfiguration;
 import java.io.BufferedReader;
 import java.io.IOException;
 import java.io.InputStreamReader;
+import java.net.InetAddress;
 
-public class UserJobLaunchConsole implements Runnable {
+public class UserJobLaunchConsole{
 
 	public static void main(String args[]) throws NumberFormatException, IOException{
 		System.out.println("The User Console will allow you to start map-reduce jobs, list running map-reduce jobs /");
@@ -19,6 +20,7 @@ public class UserJobLaunchConsole implements Runnable {
 		while(true){
 			System.out.println("Press \n 1 - Launch a map-reduce job \n 2 - Kill a map-reduce job \n 3 - List the map-reduce jobs \n 4 - Stop the master node");
 			BufferedReader br = new BufferedReader(new InputStreamReader(System.in));
+			n = Integer.parseInt(br.readLine());
 			String s = "";
 			switch(n){
 			case 1:{
@@ -28,24 +30,30 @@ public class UserJobLaunchConsole implements Runnable {
 				MapReduceConfiguration config = new MapReduceConfiguration();
 
 				/* Ask and set job details */
+				System.out.println("\nPlease enter the path for dfs folder in your system");
+				s = "";
+				s = br.readLine();
+				config.setDfsPath(s);
+
 				System.out.println("\nEnter Job name");
 				s = br.readLine();
 				config.setJobName(s);
-				
+
 				System.out.println("\nEnter absolute path of your map reduce package");
+				s="";
 				s = br.readLine();
 				config.setUserJavaFilePath(s);
-				
-				System.out.println("\nEnter input file Path");
+
+				System.out.println("\nEnter input file Path (Consider the dfs folder as root folder)");
 				s = "";
 				s = br.readLine();
-				config.setInputPath("/dfs"+s);
+				config.setInputPath(config.getDfsPath()+s);
+				System.out.println("Input path: "+config.getInputPath());
 
-				System.out.println("\nEnter output file Path");
+				System.out.println("\nEnter output file Path  (Consider the dfs folder as root folder)");
 				s = "";
 				s = br.readLine();
-				config.setInputPath("/dfs"+s);
-
+				config.setOutputPath(config.getDfsPath()+s);
 
 				try{
 
@@ -53,11 +61,9 @@ public class UserJobLaunchConsole implements Runnable {
 					s = "";
 					s = br.readLine();
 					config.setMapperClass(Class.forName(s));
-					int indexOfLastDot = s.lastIndexOf("\\.");
-					s = s.substring(0, indexOfLastDot-1);
+					int indexOfLastDot = s.lastIndexOf(".");
+					s = s.substring(0, indexOfLastDot);
 					config.setUserProgramPackageName(s);
-					
-					System.out.println("Package Name: "+s);  //remove
 
 					System.out.println("\nEnter Reduce class name");
 					s = "";
@@ -69,15 +75,15 @@ public class UserJobLaunchConsole implements Runnable {
 					s = "";
 					s = br.readLine();
 					if(!s.equals("")){
-					config.setInputKeyType(Class.forName(s));
+						config.setInputKeyType(Class.forName(s));
 					}
-					
+
 					System.out.println("\nEnter Input value Type (String, Integer, UserDefined classes ...)");
 					System.out.println("You can leave it blank to use default type Integer");
 					s = "";
 					s = br.readLine();
 					if(!s.equals("")){
-					config.setInputValueType(Class.forName(s));
+						config.setInputValueType(Class.forName(s));
 					}
 
 					System.out.println("\nEnter Output key Type (String, Integer, UserDefined classes ...)");
@@ -85,17 +91,31 @@ public class UserJobLaunchConsole implements Runnable {
 					s = "";
 					s = br.readLine();
 					if(!s.equals("")){
-					config.setOutputKeyType(Class.forName(s));
+						config.setOutputKeyType(Class.forName(s));
 					}
-					
+
 					System.out.println("\nEnter Output valur Type (String, Integer, UserDefined classes ...)");
 					System.out.println("You can leave it blank to use default type Integer");
 					s = "";
 					s = br.readLine();
 					if(!s.equals("")){
-					config.setOutputValueType(Class.forName(s));
+						config.setOutputValueType(Class.forName(s));
 					}
+
+
+					System.out.println("\nEnter number of reducers");
+					System.out.println("You can leave it blank to use default value 1");
 					
+					s = "";
+					s = br.readLine();
+					if(s.equals("")){
+						s="1";
+					}
+					config.setReducers(Integer.parseInt(s));
+
+
+					config.setWorkerIpForSplit(InetAddress.getLocalHost().getHostAddress());
+
 					MapReduceJobClient newJob = new MapReduceJobClient(config);
 					/* Running Job in a new Thread */
 					Thread jobThread = new Thread(newJob);
@@ -109,7 +129,6 @@ public class UserJobLaunchConsole implements Runnable {
 							+ "\n 2. Please ensure that you have entered the correct name of the classes");
 
 				}
-				
 
 			}
 
@@ -124,12 +143,5 @@ public class UserJobLaunchConsole implements Runnable {
 		}
 
 	}
-
-	@Override
-	public void run() {
-
-
-	}
-
 
 }
