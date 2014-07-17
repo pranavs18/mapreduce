@@ -3,6 +3,7 @@ package master;
 import generics.MapReduceConfiguration;
 import generics.MapReduceStarterInterface;
 import generics.MasterToNameNodeInterface;
+import generics.fakeDistributedFile;
 
 import java.io.IOException;
 import java.net.MalformedURLException;
@@ -12,8 +13,6 @@ import java.rmi.RemoteException;
 import java.rmi.server.UnicastRemoteObject;
 import java.util.ArrayList;
 import java.util.concurrent.ConcurrentHashMap;
-
-import distributedFS.fakeDistributedFile;
 
 public class StartMapReduceJob extends UnicastRemoteObject implements MapReduceStarterInterface{
 
@@ -28,7 +27,7 @@ public class StartMapReduceJob extends UnicastRemoteObject implements MapReduceS
 	}
 
 	@Override
-	public Boolean StartJob(MapReduceConfiguration config, byte[] jarBytes)
+	public Boolean StartJob(MapReduceConfiguration config)
 			throws RemoteException, MalformedURLException {
 		 
 		/* Here we first call an rmi function asking name node for the map of splits and their respective locations(IP) */

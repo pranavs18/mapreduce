@@ -2,6 +2,7 @@ package distributedFS;
 
 import generics.MapReduceConfiguration;
 import generics.MasterToNameNodeInterface;
+import generics.fakeDistributedFile;
 
 import java.io.FileNotFoundException;
 import java.io.IOException;
@@ -33,7 +34,7 @@ public class RemoteCallee extends UnicastRemoteObject implements MasterToNameNod
 	public ConcurrentHashMap<String, ArrayList<fakeDistributedFile>> sendChunkMap(MapReduceConfiguration config) throws RemoteException, NotBoundException, FileNotFoundException, IOException{
 		ArrayList<fakeDistributedFile> al = new ArrayList<fakeDistributedFile>();
 		remote = (SlaveRemoteInterface) Naming.lookup("//127.0.0.1:9876/Remote");
-		al = remote.splitFileIntoChunks(config.getInputPath());
+		al = remote.splitFileIntoChunks(config.getInputPath(), config);
 
 		for(int i=0;i< al.size();i++){
 			System.out.println("Block Created with name " + al.get(i));

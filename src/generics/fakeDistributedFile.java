@@ -5,7 +5,7 @@
  * fakeDistrbutedFile - representing the properties of the chunks created out of a big file and being stored in different workers
  **********************************************************************************/
 
-package distributedFS; 
+package generics; 
 
 import java.io.Serializable;
 

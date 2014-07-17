@@ -1,7 +1,13 @@
 package worker;
 
+import generics.Archiver;
+import generics.MapReduceConfiguration;
+import generics.fakeDistributedFile;
+
 import java.io.BufferedWriter;
 import java.io.File;
+import java.io.FileInputStream;
+import java.io.FileNotFoundException;
 import java.io.FileWriter;
 import java.io.IOException;
 import java.net.InetAddress;
@@ -9,8 +15,6 @@ import java.rmi.RemoteException;
 import java.rmi.server.UnicastRemoteObject;
 import java.util.ArrayList;
 import java.util.Scanner;
-
-import distributedFS.fakeDistributedFile;
 
 public class RemoteSplitterImpl extends UnicastRemoteObject implements SlaveRemoteInterface {
 	
@@ -22,7 +26,7 @@ public class RemoteSplitterImpl extends UnicastRemoteObject implements SlaveRemo
 	}
 	
 	@SuppressWarnings("resource")
-	public ArrayList<fakeDistributedFile> splitFileIntoChunks(String filename) throws RemoteException,IOException{
+	public ArrayList<fakeDistributedFile> splitFileIntoChunks(String filename , MapReduceConfiguration config) throws RemoteException,IOException{
 		ArrayList<fakeDistributedFile> chunkContainer = new ArrayList<fakeDistributedFile>();
 		
 		
@@ -95,6 +99,35 @@ public class RemoteSplitterImpl extends UnicastRemoteObject implements SlaveRemo
 				  
 		  }
 		}
+// jar archive logic 
+		
+		
+		Archiver jarMaker = new Archiver();
+		File directory = new File (config.getUserJavaFilePath());  
+		File newJarCreated = new File(config.getUserProgramPackageName()+".jar");
+		File[] filesInDirectory = directory.listFiles();
+		if (filesInDirectory != null) {
+
+			jarMaker.createJar(newJarCreated, filesInDirectory);
+
+		} else {
+			System.out.println("No files found");
+		}
+
+
+		/*  Make RMI call to master here with MapReduceConfiguration object as parameter
+		 *  Send the .class file in a jar to master
+		 */
+		byte[] JarFileByteArray = new byte[10240];
+		FileInputStream fis = new FileInputStream(newJarCreated);
+		while (true) {
+			int bytesRead = fis.read(JarFileByteArray, 0, JarFileByteArray.length);
+			if (bytesRead <= 0)
+				break;
+		}
+		fis.close();
 		return chunkContainer;
 	}
+
+	
 }

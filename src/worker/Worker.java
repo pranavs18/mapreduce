@@ -73,7 +73,7 @@ public class Worker implements Runnable {
 		String MasterIp = MasterInformation.getMasterHost(); 
 
 
-		System.setProperty("java.security.policy","/Users/VSK/Documents/Git/mapreduce/policy.txt");
+		System.setProperty("java.security.policy","C:/Users/PRANAV/Documents/mapreduce/policy.txt");
 		System.setSecurityManager(new java.rmi.RMISecurityManager());
 		RemoteSplitterImpl remote = new RemoteSplitterImpl();
 		try {
