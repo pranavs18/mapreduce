@@ -64,6 +64,10 @@ public class MapReduceJobClient implements Runnable{
 				System.out.println("Object was not found on lookup");
 				e.printStackTrace();
 			}
+			catch(Exception e){
+				System.out.println("Error occured while running Job: "+config.getJobName());
+				System.out.println("Please check if all the given inputs are correct");
+			}
 
 
 		}

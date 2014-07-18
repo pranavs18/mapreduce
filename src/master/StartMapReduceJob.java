@@ -13,6 +13,8 @@ import java.rmi.NotBoundException;
 import java.rmi.RemoteException;
 import java.rmi.server.UnicastRemoteObject;
 import java.util.ArrayList;
+import java.util.HashMap;
+import java.util.HashSet;
 import java.util.Set;
 import java.util.concurrent.ConcurrentHashMap;
 
@@ -40,11 +42,15 @@ public class StartMapReduceJob extends UnicastRemoteObject implements MapReduceS
 			MasterToNameNodeInterface fileChunkMapRequst = (MasterToNameNodeInterface)Naming.lookup("rmi://127.0.0.1:23392/split");
 
 			try {
+				Set<String> setOfworkerIpAddresses = MasterGlobalInformation.getAllWorkerMapReduceDetails().keySet();
+				System.out.println("Key Set : "+setOfworkerIpAddresses);
+				HashSet<String >workerIpAddresses = new HashSet<String>();
+				for(String s: setOfworkerIpAddresses){
+					workerIpAddresses.add(s);
+					
+				}
 				
-				Set<String> workerIpAddresses = MasterGlobalInformation.getAllWorkerMapReduceDetails().keySet();
-
 				ConcurrentHashMap<String, fakeDistributedFile> fileChunkMap =  fileChunkMapRequst.sendChunkMap(config,workerIpAddresses);
-				System.out.println(fileChunkMap);
 				check = true;
 			} catch (Exception e) {
 

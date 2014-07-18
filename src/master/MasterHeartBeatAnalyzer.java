@@ -58,7 +58,8 @@ public class MasterHeartBeatAnalyzer implements Runnable{
 				ois = new ObjectInputStream(clientSocket.getInputStream());
 			    WorkerMessageToMaster taskMapObject = (WorkerMessageToMaster)ois.readObject();
 				tempStr = "";
-				MasterGlobalInformation.getAllWorkerMapReduceDetails().put(clientSocket.getInetAddress().toString(), taskMapObject);
+				tempStr = clientSocket.getInetAddress().toString().substring(1);
+				MasterGlobalInformation.getAllWorkerMapReduceDetails().put(tempStr, taskMapObject);
 			}
 		}
 		
@@ -66,7 +67,7 @@ public class MasterHeartBeatAnalyzer implements Runnable{
 			while(true){
 				out.println("Start sending");
 				out.flush();
-				String temp =in.readLine();				
+				in.readLine();				
 			}
 		}
 

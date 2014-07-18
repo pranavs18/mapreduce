@@ -33,40 +33,40 @@ public class UserJobLaunchConsole{
 				System.out.println("\nPlease enter the path for dfs folder in your system");
 				s = "";
 				s = br.readLine();
-				config.setDfsPath(s);
+				config.setDfsPath(/*s*/"/Users/VSK/Documents/Git/mapreduce");
 
 				System.out.println("\nEnter Job name");
 				s = br.readLine();
-				config.setJobName(s);
+				config.setJobName(/*s*/"Split");
 
 				System.out.println("\nEnter absolute path of your map reduce package");
 				s="";
 				s = br.readLine();
-				config.setUserJavaFilePath(s);
+				config.setUserJavaFilePath(/*s*/"/Users/VSK/Documents/Git/mapreduce/src/client");
 
-				System.out.println("\nEnter input file Path (Consider the dfs folder as root folder)");
+				System.out.println(/*s*/"\nEnter input file Path (Consider the dfs folder as root folder)");
 				s = "";
 				s = br.readLine();
-				config.setInputPath(config.getDfsPath()+s);
+				config.setInputPath(/*config.getDfsPath()+s*/"/pranav.txt");
 				System.out.println("Input path: "+config.getInputPath());
 
 				System.out.println("\nEnter output file Path  (Consider the dfs folder as root folder)");
 				s = "";
 				s = br.readLine();
-				config.setOutputPath(config.getDfsPath()+s);
+				config.setOutputPath(/*config.getDfsPath()+s*/"/hello");
 
 				System.out.println("\nEnter Map class name");
 				s = "";
 				s = br.readLine();
-				config.setMapperClass(s);
+				config.setMapperClass(/*s*/"client.WordCount");
 				int indexOfLastDot = s.lastIndexOf(".");
-				s = s.substring(0, indexOfLastDot);
-				config.setUserProgramPackageName(s);
+				//s = s.substring(0, indexOfLastDot);
+				config.setUserProgramPackageName(/*s*/"client");
 
 				System.out.println("\nEnter Reduce class name");
 				s = "";
 				s = br.readLine();
-				config.setReducerClass(s);
+				config.setReducerClass(/*s*/"client.WordCount");
 
 				System.out.println("\nEnter Input key Type (Integer, UserDefined classes ...)");
 				System.out.println("You can leave it blank to use default type String");
