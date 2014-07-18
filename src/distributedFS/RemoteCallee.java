@@ -48,7 +48,11 @@ public class RemoteCallee extends UnicastRemoteObject implements MasterToNameNod
 
 			String chunkID = al.get(i).getChunkID();
 			chunkIDtoMachines.put(chunkID, al.get(i));
-	}
+	    }
+		// Logic to transfer chunks into other slave machines 
+		
+		
+		
 		return chunkIDtoMachines;
   }
 }

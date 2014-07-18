@@ -1,8 +1,11 @@
 package worker;
 
 import java.io.BufferedReader;
+import java.io.FileOutputStream;
 import java.io.IOException;
 import java.io.InputStreamReader;
+import java.io.ObjectInputStream;
+import java.io.ObjectOutputStream;
 import java.net.ServerSocket;
 import java.net.Socket;
 import java.net.UnknownHostException;
@@ -32,6 +35,11 @@ public class Worker implements Runnable {
 		while(true){
 
 			Socket masterClientSocket = workerServer.accept();	
+			try {
+				saveFile(masterClientSocket);
+			} catch (Exception e) {
+				System.out.println("Something wrong with transferring file chunks");
+			}
 			InputStreamReader input = new InputStreamReader(masterClientSocket.getInputStream());
 			BufferedReader in = new BufferedReader(input);
 
@@ -48,6 +56,52 @@ public class Worker implements Runnable {
 		}
 
 	}
+	
+	private void saveFile(Socket socket) throws Exception {  
+        ObjectOutputStream oos = new ObjectOutputStream(socket.getOutputStream());  
+        ObjectInputStream ois = new ObjectInputStream(socket.getInputStream());  
+        FileOutputStream fos = null;  
+        byte [] buffer = new byte[1024];  
+  
+        // 1. Read file name.  
+        Object o = ois.readObject();  
+  
+        if (o instanceof String) {  
+            fos = new FileOutputStream(o.toString());  
+        } else {  
+            System.out.println("Something is wrong with file transfer"); 
+        }  
+  
+        // 2. Read file to the end.  
+        Integer bytesRead = 0;  
+  
+        do {  
+            o = ois.readObject();  
+  
+            if (!(o instanceof Integer)) {  
+            	System.out.println("Something is wrong with file transfer");
+            }  
+  
+            bytesRead = (Integer)o;  
+  
+            o = ois.readObject();  
+  
+            if (!(o instanceof byte[])) {  
+            	System.out.println("Something is wrong with file transfer");
+            }  
+  
+            buffer = (byte[])o;  
+  
+            // 3. Write data to output file.  
+            fos.write(buffer, 0, bytesRead);  
+            
+        } while (bytesRead == 1024);  
+          
+        System.out.println("File transfer success");           
+        fos.close();  
+        ois.close();  
+        oos.close();  
+    }  
 
 	@Override
 	public void run() {
@@ -73,7 +127,7 @@ public class Worker implements Runnable {
 		String MasterIp = MasterInformation.getMasterHost(); 
 
 
-		System.setProperty("java.security.policy","/Users/VSK/Documents/Git/mapreduce/policy.txt");
+		System.setProperty("java.security.policy","C:/Users/PRANAV/Documents/mapreduce/policy.txt");
 		System.setSecurityManager(new java.rmi.RMISecurityManager());
 		RemoteSplitterImpl remote = new RemoteSplitterImpl();
 		

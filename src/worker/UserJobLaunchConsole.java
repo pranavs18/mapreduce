@@ -31,30 +31,34 @@ public class UserJobLaunchConsole{
 
 				/* Ask and set job details */
 				System.out.println("\nPlease enter the path for dfs folder in your system");
-				s = "";
-				s = br.readLine();
-				config.setDfsPath(/*s*/"/Users/VSK/Documents/Git/mapreduce");
+				s = "C:/Users/PRANAV/Documents/mapreduce";
+				//s = br.readLine();
+				config.setDfsPath(s);
 
 				System.out.println("\nEnter Job name");
-				s = br.readLine();
-				config.setJobName(/*s*/"Split");
+				//s = br.readLine();
+				s="split";
+				config.setJobName(s);
 
 				System.out.println("\nEnter absolute path of your map reduce package");
-				s="";
-				s = br.readLine();
-				config.setUserJavaFilePath(/*s*/"/Users/VSK/Documents/Git/mapreduce/src/client");
+				s="C:/Users/PRANAV/Documents/mapreduce/src/client";
+				//s = br.readLine();
+				config.setUserJavaFilePath(s);
 
-				System.out.println(/*s*/"\nEnter input file Path (Consider the dfs folder as root folder)");
-				s = "";
-				s = br.readLine();
-				config.setInputPath(/*config.getDfsPath()+s*/"/pranav.txt");
+				System.out.println("\nEnter input file Path (Consider the dfs folder as root folder)");
+				s = "/pranav.txt";
+				//s = br.readLine();
+				config.setInputPath(config.getDfsPath()+s);
 				System.out.println("Input path: "+config.getInputPath());
 
 				System.out.println("\nEnter output file Path  (Consider the dfs folder as root folder)");
-				s = "";
-				s = br.readLine();
-				config.setOutputPath(/*config.getDfsPath()+s*/"/hello");
+				s = "/abc";
+				//s = br.readLine();
+				config.setOutputPath(config.getDfsPath()+s);
 
+				try{
+
+					
 				System.out.println("\nEnter Map class name");
 				s = "";
 				s = br.readLine();
@@ -119,6 +123,9 @@ public class UserJobLaunchConsole{
 				Thread jobThread = new Thread(newJob);
 				jobThread.start();
 
+			  }
+				catch(Exception e){}
+			
 			}
 
 			case 2:{

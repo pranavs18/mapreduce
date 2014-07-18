@@ -10,11 +10,19 @@ import java.io.FileInputStream;
 import java.io.FileNotFoundException;
 import java.io.FileWriter;
 import java.io.IOException;
+import java.io.ObjectInputStream;
+import java.io.ObjectOutputStream;
 import java.net.InetAddress;
+import java.net.Socket;
+import java.rmi.Naming;
 import java.rmi.RemoteException;
 import java.rmi.server.UnicastRemoteObject;
 import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.LinkedList;
+import java.util.Queue;
 import java.util.Scanner;
+import java.util.concurrent.ConcurrentHashMap;
 
 public class RemoteSplitterImpl extends UnicastRemoteObject implements SlaveRemoteInterface {
 	
@@ -93,11 +101,12 @@ public class RemoteSplitterImpl extends UnicastRemoteObject implements SlaveRemo
 				} catch (IOException e) {
 					e.printStackTrace();
 				}
-				 uniquechunkName = chunkFileName + chunkNumber;
+				uniquechunkName = chunkFileName + chunkNumber;
 				newChunkName = newChunkDirectory +"/" +chunkFileName + chunkNumber + ".txt" ;
 				numberofLines = 0;
 				  
 		  }
+			transferFileChunks(newChunkDirectory);
 		}
 // jar archive logic 
 		
@@ -129,5 +138,46 @@ public class RemoteSplitterImpl extends UnicastRemoteObject implements SlaveRemo
 		return chunkContainer;
 	}
 
-	
+	public void transferFileChunks(String chunkDirectory) throws IOException{
+		
+		// Make a RMI call to get the map of slave machines 
+		ConcurrentHashMap<Integer, String> workerList = new ConcurrentHashMap<Integer,String>();
+		//workerList = ()Naming.lookup("//127.0.0.1:23391/workerList");
+		File folder = new File(chunkDirectory +"/");
+		File[] listOfFiles = folder.listFiles();
+        Queue<String> fileNames = new LinkedList<String>();
+		for (File file : listOfFiles) {
+		    if (file.isFile()) {
+		        fileNames.add(file.getName());
+		    }
+		}
+		int numberofChunks = fileNames.size();
+		int numberofSlaves = workerList.size();
+		int partitionSize = numberofChunks/1;
+		for(int j=0;j<numberofSlaves;j++){
+		String ipAddress = workerList.get(j);
+		  for(int i=0;i< partitionSize;i++){
+			
+			String fileName = fileNames.remove();
+		    @SuppressWarnings("resource")
+			Socket socket = new Socket("12", 23333);  
+	        ObjectInputStream ois = new ObjectInputStream(socket.getInputStream());  
+	        ObjectOutputStream oos = new ObjectOutputStream(socket.getOutputStream());  
+	        File file = new File(fileName);
+	        oos.writeObject(file.getName());  
+	  
+	        FileInputStream fis = new FileInputStream(file);  
+	        byte [] buffer = new byte[1024];  
+	        Integer bytesRead = 0;  
+	  
+	        while ((bytesRead = fis.read(buffer)) > 0) {  
+	            oos.writeObject(bytesRead);  
+	            oos.writeObject(Arrays.copyOf(buffer, buffer.length));  
+	        }  
+	  
+	        oos.close();  
+	        ois.close();
+		  }
+	   }
+	}
 }
