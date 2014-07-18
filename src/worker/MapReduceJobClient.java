@@ -39,45 +39,10 @@ public class MapReduceJobClient implements Runnable{
 
 		}
 		else{
-
-			String mapperAbstractClass= config.getMapperClass().getSuperclass().getName();
-			String reducerAbstractClass = config.getReducerClass().getSuperclass().getName();
-			/* Check if the User Mapper and reducer classes extend the 
-			 * Mapper abstract class and reducer abstract classes respectively
-			 */
-
-			//if(mapperAbstractClass!="" || reducerAbstractClass!=""){
-			//	System.out.println("Please check if your mapper or reducer class extend have appropriate super classes");
-			//}
-
-
-			//else{
+			
 			/* Create a .jar file will all user class files for transfer */
 			try {
-//				Archiver jarMaker = new Archiver();
-//				File directory = new File (config.getUserJavaFilePath());  
-//				File newJarCreated = new File(config.getUserProgramPackageName()+".jar");
-//				File[] filesInDirectory = directory.listFiles();
-//				if (filesInDirectory != null) {
-//
-//					jarMaker.createJar(newJarCreated, filesInDirectory);
-//
-//				} else {
-//					System.out.println("No files found");
-//				}
-//
-//
-//				/*  Make RMI call to master here with MapReduceConfiguration object as parameter
-//				 *  Send the .class file in a jar to master
-//				 */
-//				byte[] JarFileByteArray = new byte[10240];
-//				FileInputStream fis = new FileInputStream(newJarCreated);
-//				while (true) {
-//					int bytesRead = fis.read(JarFileByteArray, 0, JarFileByteArray.length);
-//					if (bytesRead <= 0)
-//						break;
-//				}
-				
+
 				/* Remote call to master to start job */
 				
 				MapReduceStarterInterface jobStarter = (MapReduceStarterInterface)Naming.lookup("rmi://127.0.0.1:23390/launcher");		
@@ -89,20 +54,17 @@ public class MapReduceJobClient implements Runnable{
 					System.out.println("Job "+config.getJobName()+" has Completed");
 				}
 				else{
-					System.out.println("Error occured while running Job "+config.getJobName());
+					System.out.println("Error occured while running Job: "+config.getJobName());
+					System.out.println("Please check if all the given inputs are correct");
 				}
-				
 
 			} catch (IOException e) {
 				System.out.println("An unexpected error occured. Please try again");
-				e.printStackTrace();
 			} catch (NotBoundException e) {
 				System.out.println("Object was not found on lookup");
 				e.printStackTrace();
 			}
-			
 
-			//}
 
 		}
 

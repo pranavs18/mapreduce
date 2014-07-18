@@ -20,20 +20,20 @@ public class MapReduceConfiguration implements Serializable{
 	private int reducers = 1;
 	
 	/* These fields are used by master to to determine the Type of object */ 
-	private Class<?> mapperClass = null;
-	private Class<?> reducerClass = null;
+	private String mapperClass = null;
+	private String reducerClass = null;
 
 	/* These fields are used to set the input key and Value Types
 	 * Default is String
 	 */
-	private Class<?> inputKeyType = String.class;
-	private Class<?> inputValueType = String.class;
+	private String inputKeyType = "String.class";
+	private String inputValueType = "String.class";
 
 	/* These fields are used to set the output key and Value Types
 	 * Default is String
 	 */
-	private Class<?> outputKeyType = String.class;
-	private Class<?> outputValueType = String.class;
+	private String outputKeyType = "String.class";
+	private String outputValueType = "String.class";
 
 	/* These fields are use to set the input and outPut Path in the 
 	 * our folder which will be used as our dfs on each machine
@@ -78,22 +78,6 @@ public class MapReduceConfiguration implements Serializable{
 		this.reducers = reducers;
 	}
 	
-	public Class<?> getMapperClass() {
-		return mapperClass;
-	}
-	
-	public void setMapperClass(Class<?> mapperClass) {
-		this.mapperClass = mapperClass;
-	}
-	
-	public Class<?> getReducerClass() {
-		return reducerClass;
-	}
-	
-	public void setReducerClass(Class<?> reducerClass) {
-		this.reducerClass = reducerClass;
-	}
-	
 	public String getInputPath() {
 		return inputPath;
 	}
@@ -102,37 +86,7 @@ public class MapReduceConfiguration implements Serializable{
 		this.inputPath = inputPath;
 	}
 
-	public Class<?> getInputKeyType() {
-		return inputKeyType;
-	}
-
-	public void setInputKeyType(Class<?> inputKeyType) {
-		this.inputKeyType = inputKeyType;
-	}
-
-	public Class<?> getInputValueType() {
-		return inputValueType;
-	}
-
-	public void setInputValueType(Class<?> inputValueType) {
-		this.inputValueType = inputValueType;
-	}
-
-	public Class<?> getOutputKeyType() {
-		return outputKeyType;
-	}
-
-	public void setOutputKeyType(Class<?> outputKeyType) {
-		this.outputKeyType = outputKeyType;
-	}
-
-	public Class<?> getOutputValueType() {
-		return outputValueType;
-	}
-
-	public void setOutputValueType(Class<?> outputValueType) {
-		this.outputValueType = outputValueType;
-	}
+	
 
 	public String getOutputPath() {
 		return outputPath;
@@ -181,5 +135,55 @@ public class MapReduceConfiguration implements Serializable{
 	public void setDfsPath(String dfsPath) {
 		this.dfsPath = dfsPath;
 	}
+
+	public String getMapperClass() {
+		return mapperClass;
+	}
+
+	public void setMapperClass(String mapperClass) {
+		this.mapperClass = mapperClass;
+	}
+
+	public String getReducerClass() {
+		return reducerClass;
+	}
+
+	public void setReducerClass(String reducerClass) {
+		this.reducerClass = reducerClass;
+	}
+
+	public String getInputKeyType() {
+		return inputKeyType;
+	}
+
+	public void setInputKeyType(String inputKeyType) {
+		this.inputKeyType = inputKeyType;
+	}
+
+	public String getInputValueType() {
+		return inputValueType;
+	}
+
+	public void setInputValueType(String inputValueType) {
+		this.inputValueType = inputValueType;
+	}
+
+	public String getOutputKeyType() {
+		return outputKeyType;
+	}
+
+	public void setOutputKeyType(String outputKeyType) {
+		this.outputKeyType = outputKeyType;
+	}
+
+	public String getOutputValueType() {
+		return outputValueType;
+	}
+
+	public void setOutputValueType(String outputValueType) {
+		this.outputValueType = outputValueType;
+	}
+	
+	
 		
 }

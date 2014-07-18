@@ -56,11 +56,9 @@ public class MasterHeartBeatAnalyzer implements Runnable{
 
 			while (true ) {
 				ois = new ObjectInputStream(clientSocket.getInputStream());
-				WorkerMessageToMaster taskMapObject = (WorkerMessageToMaster)ois.readObject();
+			    WorkerMessageToMaster taskMapObject = (WorkerMessageToMaster)ois.readObject();
 				tempStr = "";
-				MasterGlobalInformation.getAllMapTaskDetails().put(clientSocket.getInetAddress().toString(), taskMapObject.getMapStatus());
-				MasterGlobalInformation.getAllReduceTaskDetails().put(clientSocket.getInetAddress().toString(), taskMapObject.getReduceStatus());
-				//System.out.println("System map info : "+MasterGlobalInformation.getAllMapTaskDetails()); //remove
+				MasterGlobalInformation.getAllWorkerMapReduceDetails().put(clientSocket.getInetAddress().toString(), taskMapObject);
 			}
 		}
 		

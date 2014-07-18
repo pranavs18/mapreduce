@@ -44,9 +44,20 @@ public class WorkerMessageToMaster implements Serializable{
 	public void setReduceStatus(ConcurrentHashMap<String, TaskDetails> reduceStatus) {
 		this.reduceStatus = reduceStatus;
 	}
-	
 
-	
-	
+	public Boolean getMapFull() {
+		return mapFull;
+	}
 
+	public void setMapFull(Boolean mapFull) {
+		this.mapFull = mapFull;
+	}
+
+	public Boolean getReduceFull() {
+		return reduceFull;
+	}
+
+	public void setReduceFull(Boolean reduceFull) {
+		this.reduceFull = reduceFull;
+	}
 }

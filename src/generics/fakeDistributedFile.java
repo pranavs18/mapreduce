@@ -19,8 +19,7 @@ public class fakeDistributedFile implements Serializable{
 	private String chunkPath;
 	private int replicas;
 	
-	public fakeDistributedFile(){
-		
+	public fakeDistributedFile(){	
 	}
 	
 	public fakeDistributedFile(String filename, String ipAddress, String chunkID, String chunkPath){
@@ -69,7 +68,5 @@ public class fakeDistributedFile implements Serializable{
 	public void setReplicas(int replicas) {
 		this.replicas = replicas;
 	}
-
-	
 	
 }

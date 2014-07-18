@@ -11,6 +11,7 @@ import java.rmi.NotBoundException;
 import java.rmi.RemoteException;
 import java.rmi.server.UnicastRemoteObject;
 import java.util.ArrayList;
+import java.util.Set;
 import java.util.concurrent.ConcurrentHashMap;
 
 import worker.SlaveRemoteInterface;
@@ -31,7 +32,7 @@ public class RemoteCallee extends UnicastRemoteObject implements MasterToNameNod
 
 	private static SlaveRemoteInterface remote;
 	
-	public ConcurrentHashMap<String, fakeDistributedFile> sendChunkMap(MapReduceConfiguration config) throws RemoteException, NotBoundException, FileNotFoundException, IOException{
+	public ConcurrentHashMap<String, fakeDistributedFile> sendChunkMap(MapReduceConfiguration config, Set<String> wokerIps) throws RemoteException, NotBoundException, FileNotFoundException, IOException{
 		ArrayList<fakeDistributedFile> al = new ArrayList<fakeDistributedFile>();
 		remote = (SlaveRemoteInterface) Naming.lookup("//127.0.0.1:9876/Remote");
 		al = remote.splitFileIntoChunks(config.getInputPath(), config);
