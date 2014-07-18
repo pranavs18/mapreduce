@@ -1,8 +1,6 @@
 package master;
 
-import generics.TaskDetails;
 import generics.WorkerMessageToMaster;
-
 import java.util.concurrent.ConcurrentHashMap;
 import java.util.concurrent.atomic.AtomicInteger;
 

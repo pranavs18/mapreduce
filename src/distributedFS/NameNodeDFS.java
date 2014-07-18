@@ -39,12 +39,12 @@ public class NameNodeDFS extends Thread implements Runnable {
 		//NameNodeDFS nn = new NameNodeDFS();
 		
 		/* Here args[0] = masterIP */
-		NameNodeHeartBeat nnhb = new NameNodeHeartBeat(args[0], 23333);
+		NameNodeHeartBeat nnhb = new NameNodeHeartBeat(args[0], 23340);
 		RemoteCallee rc = new RemoteCallee();
 		Registry reg = LocateRegistry.createRegistry(23392);
 		reg.rebind("split", rc);
 		
-	    System.setProperty("java.security.policy","C:/Users/PRANAV/Documents/mapreduce/policy.txt");
+	    System.setProperty("java.security.policy","/Users/VSK/Documents/Git/mapreduce/policy.txt");
 		System.setSecurityManager(new java.rmi.RMISecurityManager());
 		
 

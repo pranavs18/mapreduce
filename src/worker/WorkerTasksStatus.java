@@ -20,8 +20,8 @@ public class WorkerTasksStatus {
 
 	private static ConcurrentHashMap<String,TaskDetails> taskStatusMap = new ConcurrentHashMap<String, TaskDetails>();
 	private static ConcurrentHashMap<String,TaskDetails> taskStatusReduce = new ConcurrentHashMap<String, TaskDetails>();
-	private static int numberOfMaps;
-	private static int numberOfReduces;
+	private static int numberOfMaps = 4;
+	private static int numberOfReduces = 2;
 	private static int workerId;
 
 	

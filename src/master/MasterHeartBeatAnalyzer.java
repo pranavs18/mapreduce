@@ -1,7 +1,6 @@
 package master;
 
 import generics.WorkerMessageToMaster;
-
 import java.io.BufferedReader;
 import java.io.IOException;
 import java.io.InputStreamReader;
@@ -13,65 +12,44 @@ public class MasterHeartBeatAnalyzer implements Runnable{
 
 	Socket clientSocket = null;
 
-
-
 	public MasterHeartBeatAnalyzer(Socket clientSocket) {
 
 		this.clientSocket = clientSocket;
 	}
 
 	public void heartBeat() throws IOException, ClassNotFoundException{
-		ObjectInputStream ois = null;
-		PrintStream out = null;
-		InputStreamReader input = null;
-		BufferedReader in = null;
-		try {
-			out = new PrintStream(clientSocket.getOutputStream());
-			input = new InputStreamReader(clientSocket.getInputStream());
-			in = new BufferedReader(input);
-		} catch (IOException e) {
+		try{
+			PrintStream out = new PrintStream(clientSocket.getOutputStream());
+			ObjectInputStream ois = new ObjectInputStream(clientSocket.getInputStream());
 
-			System.out.println("Error Occured while trying to create io streams");
-
-		}
-		String tempStr = "";
-		String ip = "";
-		if((tempStr = in.readLine())!=null){
-			if(tempStr.contains(":")){
-				ip = tempStr.substring(tempStr.indexOf(":")+1, tempStr.length());
-				System.out.println("Connection requested by Worker with Ip: "+ip);
-			}
-		}
-		if(tempStr.contains(":")){
+			String tempStr = "";
 			int conn = MasterGlobalInformation.getConnectionNumber();
-
-			String outString =conn+" "+MasterGlobalInformation.getMaxMapperPerSystem()+" "+MasterGlobalInformation.getMaxReducesPerSystem();
-			System.out.println("Sending: "+outString);
-			out.println(outString);
-			out.flush();
-
-			String temp = in.readLine();
-			out.println("Start sending");
-			out.flush();
-
+			Boolean shouldEnter = true;
 			while (true ) {
-				ois = new ObjectInputStream(clientSocket.getInputStream());
-			    WorkerMessageToMaster taskMapObject = (WorkerMessageToMaster)ois.readObject();
+
+				WorkerMessageToMaster taskMapObject = (WorkerMessageToMaster)ois.readObject();
 				tempStr = "";
 				tempStr = clientSocket.getInetAddress().toString().substring(1);
 				MasterGlobalInformation.getAllWorkerMapReduceDetails().put(tempStr, taskMapObject);
-			}
-		}
-		
-		else{
-			while(true){
-				out.println("Start sending");
-				out.flush();
-				in.readLine();				
-			}
-		}
 
+				String outString =conn+" "+MasterGlobalInformation.getMaxMapperPerSystem()+" "+MasterGlobalInformation.getMaxReducesPerSystem();
+				out.println(outString);
+				out.flush();
+
+				if(shouldEnter == true){
+					System.out.println("Connection established with worker: "+clientSocket.getInetAddress().getHostAddress().toString());
+					System.out.println("Alloted Id: "+conn);
+				}
+				shouldEnter = false;
+
+			}
+		}catch(IOException e){
+			System.out.println("Stream Error");
+			e.printStackTrace();
+		}
 	}
+
+
 
 	public void run() {
 
@@ -81,6 +59,7 @@ public class MasterHeartBeatAnalyzer implements Runnable{
 			System.out.println("Object was not received");
 
 		} catch (IOException e) {
+			e.printStackTrace();
 			System.out.println("Stream error");
 		}
 

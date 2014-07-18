@@ -8,7 +8,7 @@
 
 package master;
 
-public enum JobStatus {
+public enum JobStatus{
 
 	RUNNING, COMPLETE, AVAILABLE;
 }

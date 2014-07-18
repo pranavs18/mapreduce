@@ -32,11 +32,11 @@ public class RemoteCallee extends UnicastRemoteObject implements MasterToNameNod
 
 	private static SlaveRemoteInterface remote;
 	
-	public ConcurrentHashMap<String, fakeDistributedFile> sendChunkMap(MapReduceConfiguration config, Set<String> workerIps) throws RemoteException, NotBoundException, FileNotFoundException, IOException{
+	public ConcurrentHashMap<String, fakeDistributedFile> sendChunkMap(MapReduceConfiguration config, Set<String> workerIps, String ipOfMainFile) throws RemoteException, NotBoundException, FileNotFoundException, IOException{
 		
 		System.out.println("Set: "+ workerIps);
 		ArrayList<fakeDistributedFile> al = new ArrayList<fakeDistributedFile>();
-		remote = (SlaveRemoteInterface) Naming.lookup("//127.0.0.1:9876/Remote");
+		remote = (SlaveRemoteInterface) Naming.lookup("rmi://"+ipOfMainFile+":9876/Remote");
 		al = remote.splitFileIntoChunks(config.getInputPath(), config);
 
 		for(int i=0;i< al.size();i++){

@@ -28,7 +28,9 @@ public class Master {
 			
 
 			MasterHeartBeatReceiver hearbeatReceiver = new MasterHeartBeatReceiver();
+			MasterNameNodeHeartBeatReceiver namenodeHeartBeatReceiver = new MasterNameNodeHeartBeatReceiver();
 			new Thread(hearbeatReceiver).start();
+			new Thread(namenodeHeartBeatReceiver).start();
 		}
 		
 		else{
