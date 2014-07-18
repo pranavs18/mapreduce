@@ -6,6 +6,7 @@ import java.io.IOException;
 import java.io.InputStreamReader;
 import java.io.ObjectInputStream;
 import java.io.ObjectOutputStream;
+import java.net.InetAddress;
 import java.net.ServerSocket;
 import java.net.Socket;
 import java.net.UnknownHostException;
@@ -17,7 +18,7 @@ import java.rmi.registry.Registry;
 public class Worker implements Runnable {
 
 	private String MasterIp ;
-	int workerServerPort = 23333;
+	static int workerServerPort = 23333;
 
 	public Worker(String MasterIp){
 
@@ -127,7 +128,11 @@ public class Worker implements Runnable {
 		String MasterIp = MasterInformation.getMasterHost(); 
 		System.out.println("Master Ip: "+MasterIp);
 
-		System.setProperty("java.security.policy","/Users/VSK/Documents/Git/mapreduce/policy.txt");
+
+
+		System.setProperty("java.security.policy","C:/Users/PRANAV/Documents/mapreduce/policy.txt");
+		
+	    //System.setProperty("java.rmi.server.hostname", "128.237.186.178");
 		System.setSecurityManager(new java.rmi.RMISecurityManager());
 		RemoteSplitterImpl remote = new RemoteSplitterImpl();
 		
@@ -141,7 +146,7 @@ public class Worker implements Runnable {
 
 		}
 
-		//Worker worker = new Worker(MasterIp);
+		Worker worker = new Worker(MasterIp);
 
 		WorkerRegisterHeartBeat heartBeat = new WorkerRegisterHeartBeat(MasterIp);
 

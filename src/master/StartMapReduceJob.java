@@ -27,8 +27,9 @@ public class StartMapReduceJob extends UnicastRemoteObject implements MapReduceS
 
 	}
 
-	@Override
-	public Boolean StartJob(MapReduceConfiguration config, String ipOfMainFile)
+
+	public Boolean StartJob(MapReduceConfiguration config, String splitIp)
+
 			throws RemoteException, MalformedURLException {
 
 		/* Here we first call an rmi function asking name node for the map of splits and their respective locations(IP) */
@@ -46,7 +47,9 @@ public class StartMapReduceJob extends UnicastRemoteObject implements MapReduceS
 					
 				}
 				
-				ConcurrentHashMap<String, fakeDistributedFile> fileChunkMap =  fileChunkMapRequst.sendChunkMap(config,workerIpAddresses,ipOfMainFile);
+
+				ConcurrentHashMap<String, fakeDistributedFile> fileChunkMap =  fileChunkMapRequst.sendChunkMap(config,workerIpAddresses, splitIp);
+
 				check = true;
 			} catch (Exception e) {
 

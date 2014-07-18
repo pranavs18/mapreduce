@@ -32,20 +32,19 @@ public class RemoteCallee extends UnicastRemoteObject implements MasterToNameNod
 
 	private static SlaveRemoteInterface remote;
 	
-	public ConcurrentHashMap<String, fakeDistributedFile> sendChunkMap(MapReduceConfiguration config, Set<String> workerIps, String ipOfMainFile) throws RemoteException, NotBoundException, FileNotFoundException, IOException{
+
+	public ConcurrentHashMap<String, fakeDistributedFile> sendChunkMap(MapReduceConfiguration config, Set<String> workerIps, String splitIp) throws RemoteException, NotBoundException, FileNotFoundException, IOException{
 		
 		System.out.println("Set: "+ workerIps);
 		ArrayList<fakeDistributedFile> al = new ArrayList<fakeDistributedFile>();
-		remote = (SlaveRemoteInterface) Naming.lookup("rmi://"+ipOfMainFile+":9876/Remote");
-		al = remote.splitFileIntoChunks(config.getInputPath(), config);
-
+		remote = (SlaveRemoteInterface) Naming.lookup("//127.0.0.1:9876/Remote");
+		al = remote.splitFileIntoChunks(config.getInputPath(), config, workerIps, splitIp);
 		for(int i=0;i< al.size();i++){
 			System.out.println("Block Created with name " + al.get(i));
 		}
 		FiletoChunkList.put(config.getInputPath(), al);
 
 		for(int i=0;i< al.size();i++){
-
 			String chunkID = al.get(i).getChunkID();
 			chunkIDtoMachines.put(chunkID, al.get(i));
 	    }
