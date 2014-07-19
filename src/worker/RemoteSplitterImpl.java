@@ -30,20 +30,20 @@ import java.util.Set;
 import java.util.concurrent.ConcurrentHashMap;
 
 public class RemoteSplitterImpl extends UnicastRemoteObject implements SlaveRemoteInterface {
-	
-	
+
+
 	private static final long serialVersionUID = 1L;
 	public ConcurrentHashMap<String, ArrayList<String>> chunkTracker = new ConcurrentHashMap<String, ArrayList<String>>();
 
 	public RemoteSplitterImpl() throws RemoteException {
-		
+
 	}
-	
+
 	@SuppressWarnings("resource")
 	public ArrayList<fakeDistributedFile> splitFileIntoChunks(String filename , MapReduceConfiguration config, Set<String> workerIps , String splitIp) throws RemoteException,IOException{
 		ArrayList<fakeDistributedFile> chunkContainer = new ArrayList<fakeDistributedFile>();
-		
-		
+
+
 		File file = new File(filename);
 		int numberofLines = 0;
 		int chunkSize = 25;
@@ -53,47 +53,48 @@ public class RemoteSplitterImpl extends UnicastRemoteObject implements SlaveRemo
 		else
 			System.out.println("\n File found");
 		Scanner scanner = null;
-	    
-	    scanner = new Scanner(file);
+
+		scanner = new Scanner(file);
 		boolean result= false;
 		int index=0;
 		for(int i=filename.length()-1; i>=0;i--){
 			if(filename.charAt(i) == '/'){
-				    index = i;
-					break;
-		    }
+				index = i;
+				break;
+			}
 		}
-	
+
 		String chunkFileName = filename.substring(index+1, filename.length()-4);
-		String newChunkDirectory = filename.substring(0, index)+ "/.." + "/chunks" + chunkFileName;
-		String newContainer = "chunks" + chunkFileName;
+		//String newChunkDirectory = filename.substring(0, index)+ "/.." + "/chunks" + chunkFileName;
+		String newChunkDirectory = ".."+File.separator+"dfs"+File.separator+"chunks";
+		String newContainer = ".."+File.separator+"dfs"+File.separator+"chunks";
 		File dir = new File(newChunkDirectory);
 		if (!dir.exists()) {
-            result = dir.mkdirs();
+			result = dir.mkdirs();
 
-            if (result) {
-                System.out.println("Folder is created");
-                
-            } 
-        }
-		String newChunkName = newChunkDirectory + "/" + chunkFileName  + chunkNumber + ".txt";
+			if (result) {
+				System.out.println("Folder is created");
+
+			} 
+		}
+		String newChunkName = newChunkDirectory + File.separator + chunkFileName  + chunkNumber + ".txt";
 		int chunkID = chunkNumber;
 		String uniquechunkName = chunkFileName + chunkNumber;
 		BufferedWriter bw = null;
 		while (scanner.hasNextLine()) {
-		  String line = scanner.nextLine();
-		  
-		    bw = new BufferedWriter(new FileWriter(newChunkName,true));
-		      
-			  numberofLines++;
-			  try{
-			  bw.write(line);
-			  bw.newLine();
-		      bw.flush();
-			  }
-			  catch(Exception e){
-				  
-			  }
+			String line = scanner.nextLine();
+
+			bw = new BufferedWriter(new FileWriter(newChunkName,true));
+
+			numberofLines++;
+			try{
+				bw.write(line);
+				bw.newLine();
+				bw.flush();
+			}
+			catch(Exception e){
+
+			}
 			if(numberofLines == chunkSize){
 				chunkNumber++;
 				try {
@@ -111,18 +112,18 @@ public class RemoteSplitterImpl extends UnicastRemoteObject implements SlaveRemo
 				uniquechunkName = chunkFileName + chunkNumber;
 				newChunkName = newChunkDirectory +"/" +chunkFileName + chunkNumber + ".txt" ;
 				numberofLines = 0;
-				  
-		  }
-			
+
+			}
+
 		}
 		bw.close();
-// jar archive logic 
-		
-		
+		// jar archive logic 
+
+
 		Archiver jarMaker = new Archiver();
 		File directory = new File (config.getUserJavaFilePath());  
 		String jarName = config.getUserProgramPackageName()+".jar";
-		File newJarCreated = new File(jarName);
+		File newJarCreated = new File("."+File.separator+"src"+File.separator+jarName);
 		File[] filesInDirectory = directory.listFiles();
 		if (filesInDirectory != null) {
 
@@ -153,7 +154,7 @@ public class RemoteSplitterImpl extends UnicastRemoteObject implements SlaveRemo
 				} catch (NotBoundException e) {
 					e.printStackTrace();
 				}
-	             jarObj.transferJar(jarName,JarFileByteArray);
+				jarObj.transferJar(jarName,JarFileByteArray);
 			}
 		}
 		try {
@@ -165,100 +166,99 @@ public class RemoteSplitterImpl extends UnicastRemoteObject implements SlaveRemo
 	}
 
 	public ConcurrentHashMap<String,ArrayList<String>> fetchChunks(String chunkDirectory, Set<String> workerIps, String splitIp) throws IOException, NotBoundException{
-		
-		
+
+
 		ArrayList<String> al = new ArrayList<String>();
-	    String path  = new File(".").getCanonicalPath();
-	    int len = path.length();
-	    if(path.contains("mapreduce")){
-	    	path = path.substring(0,len-10);
-	    }
-	     
-	    path = path+File.separator+ chunkDirectory;
-		File folder = new File(path);
+		//String path  = new File(".").getCanonicalPath();
+		//int len = path.length();
+		//		if(path.contains("mapreduce")){
+		//			path = path.substring(0,len-10);
+		//		}
+
+		//path = path+File.separator+ chunkDirectory;
+		File folder = new File(chunkDirectory);
 		System.out.println(folder.getCanonicalPath());
 		File[] listOfFiles = folder.listFiles();
 		System.out.println(listOfFiles.length + " chunks found");
-        Queue<String> fileNames = new LinkedList<String>();
+		Queue<String> fileNames = new LinkedList<String>();
 		for (File file : listOfFiles) {
-		    if (file.isFile()) {
-		        fileNames.add(file.getName());
-		    }
+			if (file.isFile()) {
+				fileNames.add(file.getName());
+			}
 		}
 		int numberofChunks = fileNames.size();
 		int numberofSlaves = workerIps.size();
 		int partitionSize = numberofChunks/numberofSlaves;
 		SlaveRemoteInterface obj;
-	for(String s:workerIps){
-		String ipAddress = null;
-    	if( !s.equals(splitIp)){
-    		ipAddress= s;
-    		
-		for(int i=0;i< partitionSize;i++){
-			
-			String Name = fileNames.remove();
-			if(chunkTracker.contains(Name)){
-				chunkTracker.get(Name).add(ipAddress);
+		for(String s:workerIps){
+			String ipAddress= null;
+			if(!s.equals(splitIp)){
+
+				for(int i=0;i< partitionSize;i++){
+
+					String Name = fileNames.remove();
+					if(chunkTracker.contains(Name)){
+						chunkTracker.get(Name).add(ipAddress);
+					}
+					else {
+						chunkTracker.put(Name, al);
+					}
+					String fileName = chunkDirectory + File.separator + Name;
+					System.out.println("File found at location " + folder.getAbsolutePath());
+					File file = new File(fileName);
+					byte buffer[] = new byte[(int)file.length()];
+					BufferedInputStream input = new BufferedInputStream(new FileInputStream(fileName));
+					input.read(buffer,0,buffer.length);
+					input.close();  	
+					obj = (SlaveRemoteInterface) Naming.lookup("//"+ ipAddress +":9876/Remote");
+					obj.transferChunks(Name, buffer);
+
+
+				}
 			}
-			else {
-			chunkTracker.put(Name, al);
-			}
-			String fileName = path + File.separator + Name;
-			System.out.println("File found at location " + fileName);
-	        File file = new File(fileName);
-	        byte buffer[] = new byte[(int)file.length()];
-	        BufferedInputStream input = new BufferedInputStream(new FileInputStream(fileName));
-            input.read(buffer,0,buffer.length);
-            input.close();  	
-             obj = (SlaveRemoteInterface) Naming.lookup("//"+ ipAddress +":9876/Remote");
-             obj.transferChunks(Name, buffer);
-             
-            
-            }
+
 		}
-		}
-	   return chunkTracker;
+		return chunkTracker;
 	}
-	
+
 	public ConcurrentHashMap<String, ArrayList<String>> transferChunks(String Name, byte buffer[]) throws IOException{
-		
+
 		String path = ".."+File.separator+"dfs"+File.separator+"chunks";
 		File dir = new File(path);
 		if (!dir.exists()) {
-            boolean result = dir.mkdirs();
+			boolean result = dir.mkdirs();
 
-            if (result) {
-                System.out.println("Folder is created");
-                
-            } 
-        }
+			if (result) {
+				System.out.println("Folder is created");
+
+			} 
+		}
 		String newChunkName = path + File.separator + Name;
 		File file = new File(newChunkName);
-		
+
 		//file.createNewFile();
 		byte temp[] = buffer;
 		System.out.println(file.getCanonicalPath() + " ..." + file.getName());
-        BufferedOutputStream output = new BufferedOutputStream(new FileOutputStream(newChunkName));
-        output.write(temp,0,temp.length);
-        output.flush();
-        output.close();
-	    System.out.println(Name + " chunk tranferred");
-	    return chunkTracker;
-	    
+		BufferedOutputStream output = new BufferedOutputStream(new FileOutputStream(newChunkName));
+		output.write(temp,0,temp.length);
+		output.flush();
+		output.close();
+		System.out.println(Name + " chunk tranferred");
+		return chunkTracker;
+
 	}
-	
-  public void transferJar(String jarName, byte buffer[]) throws IOException{
-		
-		File file = new File(jarName);
+
+	public void transferJar(String jarName, byte buffer[]) throws IOException{
+		File file = new File("."+File.separator+"src"+File.separator+jarName);
 		byte temp[] = buffer;
-		
-        FileOutputStream output =new FileOutputStream(file.getName());
-        output.write(temp,0,temp.length);
-        output.flush();
-        output.close();
-	    System.out.println(jarName + " Jar copied " );
-	 }
-	
-	
-	
+		System.out.println("Absolute path of jar file: "+file.getAbsolutePath());
+		FileOutputStream output =new FileOutputStream(file.getAbsolutePath());
+		output.write(temp,0,temp.length);
+		output.flush();
+		output.close();
+		System.out.println(jarName + " Jar copied " );
+	}
+
+
+
 }
