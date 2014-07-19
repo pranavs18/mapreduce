@@ -22,7 +22,7 @@ public class Archiver {
 			if(filesToBeJar[i] == null 
 					|| !filesToBeJar[i].exists()
 					|| filesToBeJar[i].isDirectory() 
-				|| !filesToBeJar[i].getName().substring((filesToBeJar[i].getName().lastIndexOf("."))+1, (filesToBeJar[i].getName().length())).equals("class")){
+				/*|| !filesToBeJar[i].getName().substring((filesToBeJar[i].getName().lastIndexOf("."))+1, (filesToBeJar[i].getName().length())).equals("class")*/){
 				continue;
 			}
 

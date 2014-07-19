@@ -13,6 +13,7 @@ import java.io.FileNotFoundException;
 import java.io.FileOutputStream;
 import java.io.FileWriter;
 import java.io.IOException;
+import java.io.InputStream;
 import java.io.ObjectInputStream;
 import java.io.ObjectOutputStream;
 import java.net.InetAddress;
@@ -23,11 +24,14 @@ import java.rmi.RemoteException;
 import java.rmi.server.UnicastRemoteObject;
 import java.util.ArrayList;
 import java.util.Arrays;
+import java.util.Enumeration;
 import java.util.LinkedList;
 import java.util.Queue;
 import java.util.Scanner;
 import java.util.Set;
 import java.util.concurrent.ConcurrentHashMap;
+import java.util.jar.JarEntry;
+import java.util.jar.JarFile;
 
 public class RemoteSplitterImpl extends UnicastRemoteObject implements SlaveRemoteInterface {
 
@@ -146,16 +150,15 @@ public class RemoteSplitterImpl extends UnicastRemoteObject implements SlaveRemo
 		}
 		fis.close();
 		for(String s:workerIps){
-			if(!splitIp.equals(s)){
-				String ip = s;
-				SlaveRemoteInterface jarObj = null;
-				try {
-					jarObj = (SlaveRemoteInterface) Naming.lookup("//"+ ip +":9876/Remote");
-				} catch (NotBoundException e) {
-					e.printStackTrace();
-				}
-				jarObj.transferJar(jarName,JarFileByteArray);
+			String ip = s;
+			SlaveRemoteInterface jarObj = null;
+			try {
+				jarObj = (SlaveRemoteInterface) Naming.lookup("//"+ ip +":9876/Remote");
+			} catch (NotBoundException e) {
+				e.printStackTrace();
 			}
+			jarObj.transferJar(jarName,JarFileByteArray);
+
 		}
 		try {
 			fetchChunks(newContainer, workerIps , splitIp);
@@ -169,13 +172,6 @@ public class RemoteSplitterImpl extends UnicastRemoteObject implements SlaveRemo
 
 
 		ArrayList<String> al = new ArrayList<String>();
-		//String path  = new File(".").getCanonicalPath();
-		//int len = path.length();
-		//		if(path.contains("mapreduce")){
-		//			path = path.substring(0,len-10);
-		//		}
-
-		//path = path+File.separator+ chunkDirectory;
 		File folder = new File(chunkDirectory);
 		System.out.println(folder.getCanonicalPath());
 		File[] listOfFiles = folder.listFiles();
@@ -215,8 +211,8 @@ public class RemoteSplitterImpl extends UnicastRemoteObject implements SlaveRemo
 
 
 				}
-			}
 
+			}
 		}
 		return chunkTracker;
 	}
@@ -236,7 +232,7 @@ public class RemoteSplitterImpl extends UnicastRemoteObject implements SlaveRemo
 		String newChunkName = path + File.separator + Name;
 		File file = new File(newChunkName);
 
-		//file.createNewFile();
+
 		byte temp[] = buffer;
 		System.out.println(file.getCanonicalPath() + " ..." + file.getName());
 		BufferedOutputStream output = new BufferedOutputStream(new FileOutputStream(newChunkName));
@@ -249,7 +245,8 @@ public class RemoteSplitterImpl extends UnicastRemoteObject implements SlaveRemo
 	}
 
 	public void transferJar(String jarName, byte buffer[]) throws IOException{
-		File file = new File("."+File.separator+"src"+File.separator+jarName);
+		
+		File file = new File("src"+File.separator+jarName);
 		byte temp[] = buffer;
 		System.out.println("Absolute path of jar file: "+file.getAbsolutePath());
 		FileOutputStream output =new FileOutputStream(file.getAbsolutePath());
@@ -257,8 +254,44 @@ public class RemoteSplitterImpl extends UnicastRemoteObject implements SlaveRemo
 		output.flush();
 		output.close();
 		System.out.println(jarName + " Jar copied " );
+		System.out.println("Extracting Jar....");
+		File jarfile = new File("src"+File.separator+jarName);
+		System.out.println(jarfile.getAbsolutePath());  //remove
+
+		JarFile jar = new JarFile(jarfile);
+		System.out.println("jar name "+jar.getName());
+
+
+		for (Enumeration<JarEntry> enums = jar.entries(); enums.hasMoreElements();) {
+			JarEntry entry = (JarEntry) enums.nextElement();
+
+			String fileName = "src"+File.separator+jarName.substring(0, jarName.length()-4)+File.separator +entry.getName();
+			
+			File dir = new File("src"+File.separator+jarName.substring(0, jarName.length()-4));
+			if (!dir.exists()) {
+				Boolean result = dir.mkdirs();
+
+				if (result) {
+					System.out.println("Folder is created");
+
+				} 
+			}
+			
+			
+			File f = new File(fileName);
+
+			if (!fileName.endsWith("/")) {
+				InputStream is = jar.getInputStream(entry);
+				FileOutputStream fos = new FileOutputStream(f);
+
+				// write contents of 'is' to 'fos'
+				while (is.available() > 0) {
+					fos.write(is.read());
+				}
+
+				fos.close();
+				is.close();
+			}
+		}
 	}
-
-
-
 }
