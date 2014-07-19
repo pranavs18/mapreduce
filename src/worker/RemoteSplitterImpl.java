@@ -65,7 +65,7 @@ public class RemoteSplitterImpl extends UnicastRemoteObject implements SlaveRemo
 	
 		String chunkFileName = filename.substring(index+1, filename.length()-4);
 		String newChunkDirectory = filename.substring(0, index)+ "/.." + "/chunks" + chunkFileName;
-		
+		String newContainer = "chunks" + chunkFileName;
 		File dir = new File(newChunkDirectory);
 		if (!dir.exists()) {
             result = dir.mkdirs();
@@ -81,8 +81,9 @@ public class RemoteSplitterImpl extends UnicastRemoteObject implements SlaveRemo
 		BufferedWriter bw = null;
 		while (scanner.hasNextLine()) {
 		  String line = scanner.nextLine();
-			bw = new BufferedWriter(new FileWriter(newChunkName, true));
-		
+		  
+		    bw = new BufferedWriter(new FileWriter(newChunkName,true));
+		      
 			  numberofLines++;
 			  try{
 			  bw.write(line);
@@ -111,18 +112,16 @@ public class RemoteSplitterImpl extends UnicastRemoteObject implements SlaveRemo
 				numberofLines = 0;
 				  
 		  }
-			try {
-				fetchChunks(newChunkDirectory, workerIps , splitIp);
-			} catch (NotBoundException e) {
-				e.printStackTrace();
-			}
+			
 		}
+		bw.close();
 // jar archive logic 
 		
 		
 		Archiver jarMaker = new Archiver();
 		File directory = new File (config.getUserJavaFilePath());  
-		File newJarCreated = new File(config.getUserProgramPackageName()+".jar");
+		String jarName = config.getUserProgramPackageName()+".jar";
+		File newJarCreated = new File(jarName);
 		File[] filesInDirectory = directory.listFiles();
 		if (filesInDirectory != null) {
 
@@ -144,14 +143,39 @@ public class RemoteSplitterImpl extends UnicastRemoteObject implements SlaveRemo
 				break;
 		}
 		fis.close();
+		for(String s:workerIps){
+			if(!splitIp.equals(s)){
+				String ip = s;
+				SlaveRemoteInterface jarObj = null;
+				try {
+					jarObj = (SlaveRemoteInterface) Naming.lookup("//"+ ip +":9876/Remote");
+				} catch (NotBoundException e) {
+					e.printStackTrace();
+				}
+	             jarObj.transferJar(jarName,JarFileByteArray);
+			}
+		}
+		try {
+			fetchChunks(newContainer, workerIps , splitIp);
+		} catch (NotBoundException e) {
+			e.printStackTrace();
+		}
 		return chunkContainer;
 	}
 
 	public void fetchChunks(String chunkDirectory, Set<String> workerIps, String splitIp) throws IOException, NotBoundException{
 		
-		
-		File folder = new File(chunkDirectory +"/");
+	    String path  = new File(".").getCanonicalPath();
+	    int len = path.length();
+	    if(path.contains("mapreduce")){
+	    	path = path.substring(0,len-10);
+	    }
+	 
+	    path = path+File.separator+ chunkDirectory;
+		File folder = new File(path);
+		System.out.println(folder.getCanonicalPath());
 		File[] listOfFiles = folder.listFiles();
+		System.out.println(listOfFiles.length + " chunks found");
         Queue<String> fileNames = new LinkedList<String>();
 		for (File file : listOfFiles) {
 		    if (file.isFile()) {
@@ -169,13 +193,16 @@ public class RemoteSplitterImpl extends UnicastRemoteObject implements SlaveRemo
 		for(int i=0;i< partitionSize;i++){
 			
 			String fileName = fileNames.remove();
+			fileName = path + File.separator + fileName;
+			System.out.println("File found at location " + fileName);
 	        File file = new File(fileName);
 	        byte buffer[] = new byte[(int)file.length()];
 	        BufferedInputStream input = new BufferedInputStream(new FileInputStream(fileName));
             input.read(buffer,0,buffer.length);
-            input.close();   	
-             obj = (SlaveRemoteInterface) Naming.lookup("//:"+ ipAddress +":23390/Remote");
+            input.close();  	
+             obj = (SlaveRemoteInterface) Naming.lookup("//"+ ipAddress +":9876/Remote");
              obj.transferChunks(fileName, buffer);
+             
             
             }
 		}
@@ -185,12 +212,27 @@ public class RemoteSplitterImpl extends UnicastRemoteObject implements SlaveRemo
 	public void transferChunks(String fileName, byte buffer[]) throws IOException{
 		
 		File file = new File(fileName);
+		//byte temp[] = new byte[(int)file.length()];
+		byte temp[] = buffer;
         BufferedOutputStream output = new BufferedOutputStream(new FileOutputStream(file.getName()));
-        output.write(buffer,0,buffer.length);
+        output.write(temp,0,temp.length);
         output.flush();
         output.close();
-	    System.out.println(fileName + "replica created " );
+	    System.out.println(fileName + " chunk tranferred");
 	}
+	
+  public void transferJar(String jarName, byte buffer[]) throws IOException{
+		
+		File file = new File(jarName);
+		byte temp[] = buffer;
+		
+        FileOutputStream output =new FileOutputStream(file.getName());
+        output.write(temp,0,temp.length);
+        output.flush();
+        output.close();
+	    System.out.println(jarName + " Jar copied " );
+	 }
+	
 	
 	
 }

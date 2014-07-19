@@ -47,8 +47,8 @@ public class MapReduceJobClient implements Runnable{
 				System.out.println("Master Ip: "+MasterInformation.getMasterHost());  //remove
 				
 
-				MapReduceStarterInterface jobStarter = (MapReduceStarterInterface)Naming.lookup("rmi://127.0.0.1:23390/launcher");		
-				String splitIp = "127.0.0.1";
+				MapReduceStarterInterface jobStarter = (MapReduceStarterInterface)Naming.lookup("rmi://"+MasterInformation.getMasterHost()+":23390/launcher");		
+				String splitIp = "128.237.186.178";
 				Boolean status = jobStarter.StartJob(config,splitIp); 				
 				System.out.println("Job "+config.getJobName()+" has Started");
 				

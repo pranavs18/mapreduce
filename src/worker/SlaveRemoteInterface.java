@@ -15,5 +15,6 @@ public interface SlaveRemoteInterface extends Remote {
 	
 	public ArrayList<fakeDistributedFile> splitFileIntoChunks(String filename , MapReduceConfiguration config, Set<String> workerIps , String splitIp) throws RemoteException, FileNotFoundException, IOException;
 	public void transferChunks(String fileName, byte buffer[]) throws IOException;
+	public void transferJar(String jarName, byte buffer[]) throws IOException;
 }
 
