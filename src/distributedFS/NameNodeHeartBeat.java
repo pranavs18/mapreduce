@@ -23,7 +23,7 @@ public class NameNodeHeartBeat implements Runnable{
 public void startHeartBeat(String MasterIp, int MasterPort) throws UnknownHostException, IOException{
 		
 		System.out.println("Connection to master established - Sending heart beat");
-		
+		System.out.println("Master Ip and Port: "+MasterIp+" "+MasterPort);
 		Socket heartBeatSocket = new Socket(MasterIp, MasterPort);
 		/* Keeps sending heartbeat with process map and its own server port number */
 		
