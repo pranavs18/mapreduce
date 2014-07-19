@@ -33,6 +33,7 @@ public class RemoteSplitterImpl extends UnicastRemoteObject implements SlaveRemo
 	
 	
 	private static final long serialVersionUID = 1L;
+	public ConcurrentHashMap<String, ArrayList<String>> chunkTracker = new ConcurrentHashMap<String, ArrayList<String>>();
 
 	public RemoteSplitterImpl() throws RemoteException {
 		
@@ -163,14 +164,16 @@ public class RemoteSplitterImpl extends UnicastRemoteObject implements SlaveRemo
 		return chunkContainer;
 	}
 
-	public void fetchChunks(String chunkDirectory, Set<String> workerIps, String splitIp) throws IOException, NotBoundException{
+	public ConcurrentHashMap<String,ArrayList<String>> fetchChunks(String chunkDirectory, Set<String> workerIps, String splitIp) throws IOException, NotBoundException{
 		
+		
+		ArrayList<String> al = new ArrayList<String>();
 	    String path  = new File(".").getCanonicalPath();
 	    int len = path.length();
 	    if(path.contains("mapreduce")){
 	    	path = path.substring(0,len-10);
 	    }
-	 
+	     
 	    path = path+File.separator+ chunkDirectory;
 		File folder = new File(path);
 		System.out.println(folder.getCanonicalPath());
@@ -188,11 +191,18 @@ public class RemoteSplitterImpl extends UnicastRemoteObject implements SlaveRemo
 		SlaveRemoteInterface obj;
 	for(String s:workerIps){
 		String ipAddress = null;
-    	if( ! s.equals(splitIp)){
+    	if( !s.equals(splitIp)){
     		ipAddress= s;
+    		
 		for(int i=0;i< partitionSize;i++){
 			
 			String Name = fileNames.remove();
+			if(chunkTracker.contains(Name)){
+				chunkTracker.get(Name).add(ipAddress);
+			}
+			else {
+			chunkTracker.put(Name, al);
+			}
 			String fileName = path + File.separator + Name;
 			System.out.println("File found at location " + fileName);
 	        File file = new File(fileName);
@@ -206,10 +216,11 @@ public class RemoteSplitterImpl extends UnicastRemoteObject implements SlaveRemo
             
             }
 		}
-		}	
+		}
+	   return chunkTracker;
 	}
 	
-	public void transferChunks(String Name, byte buffer[]) throws IOException{
+	public ConcurrentHashMap<String, ArrayList<String>> transferChunks(String Name, byte buffer[]) throws IOException{
 		
 		String path = ".."+File.separator+"dfs"+File.separator+"chunks";
 		File dir = new File(path);
@@ -232,6 +243,8 @@ public class RemoteSplitterImpl extends UnicastRemoteObject implements SlaveRemo
         output.flush();
         output.close();
 	    System.out.println(Name + " chunk tranferred");
+	    return chunkTracker;
+	    
 	}
 	
   public void transferJar(String jarName, byte buffer[]) throws IOException{

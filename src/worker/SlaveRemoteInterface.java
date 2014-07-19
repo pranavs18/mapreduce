@@ -10,11 +10,12 @@ import java.rmi.Remote;
 import java.rmi.RemoteException;
 import java.util.ArrayList;
 import java.util.Set;
+import java.util.concurrent.ConcurrentHashMap;
 
 public interface SlaveRemoteInterface extends Remote {
 	
 	public ArrayList<fakeDistributedFile> splitFileIntoChunks(String filename , MapReduceConfiguration config, Set<String> workerIps , String splitIp) throws RemoteException, FileNotFoundException, IOException;
-	public void transferChunks(String fileName, byte buffer[]) throws IOException;
+	public ConcurrentHashMap<String, ArrayList<String>> transferChunks(String fileName, byte buffer[]) throws IOException;
 	public void transferJar(String jarName, byte buffer[]) throws IOException;
 }
 
