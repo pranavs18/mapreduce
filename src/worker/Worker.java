@@ -130,7 +130,7 @@ public class Worker implements Runnable {
 
 
 
-		System.setProperty("java.security.policy","C:/Users/PRANAV/Documents/mapreduce/policy.txt");
+		System.setProperty("java.security.policy","/Users/VSK/Documents/Git/mapreduce/policy.txt");
 		
 	    //System.setProperty("java.rmi.server.hostname", "128.237.186.178");
 		System.setSecurityManager(new java.rmi.RMISecurityManager());

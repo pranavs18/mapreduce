@@ -1,9 +1,7 @@
 package master;
 
 import generics.WorkerMessageToMaster;
-import java.io.BufferedReader;
 import java.io.IOException;
-import java.io.InputStreamReader;
 import java.io.ObjectInputStream;
 import java.io.PrintStream;
 import java.net.Socket;
@@ -31,7 +29,6 @@ public class MasterHeartBeatAnalyzer implements Runnable{
 				tempStr = "";
 				tempStr = clientSocket.getInetAddress().toString().substring(1);
 				MasterGlobalInformation.getAllWorkerMapReduceDetails().put(tempStr, taskMapObject);
-
 				String outString =conn+" "+MasterGlobalInformation.getMaxMapperPerSystem()+" "+MasterGlobalInformation.getMaxReducesPerSystem();
 				out.println(outString);
 				out.flush();

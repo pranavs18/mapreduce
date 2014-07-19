@@ -8,7 +8,7 @@ import java.net.ServerSocket;
 import java.net.Socket;
 
 public class MasterNameNodeHeartBeatReceiver implements Runnable{
-	private int port = 23340 ;	
+	public int port = 23340 ;	
 	public void createConnection() throws IOException, ClassNotFoundException{
 		ServerSocket ss = null;
 

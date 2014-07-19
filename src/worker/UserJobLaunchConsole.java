@@ -36,15 +36,15 @@ public class UserJobLaunchConsole{
 				s = br.readLine();
 				config.setJobName(/*s*/"Split");
 
-				System.out.println("\nEnter absolute path of your map reduce package");
+				System.out.println("\nEnter path of your map reduce package in dfs folder");
 				s="";
 				s = br.readLine();
-				config.setUserJavaFilePath(/*s*/"/Users/VSK/Documents/Git/mapreduce/src/client");
+				config.setUserJavaFilePath(/*s*/"/src/client");
 
 				System.out.println(/*s*/"\nEnter input file Path (Consider the dfs folder as root folder)");
 				s = "";
 				s = br.readLine();
-				config.setInputPath(/*config.getDfsPath()+s*/"10.0.0.12/Users/VSK/Documents/Git/mapreduce/pranav.txt");
+				config.setInputPath(/*config.getDfsPath()+s*/"128./Users/VSK/Documents/Git/mapreduce/pranav.txt");
 				System.out.println("Input path: "+config.getInputPath());
 
 				System.out.println("\nEnter output file Path  (Consider the dfs folder as root folder)");

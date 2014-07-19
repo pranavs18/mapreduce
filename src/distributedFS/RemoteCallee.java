@@ -37,7 +37,8 @@ public class RemoteCallee extends UnicastRemoteObject implements MasterToNameNod
 		
 		System.out.println("Set: "+ workerIps);
 		ArrayList<fakeDistributedFile> al = new ArrayList<fakeDistributedFile>();
-		remote = (SlaveRemoteInterface) Naming.lookup("//127.0.0.1:9876/Remote");
+		System.out.println("worker IP: "+splitIp);
+		remote = (SlaveRemoteInterface) Naming.lookup("rmi://"+splitIp+":9876/Remote");
 		al = remote.splitFileIntoChunks(config.getInputPath(), config, workerIps, splitIp);
 		for(int i=0;i< al.size();i++){
 			System.out.println("Block Created with name " + al.get(i));
