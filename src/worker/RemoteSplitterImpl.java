@@ -192,8 +192,8 @@ public class RemoteSplitterImpl extends UnicastRemoteObject implements SlaveRemo
     		ipAddress= s;
 		for(int i=0;i< partitionSize;i++){
 			
-			String fileName = fileNames.remove();
-			fileName = path + File.separator + fileName;
+			String Name = fileNames.remove();
+			String fileName = path + File.separator + Name;
 			System.out.println("File found at location " + fileName);
 	        File file = new File(fileName);
 	        byte buffer[] = new byte[(int)file.length()];
@@ -201,7 +201,7 @@ public class RemoteSplitterImpl extends UnicastRemoteObject implements SlaveRemo
             input.read(buffer,0,buffer.length);
             input.close();  	
              obj = (SlaveRemoteInterface) Naming.lookup("//"+ ipAddress +":9876/Remote");
-             obj.transferChunks(fileName, buffer);
+             obj.transferChunks(Name, buffer);
              
             
             }
@@ -209,16 +209,29 @@ public class RemoteSplitterImpl extends UnicastRemoteObject implements SlaveRemo
 		}	
 	}
 	
-	public void transferChunks(String fileName, byte buffer[]) throws IOException{
+	public void transferChunks(String Name, byte buffer[]) throws IOException{
 		
-		File file = new File(fileName);
-		//byte temp[] = new byte[(int)file.length()];
+		String path = ".."+File.separator+"dfs"+File.separator+"chunks";
+		File dir = new File(path);
+		if (!dir.exists()) {
+            boolean result = dir.mkdirs();
+
+            if (result) {
+                System.out.println("Folder is created");
+                
+            } 
+        }
+		String newChunkName = path + File.separator + Name;
+		File file = new File(newChunkName);
+		
+		//file.createNewFile();
 		byte temp[] = buffer;
-        BufferedOutputStream output = new BufferedOutputStream(new FileOutputStream(file.getName()));
+		System.out.println(file.getCanonicalPath() + " ..." + file.getName());
+        BufferedOutputStream output = new BufferedOutputStream(new FileOutputStream(newChunkName));
         output.write(temp,0,temp.length);
         output.flush();
         output.close();
-	    System.out.println(fileName + " chunk tranferred");
+	    System.out.println(Name + " chunk tranferred");
 	}
 	
   public void transferJar(String jarName, byte buffer[]) throws IOException{
