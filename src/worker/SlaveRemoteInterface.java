@@ -7,6 +7,7 @@ import generics.fakeDistributedFile;
 
 import java.io.FileNotFoundException;
 import java.io.IOException;
+import java.rmi.NotBoundException;
 import java.rmi.Remote;
 import java.rmi.RemoteException;
 import java.util.ArrayList;
@@ -18,5 +19,7 @@ public interface SlaveRemoteInterface extends Remote {
 	public ConcurrentHashMap<String, ChunkProperties> splitFileIntoChunks(String filename , MapReduceConfiguration config, Set<String> workerIps , String splitIp) throws RemoteException, FileNotFoundException, IOException;
 	public ConcurrentHashMap<String, ArrayList<String>> transferChunks(String fileName, byte buffer[]) throws IOException;
 	public void transferJar(String jarName, byte buffer[]) throws IOException;
+	public String requestForChunkTransfer(String chunkName, ArrayList<String> visitedIPs , Set<String> workerIps) throws FileNotFoundException, IOException, NotBoundException;
+	public boolean transferChunkOnRequest(String Name, byte[] buffer) throws IOException;
 }
 
