@@ -313,42 +313,7 @@ public class RemoteSplitterImpl extends UnicastRemoteObject implements SlaveRemo
 	}
 
 
-	public String requestForChunkTransfer(String newChunkName, ArrayList<String> visitedIPs, Set<String> workerIps) throws IOException, NotBoundException {
-		 
-		    String ipAddresstoTransfer = null;
-		   
-			for(String v:visitedIPs){
-				for(String w:workerIps ){
-					if(!v.equals(w)){
-						ipAddresstoTransfer = w;
-						break;
-					}
-				}
-			}
-			
-			
-            String path = ".." + File.separator + "dfs" + File.separator + "chunks";
-            File folder = new File(path);
-            File[] listOfFiles = folder.listFiles();
-            File file = null;
-            for(File f:listOfFiles){
-            	if(f.getName().equals(newChunkName)){
-            		System.out.println("\n File to be transferred found in the DFS...\n Transferring now.... ");
-            		file = new File(newChunkName);
-            		break;
-            	}
-            }
-            
-            byte buffer[] = new byte[(int)file.length()];
-			BufferedInputStream input = new BufferedInputStream(new FileInputStream(newChunkName));
-			input.read(buffer,0,buffer.length);
-			input.close();  	
-			SlaveRemoteInterface obj = null;
-			obj = (SlaveRemoteInterface) Naming.lookup("//"+ ipAddresstoTransfer +":9876/Remote");
-			obj.transferChunkOnRequest(newChunkName, buffer);
-			
-		return ipAddresstoTransfer;
-	}
+
 	
 	public boolean transferChunkOnRequest(String Name, byte[] buffer) throws IOException{
 		
