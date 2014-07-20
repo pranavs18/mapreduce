@@ -110,12 +110,12 @@ public class WorkerTasksStatus {
     public static void initialTaskMapCreator() throws UnknownHostException{
     	for(int i=0; i<numberOfMaps;i++){
     		String jobId = workerId+"_m"+(i+1);
-    		TaskDetails taskDetails = new TaskDetails(InetAddress.getLocalHost().getHostAddress(), jobId, null, null, JobStatus.AVAILABLE);
+    		TaskDetails taskDetails = new TaskDetails(InetAddress.getLocalHost().getHostAddress(), jobId,  null, JobStatus.AVAILABLE);
     		putInStatusMap(jobId, taskDetails);
     	}
     	for(int i=0; i<numberOfReduces;i++){
     		String jobId = workerId+"_r"+(i+1);
-    		TaskDetails taskDetails = new TaskDetails(InetAddress.getLocalHost().getHostAddress(), jobId, null, null, JobStatus.AVAILABLE);
+    		TaskDetails taskDetails = new TaskDetails(InetAddress.getLocalHost().getHostAddress(), jobId,  null, JobStatus.AVAILABLE);
     		putInStatusReduce(jobId, taskDetails);
     	}
     }
