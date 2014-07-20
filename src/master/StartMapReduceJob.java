@@ -4,6 +4,7 @@ import generics.ChunkProperties;
 import generics.MapReduceConfiguration;
 import generics.MapReduceStarterInterface;
 import generics.MasterToNameNodeInterface;
+import generics.TaskDetails;
 import generics.fakeDistributedFile;
 
 import java.io.IOException;
@@ -37,7 +38,7 @@ public class StartMapReduceJob extends UnicastRemoteObject implements MapReduceS
 		Boolean check = null;
 		System.out.println("Reached here");
 		try {
-			MasterToNameNodeInterface fileChunkMapRequst = (MasterToNameNodeInterface)Naming.lookup("rmi://"+MasterGlobalInformation.getNameNodeIp()+":23392/split");
+			MasterToNameNodeInterface fileChunkMapRequest = (MasterToNameNodeInterface)Naming.lookup("rmi://"+MasterGlobalInformation.getNameNodeIp()+":23392/split");
 
 			try {
 				Set<String> setOfworkerIpAddresses = MasterGlobalInformation.getAllWorkerMapReduceDetails().keySet();
@@ -45,11 +46,96 @@ public class StartMapReduceJob extends UnicastRemoteObject implements MapReduceS
 				HashSet<String >workerIpAddresses = new HashSet<String>();
 				for(String s: setOfworkerIpAddresses){
 					workerIpAddresses.add(s);
+
+				}
+
+				ConcurrentHashMap<String, ChunkProperties> fileChunkMap =  fileChunkMapRequest.sendChunkMap(config,workerIpAddresses, splitIp);
+				MasterGlobalInformation.setMasterStaticChunkMap(fileChunkMap);
+
+				/* Start Launching Mappers */
+
+				int countOfComplete = 0;
+				while(true){
+					/* Used for checking if all map jobs have completed their work */
+					Boolean MappersNotCompleted = false;
 					
+					/* we iterate through the chunkMapobtained from Name node to launch Job */
+					for(ConcurrentHashMap.Entry<String, ChunkProperties> chunkDetails : MasterGlobalInformation.getMasterStaticChunkMap().entrySet()){
+						
+						/* if the status of the job is complete just continue */
+						if(chunkDetails.getValue().getJobStatus().equals("COMPLETE")){
+							continue;
+						}
+
+						/* if status of the job is available the the job has not been scheduled yet */
+						else if(chunkDetails.getValue().getJobStatus().equals("AVAILABLE")){
+							/* This count is used to check if the IPs containing the file chunk are completely busy*/
+							int busyCount = 0;
+							
+							/* For all ips that contain the file chunk try to launch the job in one */
+							for(String anIpInList : chunkDetails.getValue().getCHUNK_IP_LIST()){
+								
+								if(MasterGlobalInformation.getAllWorkerMapReduceDetails().get(anIpInList).getMapFull() == false){
+									Boolean mapperFound = false;
+									
+									for(ConcurrentHashMap.Entry<String, TaskDetails> idFree : 
+										MasterGlobalInformation.getAllWorkerMapReduceDetails().get(anIpInList).getMapStatus().entrySet()){
+										if(idFree.getValue().getStatus() == JobStatus.AVAILABLE || idFree.getValue().getStatus() == JobStatus.COMPLETE){
+											String mapperID = idFree.getKey();
+
+											/****/
+											/* Make RMI Call to worker with args mapperID and fileName*/
+											
+											
+											/****/
+											chunkDetails.getValue().setJobMachineHolder(mapperID);
+											chunkDetails.getValue().setJobStatus("RUNNING");
+											mapperFound = true;
+											break;
+										}
+									}
+									if(mapperFound == true){
+										break;
+									}
+								}
+								else{
+									busyCount++;
+									if(busyCount>=chunkDetails.getValue().getCHUNK_IP_LIST().size()){
+										break;
+									}
+								}
+							}
+							if(busyCount>=chunkDetails.getValue().getCHUNK_IP_LIST().size()){
+								
+								MasterRequestForTransfer transferRequest = new MasterRequestForTransfer(fileChunkMapRequest, chunkDetails.getKey(), config.getInputPath(), chunkDetails.getValue().getCHUNK_IP_LIST(), workerIpAddresses);
+								new Thread(transferRequest).start();
+								busyCount = 0;
+							}
+						}
+
+						else if(chunkDetails.getValue().getJobStatus().equals("RUNNING")){
+
+							String idToBeinvestigated = chunkDetails.getValue().getJobMachineHolder();
+							String ipToBeinvestigated = idToBeinvestigated.substring(0,idToBeinvestigated.indexOf("_")-1);
+							if(MasterGlobalInformation.getAllWorkerMapReduceDetails().get(ipToBeinvestigated).getMapStatus().get(idToBeinvestigated).getStatus()==JobStatus.COMPLETE 
+									|| !(MasterGlobalInformation.getAllWorkerMapReduceDetails().get(ipToBeinvestigated).getMapStatus().get(idToBeinvestigated).getFileName().equals(chunkDetails.getKey()))){
+								chunkDetails.getValue().setJobStatus("COMPLETE");
+								countOfComplete++;
+							}
+
+						}
+						if(countOfComplete>=MasterGlobalInformation.getMasterStaticChunkMap().size()){
+							MappersNotCompleted = true;
+							break;
+						}
+						
+					}
+					if(MappersNotCompleted == true){
+						break;
+					}	
 				}
 				
-
-				ConcurrentHashMap<String, ChunkProperties> fileChunkMap =  fileChunkMapRequst.sendChunkMap(config,workerIpAddresses, splitIp);
+				/* If code reaches here all the map jobs are complete */
 
 				check = true;
 			} catch (Exception e) {

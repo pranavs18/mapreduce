@@ -22,16 +22,14 @@ public class TaskDetails implements Serializable{
 	String workerIp;
 	String workerMapReduceId;
 	String fileName;
-	String localFilePath;
 	JobStatus status;
 	
 	public TaskDetails(String workerIp, String workerMapReduceId,
-			String fileName, String localFilePath, JobStatus status) {
+			String fileName, JobStatus status) {
 		
 		this.workerIp = workerIp;
 		this.workerMapReduceId = workerMapReduceId;
 		this.fileName = fileName;
-		this.localFilePath = localFilePath;
 		this.status = status;
 	}
 	
@@ -59,13 +57,6 @@ public class TaskDetails implements Serializable{
 		this.fileName = fileName;
 	}
 	
-	public String getLocalFilePath() {
-		return localFilePath;
-	}
-	
-	public void setLocalFilePath(String localFilePath) {
-		this.localFilePath = localFilePath;
-	}
 	
 	public JobStatus getStatus() {
 		return status;
@@ -78,7 +69,6 @@ public class TaskDetails implements Serializable{
 	public void setAsDefault(){
 
 		this.fileName = null;
-		this.localFilePath = null;
 		this.status = JobStatus.AVAILABLE;
 		
 	}

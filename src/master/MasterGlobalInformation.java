@@ -1,6 +1,8 @@
 package master;
 
+import generics.ChunkProperties;
 import generics.WorkerMessageToMaster;
+
 import java.util.concurrent.ConcurrentHashMap;
 import java.util.concurrent.atomic.AtomicInteger;
 
@@ -11,7 +13,13 @@ public class MasterGlobalInformation {
 	private static int maxReducesPerSystem = 2;
 	private static String nameNodeIp = "";
 	private static AtomicInteger connectionNumber = new AtomicInteger(0);
+	
+	/* used to get worker information from all available workers and we would need to append the values here*/
 	public static ConcurrentHashMap<String, WorkerMessageToMaster> allWorkerMapReduceDetails = new ConcurrentHashMap<String,WorkerMessageToMaster>();
+	
+	/* this map is obtained when a request is made to name node for all the chunk maps */
+	public static ConcurrentHashMap<String, ChunkProperties> masterStaticChunkMap = new ConcurrentHashMap<String, ChunkProperties>();
+	
 	
 	public static int getMaxMapperPerSystem() {
 		return maxMapperPerSystem;
@@ -41,4 +49,13 @@ public class MasterGlobalInformation {
 			ConcurrentHashMap<String, WorkerMessageToMaster> allWorkerMapReduceDetails) {
 		MasterGlobalInformation.allWorkerMapReduceDetails = allWorkerMapReduceDetails;
 	}
+	public static ConcurrentHashMap<String, ChunkProperties> getMasterStaticChunkMap() {
+		return masterStaticChunkMap;
+	}
+	public static void setMasterStaticChunkMap(
+			ConcurrentHashMap<String, ChunkProperties> masterStaticChunkMap) {
+		MasterGlobalInformation.masterStaticChunkMap = masterStaticChunkMap;
+	}
+	
+	
 }

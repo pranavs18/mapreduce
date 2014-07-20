@@ -6,7 +6,7 @@
  * 
  ****************************************************************************************/
 
-package worker;
+package generics;
 
 public enum JobStatus {
 

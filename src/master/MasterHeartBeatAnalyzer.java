@@ -29,6 +29,7 @@ public class MasterHeartBeatAnalyzer implements Runnable{
 				tempStr = "";
 				tempStr = clientSocket.getInetAddress().toString().substring(1);
 				MasterGlobalInformation.getAllWorkerMapReduceDetails().put(tempStr, taskMapObject);
+				
 				String outString =conn+" "+MasterGlobalInformation.getMaxMapperPerSystem()+" "+MasterGlobalInformation.getMaxReducesPerSystem();
 				out.println(outString);
 				out.flush();
