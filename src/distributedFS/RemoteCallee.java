@@ -57,7 +57,7 @@ public class RemoteCallee extends UnicastRemoteObject implements MasterToNameNod
 		return cp;
   }
 	
-	public String requestForChunkTransfer(String newChunkName, ArrayList<String> visitedIPs, Set<String> workerIps) throws IOException, NotBoundException {
+	public ChunkProperties requestForChunkTransfer(String newChunkName,String fileName, ArrayList<String> visitedIPs, Set<String> workerIps) throws IOException, NotBoundException {
 		 
 	    String ipAddresstoTransfer = null;
 	   
@@ -89,8 +89,12 @@ public class RemoteCallee extends UnicastRemoteObject implements MasterToNameNod
 		input.close();  	
 		SlaveRemoteInterface obj = null;
 		obj = (SlaveRemoteInterface) Naming.lookup("//"+ ipAddresstoTransfer +":9876/Remote");
-		obj.transferChunkOnRequest(newChunkName, buffer);
-		
-	return ipAddresstoTransfer;
+		boolean flag = obj.transferChunkOnRequest(newChunkName, buffer);
+		if(flag == true){
+			GlobalFileMap.get(fileName).get(newChunkName).getCHUNK_IP_LIST().add(ipAddresstoTransfer);
+		}
+	return GlobalFileMap.get(fileName).get(newChunkName);
 }
+
+	
 }
