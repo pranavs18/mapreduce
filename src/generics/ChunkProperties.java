@@ -1,10 +1,15 @@
 package generics;
+import java.io.Serializable;
 import java.util.ArrayList;
 
 
-public class ChunkProperties {
+public class ChunkProperties implements Serializable {
 	
-private String jobStatus = "AVAILABLE"; 
+/**
+	 * 
+	 */
+	private static final long serialVersionUID = 1L;
+private String jobStatus; 
 private String jobMachineHolder;
 private ArrayList<String> CHUNK_IP_LIST;
 private fakeDistributedFile fdf;

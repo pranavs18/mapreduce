@@ -200,16 +200,18 @@ public class RemoteSplitterImpl extends UnicastRemoteObject implements SlaveRemo
 		int partitionSize = numberofChunks/numberofSlaves;
 		SlaveRemoteInterface obj;
 		String chunkName = fileNames.peek();
-		chunkTracker.get(chunkName).add(splitIp);
+		al.add(splitIp);
+		chunkTracker.put(chunkName,al);
 		for(String s:workerIps){
 			String ipAddress= null;
 			if(!s.equals(splitIp)){
-                
+                ipAddress = s;
+                al.add(ipAddress);
 				for(int i=0;i< partitionSize;i++){
 
 					String Name = fileNames.remove();
 					if(chunkTracker.contains(Name)){
-						chunkTracker.get(Name).add(ipAddress);
+						//chunkTracker.get(Name).add(ipAddress);
 					}
 					else {
 						chunkTracker.put(Name, al);
