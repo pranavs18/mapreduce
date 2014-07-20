@@ -1,6 +1,7 @@
 package worker;
 
 
+import generics.ChunkProperties;
 import generics.MapReduceConfiguration;
 import generics.fakeDistributedFile;
 
@@ -14,7 +15,7 @@ import java.util.concurrent.ConcurrentHashMap;
 
 public interface SlaveRemoteInterface extends Remote {
 	
-	public ArrayList<fakeDistributedFile> splitFileIntoChunks(String filename , MapReduceConfiguration config, Set<String> workerIps , String splitIp) throws RemoteException, FileNotFoundException, IOException;
+	public ConcurrentHashMap<String, ChunkProperties> splitFileIntoChunks(String filename , MapReduceConfiguration config, Set<String> workerIps , String splitIp) throws RemoteException, FileNotFoundException, IOException;
 	public ConcurrentHashMap<String, ArrayList<String>> transferChunks(String fileName, byte buffer[]) throws IOException;
 	public void transferJar(String jarName, byte buffer[]) throws IOException;
 }

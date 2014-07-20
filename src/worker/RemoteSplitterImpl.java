@@ -1,6 +1,7 @@
 package worker;
 
 import generics.Archiver;
+import generics.ChunkProperties;
 import generics.MapReduceConfiguration;
 import generics.fakeDistributedFile;
 
@@ -44,10 +45,16 @@ public class RemoteSplitterImpl extends UnicastRemoteObject implements SlaveRemo
 	}
 
 	@SuppressWarnings("resource")
-	public ArrayList<fakeDistributedFile> splitFileIntoChunks(String filename , MapReduceConfiguration config, Set<String> workerIps , String splitIp) throws RemoteException,IOException{
-		ArrayList<fakeDistributedFile> chunkContainer = new ArrayList<fakeDistributedFile>();
-
-
+	public ConcurrentHashMap<String, ChunkProperties > splitFileIntoChunks(String filename , MapReduceConfiguration config, Set<String> workerIps , String splitIp) throws RemoteException,IOException{
+		
+	    ConcurrentHashMap<String, ChunkProperties> chunkContainer = new ConcurrentHashMap<String, ChunkProperties>();
+		ConcurrentHashMap<String,ArrayList<String>> chunkTracker = new ConcurrentHashMap<String,ArrayList<String>>();
+		fakeDistributedFile fdf = new fakeDistributedFile();
+		String jobStatus = "AVAILABLE";
+		String jobMachineHolder = "";
+		ChunkProperties cp = new ChunkProperties();
+		cp.setJobMachineHolder(jobMachineHolder);
+		cp.setJobStatus(jobStatus);
 		File file = new File(filename);
 		int numberofLines = 0;
 		int chunkSize = 25;
@@ -102,13 +109,13 @@ public class RemoteSplitterImpl extends UnicastRemoteObject implements SlaveRemo
 			if(numberofLines == chunkSize){
 				chunkNumber++;
 				try {
-					fakeDistributedFile fdf = new fakeDistributedFile();
+					
 					fdf.setIpAddress(InetAddress.getLocalHost().getHostAddress());
 					fdf.setFilename(filename);
 					fdf.setReplicas(0);
 					fdf.setChunkID(uniquechunkName);
 					fdf.setChunkPath(newChunkName);
-					chunkContainer.add(fdf);
+					cp.setFdf(fdf);
 					bw.close();
 				} catch (IOException e) {
 					e.printStackTrace();
@@ -161,7 +168,13 @@ public class RemoteSplitterImpl extends UnicastRemoteObject implements SlaveRemo
 
 		}
 		try {
-			fetchChunks(newContainer, workerIps , splitIp);
+			chunkTracker = fetchChunks(newContainer, workerIps , splitIp);
+			for(String s:chunkTracker.keySet()){
+				ArrayList<String> al = new ArrayList<String>();
+				al = chunkTracker.get(s);
+				cp.setCHUNK_IP_LIST(al);
+				chunkContainer.put(s,cp);
+			}
 		} catch (NotBoundException e) {
 			e.printStackTrace();
 		}
@@ -186,10 +199,12 @@ public class RemoteSplitterImpl extends UnicastRemoteObject implements SlaveRemo
 		int numberofSlaves = workerIps.size();
 		int partitionSize = numberofChunks/numberofSlaves;
 		SlaveRemoteInterface obj;
+		String chunkName = fileNames.peek();
+		chunkTracker.get(chunkName).add(splitIp);
 		for(String s:workerIps){
 			String ipAddress= null;
 			if(!s.equals(splitIp)){
-
+                
 				for(int i=0;i< partitionSize;i++){
 
 					String Name = fileNames.remove();

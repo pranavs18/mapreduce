@@ -1,5 +1,6 @@
 package master;
 
+import generics.ChunkProperties;
 import generics.MapReduceConfiguration;
 import generics.MapReduceStarterInterface;
 import generics.MasterToNameNodeInterface;
@@ -48,7 +49,7 @@ public class StartMapReduceJob extends UnicastRemoteObject implements MapReduceS
 				}
 				
 
-				ConcurrentHashMap<String, fakeDistributedFile> fileChunkMap =  fileChunkMapRequst.sendChunkMap(config,workerIpAddresses, splitIp);
+				ConcurrentHashMap<String, ChunkProperties> fileChunkMap =  fileChunkMapRequst.sendChunkMap(config,workerIpAddresses, splitIp);
 
 				check = true;
 			} catch (Exception e) {
