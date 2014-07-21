@@ -1,5 +1,10 @@
 package worker;
 
+import java.io.BufferedReader;
+import java.io.File;
+import java.io.FileNotFoundException;
+import java.io.FileReader;
+import java.io.IOException;
 import java.lang.reflect.InvocationTargetException;
 import java.lang.reflect.Method;
 import java.net.InetAddress;
@@ -32,20 +37,39 @@ public class WorkerMapRunner implements Runnable{
 			/* read a file and Use reflections to run Map function */
 			/* Store the output in a file in key Value pair */
 			System.out.println("Reached Launcher"); //remove
-			
-			Class<?> params[] = {};
+
+
+			Class<?> params[] = {String.class,String.class, Mapper.class};
 			Class<?> mapClass = Class.forName("client.WordCount");
-			Object[] arguments= {};
-			
+			String fileInputPath = ".."+File.separator+"dfs"+File.separator+"chunks"+File.separator+"fileName";			
+			Mapper mpr = new Mapper(fileName);
+
+
 			Object mapObject = mapClass.newInstance();
-			
 			Method method = mapClass.getDeclaredMethod("map",params);
 			method.setAccessible(true);
-			method.invoke(mapObject, (Object[])null);
-	
-			
-			
-		} catch (ClassNotFoundException | InstantiationException | IllegalAccessException | NoSuchMethodException | SecurityException | IllegalArgumentException | InvocationTargetException e) {
+
+
+			File file = new File(fileInputPath);
+			if(file.exists()){
+				BufferedReader buf = null;
+				try {
+					buf = new BufferedReader(new FileReader(file));
+				} catch (FileNotFoundException e) {
+					System.out.println("File not found for reading");
+					e.printStackTrace();
+				}
+				String line;
+				int i = 0;
+				while((line = buf.readLine()) != null){
+					i++;
+					Object[] arguments= {i,line,mpr};
+					method.invoke(mapObject, arguments);
+				}
+				buf.close();
+			}
+
+		} catch (ClassNotFoundException | InstantiationException | IllegalAccessException | NoSuchMethodException | SecurityException | IllegalArgumentException | InvocationTargetException | IOException e) {
 			System.out.println("Inet Address Error");
 			e.printStackTrace();
 		}
