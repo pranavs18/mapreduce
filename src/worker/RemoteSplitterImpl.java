@@ -223,6 +223,7 @@ public class RemoteSplitterImpl extends UnicastRemoteObject implements SlaveRemo
 					}
 					else {
 						chunkTracker.put(Name, al);
+						System.out.println("chunk Map "+ Name + " " + chunkTracker.get(Name));
 					}
 					String fileName = chunkDirectory + File.separator + Name;
 					System.out.println("File found at location " + folder.getAbsolutePath());

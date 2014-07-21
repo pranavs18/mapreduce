@@ -13,7 +13,7 @@ public abstract class Reducer <KeyIn, ValueIn, KeyOut, ValueOut> implements Seri
 		reducerResult = new ArrayList<Pair<KeyOut, ValueOut>>();
 	}
 	
-	public abstract void reduce();
+	public abstract void reduce(KeyIn key, ArrayList<ValueIn> value);
 	
 	public ArrayList<Pair<KeyOut, ValueOut>> ReducerResult() {
         return reducerResult;

@@ -9,13 +9,13 @@ package generics;
 
 public class defaultPartitioner {
 	 
-	public static int createPartition(String mapKey, int Reducers){
+	public static int createPartition(String mapKey, int totalNumberOfReducers){
 		// From the data structures class, using the hashcode of the key is a good hash function as it is always unique
 		// but can sometimes lead to negative values which we have handled here
 		int code = mapKey.hashCode();
-		int numberofPartitions = code % Reducers;
-		if(numberofPartitions < 0)
-			numberofPartitions = (-1) * numberofPartitions;
-		return numberofPartitions;
+		int keyToReducerMap = code % totalNumberOfReducers;
+		if(keyToReducerMap < 0)
+			keyToReducerMap = (-1) * keyToReducerMap;
+		return keyToReducerMap;
 	}
 }

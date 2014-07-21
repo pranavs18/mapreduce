@@ -184,6 +184,6 @@ public class MapReduceConfiguration implements Serializable{
 		this.outputValueType = outputValueType;
 	}
 	
-	
+
 		
 }
