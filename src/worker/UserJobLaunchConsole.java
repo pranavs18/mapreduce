@@ -112,9 +112,9 @@ public class UserJobLaunchConsole{
 				}
 				config.setReducers(Integer.parseInt(s));
 
-
+                 
 				config.setWorkerIpForSplit(InetAddress.getLocalHost().getHostAddress());
-
+                config.setSplitIP("128.237.186.178");
 				MapReduceJobClient newJob = new MapReduceJobClient(config);
 				/* Running Job in a new Thread */
 				Thread jobThread = new Thread(newJob);

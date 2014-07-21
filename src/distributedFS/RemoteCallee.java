@@ -57,46 +57,16 @@ public class RemoteCallee extends UnicastRemoteObject implements MasterToNameNod
 		return cp;
   }
 	
-	public ChunkProperties requestForChunkTransfer(String newChunkName,String fileName, ArrayList<String> visitedIPs, Set<String> workerIps) throws IOException, NotBoundException {
+	public ChunkProperties requestForChunkTransfer(String newChunkName,String fileName, ArrayList<String> visitedIPs, Set<String> workerIps, String splitIp) throws IOException, NotBoundException {
 		 
-	    String ipAddresstoTransfer = null;
-	   
-		for(String v:visitedIPs){
-			for(String w:workerIps ){
-				if(!v.equals(w)){
-					ipAddresstoTransfer = w;
-					break;
-				}
-			}
-		}
-		if(ipAddresstoTransfer == null){
-			ipAddresstoTransfer = visitedIPs.get(0);
-		    System.out.println("Transferred machine IP" + ipAddresstoTransfer);
-		}
-		
-		
-        String path = ".." + File.separator + "dfs" + File.separator + "chunks";
-        File folder = new File(path);
-        File[] listOfFiles = folder.listFiles();
-        File file = null;
-        for(File f:listOfFiles){
-        	if(f.getName().equals(newChunkName)){
-        		System.out.println("\n File to be transferred found in the DFS...\n Transferring now.... ");
-        		file = new File(newChunkName);
-        		break;
-        	}
-        }
-        
-        byte buffer[] = new byte[(int)file.length()];
-		BufferedInputStream input = new BufferedInputStream(new FileInputStream(path+File.separator+newChunkName));
-		input.read(buffer,0,buffer.length);
-		input.close();  	
-		SlaveRemoteInterface obj = null;
-		obj = (SlaveRemoteInterface) Naming.lookup("//"+ ipAddresstoTransfer +":9876/Remote");
-		boolean flag = obj.transferChunkOnRequest(newChunkName, buffer);
-		if(flag == true){
-			if(!GlobalFileMap.get(fileName).get(newChunkName).getCHUNK_IP_LIST().get(0).equals(ipAddresstoTransfer))
-				GlobalFileMap.get(fileName).get(newChunkName).getCHUNK_IP_LIST().add(ipAddresstoTransfer);
+	 
+		SlaveRemoteInterface obj;
+		obj = (SlaveRemoteInterface) Naming.lookup("//"+ splitIp +":9876/Remote");
+		String ipAddressAdded = obj.transferChunktoSlave(newChunkName, fileName, visitedIPs, workerIps, splitIp);
+	
+		if(ipAddressAdded != null){
+			if(!GlobalFileMap.get(fileName).get(newChunkName).getCHUNK_IP_LIST().get(0).equals(ipAddressAdded))
+				GlobalFileMap.get(fileName).get(newChunkName).getCHUNK_IP_LIST().add(ipAddressAdded);
 		}
 	return GlobalFileMap.get(fileName).get(newChunkName);
 }

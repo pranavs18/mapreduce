@@ -16,19 +16,22 @@ public class MasterRequestForTransfer implements Runnable{
 	ArrayList<String> visitedIPs; 
 	Set<String> workerIps;
 	MasterToNameNodeInterface fileChunkMapRequest;
+	
+	String splitIp;
 
-	public MasterRequestForTransfer(MasterToNameNodeInterface fileChunkMapRequest,String chunkName, String fileName, ArrayList<String> visitedIPs , Set<String> workerIps){
+	public MasterRequestForTransfer(MasterToNameNodeInterface fileChunkMapRequest,String chunkName, String fileName, ArrayList<String> visitedIPs , Set<String> workerIps, String splitIp){
 		this.chunkName = chunkName;
 		this.fileName = fileName;
 		this.visitedIPs = visitedIPs;
 		this.workerIps = workerIps;
 		this.fileChunkMapRequest = fileChunkMapRequest;
+		this.splitIp = splitIp;
 	}
 
 	public void run(){
 		ChunkProperties chunk = null;
 		try {
-			chunk = fileChunkMapRequest.requestForChunkTransfer(chunkName, fileName, visitedIPs, workerIps);
+			chunk = fileChunkMapRequest.requestForChunkTransfer(chunkName, fileName, visitedIPs, workerIps , splitIp);
 		} catch (IOException | NotBoundException e) {
 			e.printStackTrace();
 		}

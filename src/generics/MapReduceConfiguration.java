@@ -18,7 +18,7 @@ public class MapReduceConfiguration implements Serializable{
 	 * Mappers.
 	 */
 	private int reducers = 1;
-	
+	private String splitIP;
 	/* These fields are used by master to to determine the Type of object */ 
 	private String mapperClass = null;
 	private String reducerClass = null;
@@ -182,6 +182,14 @@ public class MapReduceConfiguration implements Serializable{
 
 	public void setOutputValueType(String outputValueType) {
 		this.outputValueType = outputValueType;
+	}
+
+	public String getSplitIP() {
+		return splitIP;
+	}
+
+	public void setSplitIP(String splitIP) {
+		this.splitIP = splitIP;
 	}
 	
 

@@ -114,7 +114,7 @@ public class StartMapReduceJob extends UnicastRemoteObject implements MapReduceS
 							}
 							if(busyCount>=chunkDetails.getValue().getCHUNK_IP_LIST().size()){
 								
-								MasterRequestForTransfer transferRequest = new MasterRequestForTransfer(fileChunkMapRequest, chunkDetails.getKey(), config.getInputPath(), chunkDetails.getValue().getCHUNK_IP_LIST(), workerIpAddresses);
+								MasterRequestForTransfer transferRequest = new MasterRequestForTransfer(fileChunkMapRequest, chunkDetails.getKey(), config.getInputPath(), chunkDetails.getValue().getCHUNK_IP_LIST(), workerIpAddresses , config.getSplitIP());
 								new Thread(transferRequest).start();
 								busyCount = 0;
 							}

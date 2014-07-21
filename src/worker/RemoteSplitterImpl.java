@@ -311,8 +311,10 @@ public class RemoteSplitterImpl extends UnicastRemoteObject implements SlaveRemo
 			JarEntry entry = (JarEntry) enums.nextElement();
 
 			String fileName = "src"+File.separator+jarName.substring(0, jarName.length()-4)+File.separator +entry.getName();
+			String binFile = "bin"+File.separator+jarName.substring(0, jarName.length()-4)+File.separator +entry.getName();
 			
 			File dir = new File("src"+File.separator+jarName.substring(0, jarName.length()-4));
+			File bin = new File("bin"+File.separator+jarName.substring(0, jarName.length()-4));
 			if (!dir.exists()) {
 				Boolean result = dir.mkdirs();
 
@@ -322,12 +324,33 @@ public class RemoteSplitterImpl extends UnicastRemoteObject implements SlaveRemo
 				} 
 			}
 			
+			if (!bin.exists()) {
+				Boolean result = bin.mkdirs();
+
+				if (result) {
+					System.out.println("Folder is created");
+
+				} 
+			}
+			
 			
 			File f = new File(fileName);
-
+            File b = new File(binFile);
 			if (!fileName.endsWith("/")) {
 				InputStream is = jar.getInputStream(entry);
 				FileOutputStream fos = new FileOutputStream(f);
+
+				// write contents of 'is' to 'fos'
+				while (is.available() > 0) {
+					fos.write(is.read());
+				}
+
+				fos.close();
+				is.close();
+			}
+			if (!binFile.endsWith("/")) {
+				InputStream is = jar.getInputStream(entry);
+				FileOutputStream fos = new FileOutputStream(b);
 
 				// write contents of 'is' to 'fos'
 				while (is.available() > 0) {
@@ -369,4 +392,53 @@ public class RemoteSplitterImpl extends UnicastRemoteObject implements SlaveRemo
 		transfer = true;
 	    return transfer;
 	}
+	
+	public String transferChunktoSlave(String newChunkName, String fileName, ArrayList<String> visitedIPs , Set<String> workerIps, String splitIp) throws FileNotFoundException, IOException, NotBoundException{
+		String ipAddresstoTransfer = null;
+		
+		for(String v:visitedIPs){
+			for(String w:workerIps ){
+				if(!v.equals(w)){
+					ipAddresstoTransfer = w;
+					break;
+				}
+			}
+		}
+		if(ipAddresstoTransfer == null){
+			ipAddresstoTransfer = visitedIPs.get(0);
+		    System.out.println("Transferred machine IP" + ipAddresstoTransfer);
+		}
+		
+		
+        String path = ".." + File.separator + "dfs" + File.separator + "chunks";
+        File folder = new File(path);
+        File[] listOfFiles = folder.listFiles();
+        System.out.println("Total files found..." + listOfFiles.length);
+        File file = null;
+        
+        for(File f:listOfFiles){
+        	if(f.getName().equals(newChunkName)){
+        		System.out.println("\n File to be transferred found in the DFS...\n Transferring now.... ");
+        		file = new File(newChunkName);
+        		break;
+        	}
+  
+        		
+        }
+        
+        byte buffer[] = new byte[(int)file.length()];
+		BufferedInputStream input = new BufferedInputStream(new FileInputStream(path+File.separator+newChunkName));
+		input.read(buffer,0,buffer.length);
+		input.close();  	
+		SlaveRemoteInterface obj = null;
+		obj = (SlaveRemoteInterface) Naming.lookup("//"+ ipAddresstoTransfer +":9876/Remote");
+		boolean flag = obj.transferChunkOnRequest(newChunkName, buffer);
+		if(flag == true)
+			System.out.println("Chunk" + newChunkName + "transferred to the machine with IP ADDRESS " + ipAddresstoTransfer);
+		else
+			System.out.println("Chunk Transfer failed");
+		
+		return ipAddresstoTransfer;
+	}
+	
 }

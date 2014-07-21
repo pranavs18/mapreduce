@@ -20,5 +20,6 @@ public interface SlaveRemoteInterface extends Remote {
 	public ConcurrentHashMap<String, ArrayList<String>> transferChunks(String fileName, byte buffer[]) throws IOException;
 	public void transferJar(String jarName, byte buffer[]) throws IOException;
 	public boolean transferChunkOnRequest(String Name, byte[] buffer) throws IOException;
+	public String transferChunktoSlave(String chunkName, String fileName, ArrayList<String> visitedIPs , Set<String> workerIps, String splitIp) throws FileNotFoundException, IOException, NotBoundException;
 }
 

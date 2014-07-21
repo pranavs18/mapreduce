@@ -13,5 +13,5 @@ public interface MasterToNameNodeInterface  extends Remote {
 
 
 	public ConcurrentHashMap<String, ChunkProperties> sendChunkMap(MapReduceConfiguration config, Set<String> workerIpAddresses , String splitIp) throws RemoteException, NotBoundException, FileNotFoundException, IOException;
-	public ChunkProperties requestForChunkTransfer(String chunkName, String fileName, ArrayList<String> visitedIPs , Set<String> workerIps) throws FileNotFoundException, IOException, NotBoundException;
+	public ChunkProperties requestForChunkTransfer(String chunkName, String fileName, ArrayList<String> visitedIPs , Set<String> workerIps, String splitIp) throws FileNotFoundException, IOException, NotBoundException;
 }
