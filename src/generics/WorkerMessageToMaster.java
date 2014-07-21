@@ -23,10 +23,12 @@ public class WorkerMessageToMaster implements Serializable{
 	private Boolean reduceFull = false;
 		
 	public WorkerMessageToMaster(ConcurrentHashMap<String, TaskDetails> mapStatus,
-			ConcurrentHashMap<String, TaskDetails> reduceStatus) {
+			ConcurrentHashMap<String, TaskDetails> reduceStatus, Boolean mapFull, Boolean reduceFull) {
 		super();
 		this.mapStatus = mapStatus;
 		this.reduceStatus = reduceStatus;
+		this.mapFull = mapFull;
+		this.reduceFull = reduceFull;
 	}
 
 	public ConcurrentHashMap<String, TaskDetails> getMapStatus() {

@@ -1,6 +1,7 @@
 package master;
 
 import generics.WorkerMessageToMaster;
+
 import java.io.IOException;
 import java.io.ObjectInputStream;
 import java.io.PrintStream;
@@ -29,11 +30,10 @@ public class MasterHeartBeatAnalyzer implements Runnable{
 				tempStr = "";
 				tempStr = clientSocket.getInetAddress().toString().substring(1);
 				MasterGlobalInformation.getAllWorkerMapReduceDetails().put(tempStr, taskMapObject);
-				
 				String outString =conn+" "+MasterGlobalInformation.getMaxMapperPerSystem()+" "+MasterGlobalInformation.getMaxReducesPerSystem();
 				out.println(outString);
 				out.flush();
-
+				
 				if(shouldEnter == true){
 					System.out.println("Connection established with worker: "+clientSocket.getInetAddress().getHostAddress().toString());
 					System.out.println("Alloted Id: "+conn);

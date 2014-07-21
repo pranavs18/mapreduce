@@ -136,22 +136,22 @@ public class Worker implements Runnable {
 		System.setSecurityManager(new java.rmi.RMISecurityManager());
 		RemoteSplitterImpl remote = new RemoteSplitterImpl();
 		
+		WorkerJobLauncerImpl jobLauncher = new WorkerJobLauncerImpl();
+		
 		
 		try {
 
 			Registry registry = LocateRegistry.createRegistry(9876);
 			registry.rebind("Remote", remote);
 			System.out.println("Remote bounded" + remote);
+			registry.rebind("job", jobLauncher);
+			System.out.println("job bound" + remote);
 		} catch (RemoteException e) {
 
 		}
 
-		Worker worker = new Worker(MasterIp);
 
 		WorkerRegisterHeartBeat heartBeat = new WorkerRegisterHeartBeat(MasterIp);
-
-		// Starts worker host thread
-		//new Thread(worker).start();
 
 		// Start heart beat thread
 		new Thread(heartBeat).start();

@@ -40,7 +40,7 @@ public class UserJobLaunchConsole{
 				s="";
 				s = br.readLine();
 
-				config.setUserJavaFilePath(/*s*/"/Users/VSK/Documents/Git/mapreduce/src/master");
+				config.setUserJavaFilePath(/*s*/"/Users/VSK/Documents/Git/mapreduce/src/client");
 
 
 				System.out.println(/*s*/"\nEnter input file Path (Consider the dfs folder as root folder)");
@@ -59,15 +59,15 @@ public class UserJobLaunchConsole{
 				System.out.println("\nEnter Map class name");
 				s = "";
 				s = br.readLine();
-				config.setMapperClass(/*s*/"master.Master");
+				config.setMapperClass(/*s*/"client.WordCount");
 				int indexOfLastDot = s.lastIndexOf(".");
 				//s = s.substring(0, indexOfLastDot);
-				config.setUserProgramPackageName(/*s*/"master");
+				config.setUserProgramPackageName(/*s*/"client");
 
 				System.out.println("\nEnter Reduce class name");
 				s = "";
 				s = br.readLine();
-				config.setReducerClass(/*s*/"master.Master");
+				config.setReducerClass(/*s*/"client.WordCount");
 
 				System.out.println("\nEnter Input key Type (Integer, UserDefined classes ...)");
 				System.out.println("You can leave it blank to use default type String");
@@ -104,7 +104,7 @@ public class UserJobLaunchConsole{
 
 				System.out.println("\nEnter number of reducers");
 				System.out.println("You can leave it blank to use default value 1");
-				
+
 				s = "";
 				s = br.readLine();
 				if(s.equals("")){

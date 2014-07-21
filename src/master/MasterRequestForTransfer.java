@@ -33,7 +33,8 @@ public class MasterRequestForTransfer implements Runnable{
 			e.printStackTrace();
 		}
 
-		MasterGlobalInformation.getMasterStaticChunkMap().put(chunkName, chunk);
+		MasterGlobalInformation.getMasterStaticChunkMap().put(chunkName,chunk);
+		
 	}
 
 

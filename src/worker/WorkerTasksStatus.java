@@ -13,6 +13,7 @@ import generics.TaskDetails;
 import java.net.InetAddress;
 import java.net.UnknownHostException;
 import java.util.concurrent.ConcurrentHashMap;
+import java.util.concurrent.atomic.AtomicInteger;
 
 import master.JobStatus;
 
@@ -23,6 +24,11 @@ public class WorkerTasksStatus {
 	private static int numberOfMaps = 4;
 	private static int numberOfReduces = 2;
 	private static int workerId;
+	private static AtomicInteger numberOfMapsCurrentlyRunning = new AtomicInteger(0);
+	private static AtomicInteger numberOfReducesCurrentlyRunning = new AtomicInteger(0);
+	
+	private static Boolean mapFull = false;
+	private static Boolean reduceFull = false;
 
 	
 	public WorkerTasksStatus() {
@@ -66,6 +72,7 @@ public class WorkerTasksStatus {
     		}
     	}
     	if((taskStatusMap.size()<=numberOfMaps) || availability>0){
+
     		taskStatusMap.put(jobId, taskDetails);
     		returnValue = "success";
     	}
@@ -84,12 +91,14 @@ public class WorkerTasksStatus {
     public static String putInStatusReduce(String jobId, TaskDetails taskDetails){
     	int availability = 0;
     	String returnValue = "";
+ 
     	for(ConcurrentHashMap.Entry<String, TaskDetails> entry : taskStatusReduce.entrySet()){
     		if((entry.getValue().getStatus() == JobStatus.AVAILABLE) || entry.getValue().getStatus() == JobStatus.COMPLETE){
     			++availability;
     		}
     	}
-    	if((taskStatusReduce.size()<=numberOfReduces) && availability>0){
+    	if((taskStatusReduce.size()<=numberOfReduces) || availability>0){
+
     		taskStatusReduce.put(jobId, taskDetails);
     		returnValue = "success";
     	}
@@ -98,7 +107,7 @@ public class WorkerTasksStatus {
     	}
 		return returnValue;
     }
-	
+    
     public static TaskDetails getInStatusReduce(String jobId){
    	 return taskStatusReduce.get(jobId);
    }
@@ -109,12 +118,12 @@ public class WorkerTasksStatus {
      */
     public static void initialTaskMapCreator() throws UnknownHostException{
     	for(int i=0; i<numberOfMaps;i++){
-    		String jobId = workerId+"_m"+(i+1);
+    		String jobId = InetAddress.getLocalHost().getHostAddress()+"_m"+(i+1);
     		TaskDetails taskDetails = new TaskDetails(InetAddress.getLocalHost().getHostAddress(), jobId,  null, JobStatus.AVAILABLE);
     		putInStatusMap(jobId, taskDetails);
     	}
     	for(int i=0; i<numberOfReduces;i++){
-    		String jobId = workerId+"_r"+(i+1);
+    		String jobId = InetAddress.getLocalHost().getHostAddress()+"_r"+(i+1);
     		TaskDetails taskDetails = new TaskDetails(InetAddress.getLocalHost().getHostAddress(), jobId,  null, JobStatus.AVAILABLE);
     		putInStatusReduce(jobId, taskDetails);
     	}
@@ -128,6 +137,45 @@ public class WorkerTasksStatus {
 		return numberOfReduces;
 	}
     
-    
+	
+	public static int getIncreasedMapperNumber() {
+		return numberOfMapsCurrentlyRunning.addAndGet(1);
+	}
+	public static int getDecreasedMapperNumber() {
+		return numberOfMapsCurrentlyRunning.decrementAndGet();
+	}
+	
+	public static int getIncreasedReducerNumber() {
+		return numberOfReducesCurrentlyRunning.addAndGet(1);
+	}
+	public static int getDecreasedReducerNumber() {
+		return numberOfReducesCurrentlyRunning.decrementAndGet();
+	}
+
+	public static Boolean getMapFull() {
+		return mapFull;
+	}
+
+	public static void setMapFull(Boolean mapFull) {
+		WorkerTasksStatus.mapFull = mapFull;
+	}
+
+	public static Boolean getReduceFull() {
+		return reduceFull;
+	}
+
+	public static void setReduceFull(Boolean reduceFull) {
+		WorkerTasksStatus.reduceFull = reduceFull;
+	}
+
+	public static AtomicInteger getNumberOfMapsCurrentlyRunning() {
+		return numberOfMapsCurrentlyRunning;
+	}
+
+
+	public static AtomicInteger getNumberOfReducesCurrentlyRunning() {
+		return numberOfReducesCurrentlyRunning;
+	}
+
 	
 }

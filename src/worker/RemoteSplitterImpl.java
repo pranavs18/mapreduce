@@ -50,11 +50,8 @@ public class RemoteSplitterImpl extends UnicastRemoteObject implements SlaveRemo
 	    ConcurrentHashMap<String, ChunkProperties> chunkContainer = new ConcurrentHashMap<String, ChunkProperties>();
 		ConcurrentHashMap<String,ArrayList<String>> chunkTracker = new ConcurrentHashMap<String,ArrayList<String>>();
 		fakeDistributedFile fdf = new fakeDistributedFile();
-		String jobStatus = "AVAILABLE";
-		String jobMachineHolder = "";
-		ChunkProperties cp = new ChunkProperties();
-		cp.setJobMachineHolder(jobMachineHolder);
-		cp.setJobStatus(jobStatus);
+		//ChunkProperties cp = new ChunkProperties();
+	
 		File file = new File(filename);
 		int numberofLines = 0;
 		int chunkSize = 25;
@@ -115,7 +112,7 @@ public class RemoteSplitterImpl extends UnicastRemoteObject implements SlaveRemo
 					fdf.setReplicas(0);
 					fdf.setChunkID(uniquechunkName);
 					fdf.setChunkPath(newChunkName);
-					cp.setFdf(fdf);
+					//cp.setFdf(fdf);
 					bw.close();
 				} catch (IOException e) {
 					e.printStackTrace();
@@ -170,8 +167,14 @@ public class RemoteSplitterImpl extends UnicastRemoteObject implements SlaveRemo
 		try {
 			chunkTracker = fetchChunks(newContainer, workerIps , splitIp);
 			for(String s:chunkTracker.keySet()){
+				String jobStatus = "AVAILABLE";
+				String jobMachineHolder = "";
+				ChunkProperties cp = new ChunkProperties();
+				cp.setJobMachineHolder(jobMachineHolder);
+				cp.setJobStatus(jobStatus);
 				ArrayList<String> al = new ArrayList<String>();
 				al = chunkTracker.get(s);
+				System.out.println("Array List "+s+" "+al);
 				cp.setCHUNK_IP_LIST(al);
 				chunkContainer.put(s,cp);
 			}
@@ -192,7 +195,8 @@ public class RemoteSplitterImpl extends UnicastRemoteObject implements SlaveRemo
 		Queue<String> fileNames = new LinkedList<String>();
 		for (File file : listOfFiles) {
 			if (file.isFile()) {
-				fileNames.add(file.getName());
+				if(!file.getName().equals(".DS_Store"))
+					fileNames.add(file.getName());
 			}
 		}
 		int numberofChunks = fileNames.size();
@@ -229,6 +233,18 @@ public class RemoteSplitterImpl extends UnicastRemoteObject implements SlaveRemo
 
 				}
 
+			}
+			else{
+				for(int i=0;i< partitionSize;i++){
+
+					String Name = fileNames.remove();
+					if(chunkTracker.contains(Name)){
+						//chunkTracker.get(Name).add(ipAddress);
+					}
+					else {
+						chunkTracker.put(Name, al);
+					}
+			  }
 			}
 		}
 		return chunkTracker;

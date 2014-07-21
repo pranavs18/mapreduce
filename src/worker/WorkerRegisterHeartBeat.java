@@ -10,6 +10,7 @@
 
 package worker;
 
+import generics.TaskDetails;
 import generics.WorkerMessageToMaster;
 
 import java.io.BufferedReader;
@@ -20,6 +21,7 @@ import java.io.PrintStream;
 import java.net.InetAddress;
 import java.net.Socket;
 import java.net.UnknownHostException;
+import java.util.concurrent.ConcurrentHashMap;
 
 public class WorkerRegisterHeartBeat implements Runnable {
 
@@ -64,7 +66,29 @@ public class WorkerRegisterHeartBeat implements Runnable {
 		Boolean shouldEnter = true;
 		
 		while(true){
-			WorkerMessageToMaster message = new WorkerMessageToMaster(WorkerTasksStatus.getTaskStatusMap(), WorkerTasksStatus.getTaskStatusReduce());
+			ConcurrentHashMap<String, TaskDetails> nonStaticMapObject = new ConcurrentHashMap<String, TaskDetails>();
+			ConcurrentHashMap<String, TaskDetails> nonStaticReduceObject = new ConcurrentHashMap<String, TaskDetails>();
+			nonStaticMapObject.putAll(WorkerTasksStatus.getTaskStatusMap());
+			nonStaticReduceObject.putAll(WorkerTasksStatus.getTaskStatusReduce());
+			
+			Boolean mapFull = new Boolean(false);
+			Boolean reduceFull = new Boolean(false);
+			
+			if(WorkerTasksStatus.getMapFull() == true){
+				mapFull = true;
+			}
+			else{
+				mapFull = false;
+			}
+			
+			if(WorkerTasksStatus.getMapFull() == true){
+				reduceFull = true;
+			}
+			else{
+				reduceFull = false;
+			}
+			
+			WorkerMessageToMaster message = new WorkerMessageToMaster(nonStaticMapObject, nonStaticReduceObject,mapFull,reduceFull);
 			oos.writeObject(message);
 			oos.flush();
 			readS = in.readLine();
@@ -78,7 +102,7 @@ public class WorkerRegisterHeartBeat implements Runnable {
 			}
 			shouldEnter = false;
 			readS = "";
-			Thread.sleep(1000);
+			Thread.sleep(50);
 		}
 	}
 

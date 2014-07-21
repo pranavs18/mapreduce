@@ -69,6 +69,10 @@ public class RemoteCallee extends UnicastRemoteObject implements MasterToNameNod
 				}
 			}
 		}
+		if(ipAddresstoTransfer == null){
+			ipAddresstoTransfer = visitedIPs.get(0);
+		    System.out.println("Transferred machine IP" + ipAddresstoTransfer);
+		}
 		
 		
         String path = ".." + File.separator + "dfs" + File.separator + "chunks";
@@ -84,14 +88,15 @@ public class RemoteCallee extends UnicastRemoteObject implements MasterToNameNod
         }
         
         byte buffer[] = new byte[(int)file.length()];
-		BufferedInputStream input = new BufferedInputStream(new FileInputStream(newChunkName));
+		BufferedInputStream input = new BufferedInputStream(new FileInputStream(path+File.separator+newChunkName));
 		input.read(buffer,0,buffer.length);
 		input.close();  	
 		SlaveRemoteInterface obj = null;
 		obj = (SlaveRemoteInterface) Naming.lookup("//"+ ipAddresstoTransfer +":9876/Remote");
 		boolean flag = obj.transferChunkOnRequest(newChunkName, buffer);
 		if(flag == true){
-			GlobalFileMap.get(fileName).get(newChunkName).getCHUNK_IP_LIST().add(ipAddresstoTransfer);
+			if(!GlobalFileMap.get(fileName).get(newChunkName).getCHUNK_IP_LIST().get(0).equals(ipAddresstoTransfer))
+				GlobalFileMap.get(fileName).get(newChunkName).getCHUNK_IP_LIST().add(ipAddresstoTransfer);
 		}
 	return GlobalFileMap.get(fileName).get(newChunkName);
 }

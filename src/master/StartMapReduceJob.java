@@ -4,6 +4,7 @@ import generics.ChunkProperties;
 import generics.MapReduceConfiguration;
 import generics.MapReduceStarterInterface;
 import generics.MasterToNameNodeInterface;
+import generics.MasterToWorkerInterface;
 import generics.TaskDetails;
 import generics.fakeDistributedFile;
 
@@ -39,7 +40,7 @@ public class StartMapReduceJob extends UnicastRemoteObject implements MapReduceS
 		System.out.println("Reached here");
 		try {
 			MasterToNameNodeInterface fileChunkMapRequest = (MasterToNameNodeInterface)Naming.lookup("rmi://"+MasterGlobalInformation.getNameNodeIp()+":23392/split");
-
+			
 			try {
 				Set<String> setOfworkerIpAddresses = MasterGlobalInformation.getAllWorkerMapReduceDetails().keySet();
 				System.out.println("Key Set : "+setOfworkerIpAddresses);
@@ -53,7 +54,6 @@ public class StartMapReduceJob extends UnicastRemoteObject implements MapReduceS
 				MasterGlobalInformation.setMasterStaticChunkMap(fileChunkMap);
 
 				/* Start Launching Mappers */
-
 				int countOfComplete = 0;
 				while(true){
 					/* Used for checking if all map jobs have completed their work */
@@ -62,6 +62,8 @@ public class StartMapReduceJob extends UnicastRemoteObject implements MapReduceS
 					/* we iterate through the chunkMapobtained from Name node to launch Job */
 					for(ConcurrentHashMap.Entry<String, ChunkProperties> chunkDetails : MasterGlobalInformation.getMasterStaticChunkMap().entrySet()){
 						
+						System.out.println(chunkDetails.getKey()+ " zval: "+chunkDetails.getValue().getCHUNK_IP_LIST()+" job: "+chunkDetails.getValue().getJobStatus()+" jobh: "+chunkDetails.getValue().getJobMachineHolder());
+						
 						/* if the status of the job is complete just continue */
 						if(chunkDetails.getValue().getJobStatus().equals("COMPLETE")){
 							continue;
@@ -69,6 +71,7 @@ public class StartMapReduceJob extends UnicastRemoteObject implements MapReduceS
 
 						/* if status of the job is available the the job has not been scheduled yet */
 						else if(chunkDetails.getValue().getJobStatus().equals("AVAILABLE")){
+							
 							/* This count is used to check if the IPs containing the file chunk are completely busy*/
 							int busyCount = 0;
 							
@@ -82,11 +85,13 @@ public class StartMapReduceJob extends UnicastRemoteObject implements MapReduceS
 										MasterGlobalInformation.getAllWorkerMapReduceDetails().get(anIpInList).getMapStatus().entrySet()){
 										if(idFree.getValue().getStatus() == JobStatus.AVAILABLE || idFree.getValue().getStatus() == JobStatus.COMPLETE){
 											String mapperID = idFree.getKey();
+											System.out.println("Mapper id: "+mapperID);
 
 											/****/
 											/* Make RMI Call to worker with args mapperID and fileName*/
-											
-											
+											MasterToWorkerInterface launchJob = (MasterToWorkerInterface)Naming.lookup("rmi://"+anIpInList+":9876/job");
+											Boolean isJobLaunchSuccessful = launchJob.launchMapJob(chunkDetails.getKey(), mapperID, config);
+											System.out.println("Result of launch: "+isJobLaunchSuccessful);
 											/****/
 											chunkDetails.getValue().setJobMachineHolder(mapperID);
 											chunkDetails.getValue().setJobStatus("RUNNING");
@@ -116,12 +121,18 @@ public class StartMapReduceJob extends UnicastRemoteObject implements MapReduceS
 						else if(chunkDetails.getValue().getJobStatus().equals("RUNNING")){
 
 							String idToBeinvestigated = chunkDetails.getValue().getJobMachineHolder();
-							String ipToBeinvestigated = idToBeinvestigated.substring(0,idToBeinvestigated.indexOf("_")-1);
+							System.out.println("Id investigated "+idToBeinvestigated);
+							
+							String ipToBeinvestigated = idToBeinvestigated.substring(0,idToBeinvestigated.indexOf("_"));
+							System.out.println("Ip investigated "+ipToBeinvestigated);
+							System.out.println(MasterGlobalInformation.getAllWorkerMapReduceDetails().get(ipToBeinvestigated).getMapStatus().get(idToBeinvestigated).getWorkerMapReduceId());
+							
 							if(MasterGlobalInformation.getAllWorkerMapReduceDetails().get(ipToBeinvestigated).getMapStatus().get(idToBeinvestigated).getStatus()==JobStatus.COMPLETE 
 									|| !(MasterGlobalInformation.getAllWorkerMapReduceDetails().get(ipToBeinvestigated).getMapStatus().get(idToBeinvestigated).getFileName().equals(chunkDetails.getKey()))){
 								chunkDetails.getValue().setJobStatus("COMPLETE");
 								countOfComplete++;
 							}
+							
 
 						}
 						if(countOfComplete>=MasterGlobalInformation.getMasterStaticChunkMap().size()){
