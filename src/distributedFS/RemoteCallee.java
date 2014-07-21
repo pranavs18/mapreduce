@@ -39,7 +39,8 @@ public class RemoteCallee extends UnicastRemoteObject implements MasterToNameNod
 
 	public  ConcurrentHashMap<String, ChunkProperties> sendChunkMap(MapReduceConfiguration config, Set<String> workerIps, String splitIp) throws RemoteException, NotBoundException, FileNotFoundException, IOException{
 		
-		if(GlobalFileMap.contains(config.getInputPath())){
+		if(GlobalFileMap.containsKey(config.getInputPath())){
+			System.out.println("File already split....launching the mappers directly");
 			return GlobalFileMap.get(config.getInputPath());
 		}
 		SlaveRemoteInterface remote;
