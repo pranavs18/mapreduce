@@ -40,14 +40,14 @@ public class UserJobLaunchConsole{
 				s="";
 				s = br.readLine();
 
-				config.setUserJavaFilePath(/*s*/"/Users/VSK/Documents/Git/mapreduce/src/client");
+				config.setUserJavaFilePath(/*s*/"C:/Users/PRANAV/Documents/mapreduce/src/client");
 
 
 				System.out.println(/*s*/"\nEnter input file Path (Consider the dfs folder as root folder)");
 				s = "";
 				s = br.readLine();
 
-				config.setInputPath(/*config.getDfsPath()+s*/"/Users/VSK/Documents/Git/mapreduce/pranav.txt");
+				config.setInputPath(/*config.getDfsPath()+s*/"C:/Users/PRANAV/Documents/mapreduce/pranav.txt");
 
 				System.out.println("Input path: "+config.getInputPath());
 

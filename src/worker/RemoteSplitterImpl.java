@@ -105,6 +105,7 @@ public class RemoteSplitterImpl extends UnicastRemoteObject implements SlaveRemo
 			}
 			if(numberofLines == chunkSize){
 				chunkNumber++;
+				System.out.println("Chunk Number created..." + chunkNumber);
 				try {
 					
 					fdf.setIpAddress(InetAddress.getLocalHost().getHostAddress());
@@ -200,10 +201,13 @@ public class RemoteSplitterImpl extends UnicastRemoteObject implements SlaveRemo
 			}
 		}
 		int numberofChunks = fileNames.size();
+		System.out.println("Chunks found " + numberofChunks);
 		int numberofSlaves = workerIps.size();
 		int partitionSize = numberofChunks/numberofSlaves;
+		System.out.println("Partition size  " + partitionSize);
 		SlaveRemoteInterface obj;
 		String chunkName = fileNames.peek();
+		System.out.println("Total chunks..." + fileNames);
 		al.add(splitIp);
 		chunkTracker.put(chunkName,al);
 		for(String s:workerIps){
@@ -212,7 +216,7 @@ public class RemoteSplitterImpl extends UnicastRemoteObject implements SlaveRemo
                 ipAddress = s;
                 al.add(ipAddress);
 				for(int i=0;i< partitionSize;i++){
-
+                    
 					String Name = fileNames.remove();
 					if(chunkTracker.contains(Name)){
 						//chunkTracker.get(Name).add(ipAddress);
@@ -227,6 +231,7 @@ public class RemoteSplitterImpl extends UnicastRemoteObject implements SlaveRemo
 					BufferedInputStream input = new BufferedInputStream(new FileInputStream(fileName));
 					input.read(buffer,0,buffer.length);
 					input.close();  	
+					System.out.println("Transferring...." + Name);
 					obj = (SlaveRemoteInterface) Naming.lookup("//"+ ipAddress +":9876/Remote");
 					obj.transferChunks(Name, buffer);
 
@@ -235,7 +240,8 @@ public class RemoteSplitterImpl extends UnicastRemoteObject implements SlaveRemo
 
 			}
 			else{
-				for(int i=0;i< partitionSize;i++){
+				if(numberofSlaves == 1){
+				for(int i=0;i<partitionSize;i++){
 
 					String Name = fileNames.remove();
 					if(chunkTracker.contains(Name)){
@@ -245,8 +251,13 @@ public class RemoteSplitterImpl extends UnicastRemoteObject implements SlaveRemo
 						chunkTracker.put(Name, al);
 					}
 			  }
+				}
+				for(String name:fileNames){
+					chunkTracker.put(name, al);
+				}
 			}
 		}
+		System.out.println(" Chunks on parent machine" + fileNames);
 		return chunkTracker;
 	}
 

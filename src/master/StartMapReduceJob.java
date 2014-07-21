@@ -93,6 +93,8 @@ public class StartMapReduceJob extends UnicastRemoteObject implements MapReduceS
 											Boolean isJobLaunchSuccessful = launchJob.launchMapJob(chunkDetails.getKey(), mapperID, config);
 											System.out.println("Result of launch: "+isJobLaunchSuccessful);
 											/****/
+											if(isJobLaunchSuccessful==false)
+                                                continue;
 											chunkDetails.getValue().setJobMachineHolder(mapperID);
 											chunkDetails.getValue().setJobStatus("RUNNING");
 											mapperFound = true;
