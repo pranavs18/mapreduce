@@ -4,22 +4,33 @@ package client;
 import java.util.ArrayList;
 
 import worker.Mapper;
-import worker.Reducer;
-import worker.Pair;
 
 
-public class WordCount   {
+public class WordCount extends Mapper  {
 	
-	public void map() throws InterruptedException {
-        
-       /* String[] words = value.split("\\s+");
-        for (String keys : words) {
-            if (keys.trim().length() > 0) {
-              //  mapResult.add(new Pair<String, String>(keys.trim(), "1"));
+	public WordCount(String fileChunkName) {
+		super(fileChunkName);
+		
+	}
+
+
+	private static final long serialVersionUID = 1L;
+   
+	public void map(String key, String value)  {
+        String frequency = "1";
+        String[] words = value.split("\\s+");
+        for (String k : words) {
+            if (k.trim().length() > 0) {
+                mapResult.writeToFile(k.trim(), frequency);
             }
-        }*/
-        System.out.println( "MAPPER LAUNCHED....WELCOME...distributedtest");
-        Thread.sleep(10000);
+        }
+        
+        try {
+        	System.out.println( "MAPPER LAUNCHED....WELCOME...distributedtest");
+			Thread.sleep(10000);
+		} catch (InterruptedException e) {
+			e.printStackTrace();
+		}
     }
 	
 	
@@ -31,7 +42,7 @@ public class WordCount   {
                  sum += Integer.parseInt(value);
              
          }
-         //reducerResult.add(new Pair<String, String>(key, sum.toString()));
+         //reducerResult.add(key, sum.toString()));
      }
     
 	

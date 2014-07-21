@@ -417,12 +417,14 @@ public class RemoteSplitterImpl extends UnicastRemoteObject implements SlaveRemo
         File file = null;
         
         for(File f:listOfFiles){
-        	if(f.getName().equals(newChunkName)){
+        	if(!f.getName().equals(newChunkName))
+        		continue;
+        	else if(f.getName().equals(newChunkName)){
         		System.out.println("\n File to be transferred found in the DFS...\n Transferring now.... ");
         		file = new File(newChunkName);
         		break;
         	}
-  
+            
         		
         }
         
@@ -434,7 +436,7 @@ public class RemoteSplitterImpl extends UnicastRemoteObject implements SlaveRemo
 		obj = (SlaveRemoteInterface) Naming.lookup("//"+ ipAddresstoTransfer +":9876/Remote");
 		boolean flag = obj.transferChunkOnRequest(newChunkName, buffer);
 		if(flag == true)
-			System.out.println("Chunk" + newChunkName + "transferred to the machine with IP ADDRESS " + ipAddresstoTransfer);
+			System.out.println("Chunk " + newChunkName + " transferred from the machine with IP ADDRESS " + ipAddresstoTransfer);
 		else
 			System.out.println("Chunk Transfer failed");
 		

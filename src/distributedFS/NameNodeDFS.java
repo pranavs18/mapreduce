@@ -46,7 +46,7 @@ public class NameNodeDFS extends Thread implements Runnable {
 		
 	    System.setProperty("java.security.policy","C:/Users/PRANAV/Documents/mapreduce/policy.txt");
 		System.setSecurityManager(new java.rmi.RMISecurityManager());
-		
+		 System.setProperty("java.rmi.server.hostname", "128.237.186.178");
 
 		new Thread(nnhb).start();
 	}

@@ -11,7 +11,10 @@ package worker;
 import generics.TaskDetails;
 
 import java.net.InetAddress;
+import java.net.NetworkInterface;
+import java.net.SocketException;
 import java.net.UnknownHostException;
+import java.util.Collections;
 import java.util.concurrent.ConcurrentHashMap;
 import java.util.concurrent.atomic.AtomicInteger;
 
@@ -29,6 +32,7 @@ public class WorkerTasksStatus {
 	
 	private static Boolean mapFull = false;
 	private static Boolean reduceFull = false;
+    
 
 	
 	public WorkerTasksStatus() {
@@ -116,15 +120,19 @@ public class WorkerTasksStatus {
      * Warning: This is to be used only during worker node startup. It can potentially destroy the maps
      * if called later.
      */
-    public static void initialTaskMapCreator() throws UnknownHostException{
+   
+    public static void initialTaskMapCreator() throws UnknownHostException, SocketException{
+    	
+    	String ip = InetAddress.getLocalHost().getHostAddress().toString();
+    	ip="128.237.186.178";
     	for(int i=0; i<numberOfMaps;i++){
-    		String jobId = InetAddress.getLocalHost().getHostAddress()+"_m"+(i+1);
-    		TaskDetails taskDetails = new TaskDetails(InetAddress.getLocalHost().getHostAddress(), jobId,  null, JobStatus.AVAILABLE);
+    		String jobId = ip+"_m"+(i+1);
+    		TaskDetails taskDetails = new TaskDetails(ip, jobId,  null, JobStatus.AVAILABLE);
     		putInStatusMap(jobId, taskDetails);
     	}
     	for(int i=0; i<numberOfReduces;i++){
-    		String jobId = InetAddress.getLocalHost().getHostAddress()+"_r"+(i+1);
-    		TaskDetails taskDetails = new TaskDetails(InetAddress.getLocalHost().getHostAddress(), jobId,  null, JobStatus.AVAILABLE);
+    		String jobId = ip+"_r"+(i+1);
+    		TaskDetails taskDetails = new TaskDetails(ip, jobId,  null, JobStatus.AVAILABLE);
     		putInStatusReduce(jobId, taskDetails);
     	}
     }

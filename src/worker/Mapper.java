@@ -1,21 +1,44 @@
 package worker;
 
+import java.io.BufferedWriter;
+import java.io.File;
+import java.io.FileWriter;
+import java.io.IOException;
 import java.io.Serializable;
 import java.util.ArrayList;
 
-public abstract class Mapper <KeyIn, ValueIn, KeyOut, ValueOut> implements Serializable {
+public class Mapper implements Serializable {
 
 
 	private static final long serialVersionUID = 1L;
-	public ArrayList<Pair<KeyOut, ValueOut>> mapResult;
+	protected Mapper mapResult;
+	protected String fileChunkName;
 	
-	public Mapper(){
-		mapResult = new ArrayList<Pair<KeyOut, ValueOut>>();
+	protected Mapper(String fileChunkName){
+		this.fileChunkName = fileChunkName;
 	}
 	
-	public abstract void map(KeyIn key, ValueIn value);
+	public void writeToFile(String key, String value)  {
+		 String path = ".." + File.separator + "dfs" + File.separator + "intermediate";
+		 File dir = new File(path);
+			if (!dir.exists()) {
+				boolean result = dir.mkdirs();
+
+				if (result) {
+					System.out.println("Intermediate Map Folder is created");
+
+				} 
+			}
+		 File outputFile = new File(path + File.separator + fileChunkName + "_mapper.txt");
+		 try {
+			
+			FileWriter bw = new FileWriter(outputFile);
+			bw.write(key + " " + value + "\n");
+			
+		} catch (IOException e) {
+			e.printStackTrace();
+		}
+		
+	}
 	
-	public ArrayList<Pair<KeyOut, ValueOut>> MapperResult() {
-        return mapResult;
-    }
 }
