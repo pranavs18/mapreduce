@@ -102,7 +102,7 @@ public class WorkerRegisterHeartBeat implements Runnable {
 			}
 			shouldEnter = false;
 			readS = "";
-			Thread.sleep(50);
+			Thread.sleep(20);
 		}
 	}
 

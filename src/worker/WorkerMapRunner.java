@@ -9,6 +9,7 @@ import java.lang.reflect.InvocationTargetException;
 import java.lang.reflect.Method;
 import java.net.InetAddress;
 import java.net.UnknownHostException;
+import java.util.concurrent.ConcurrentHashMap;
 
 import master.JobStatus;
 import generics.MapReduceConfiguration;
@@ -41,7 +42,8 @@ public class WorkerMapRunner implements Runnable{
 
 			Class<?> params[] = {String.class,String.class, Mapper.class};
 			Class<?> mapClass = Class.forName("client.WordCount");
-			String fileInputPath = ".."+File.separator+"dfs"+File.separator+"chunks"+File.separator+"fileName";			
+			String fileInputPath = ".."+File.separator+"dfs"+File.separator+"chunks"+File.separator+fileName;	
+			System.out.println("Searching for a file at... " +fileInputPath);
 			Mapper mpr = new Mapper(fileName);
 
 
@@ -60,10 +62,10 @@ public class WorkerMapRunner implements Runnable{
 					e.printStackTrace();
 				}
 				String line;
-				int i = 0;
+				Integer i = 0;
 				while((line = buf.readLine()) != null){
 					i++;
-					Object[] arguments= {i,line,mpr};
+					Object[] arguments= {i.toString(),line,mpr};
 					method.invoke(mapObject, arguments);
 				}
 				buf.close();
@@ -83,7 +85,12 @@ public class WorkerMapRunner implements Runnable{
 		WorkerTasksStatus.putInStatusMap(allotedId, mapDetails);
 		WorkerTasksStatus.getDecreasedMapperNumber();
 		WorkerTasksStatus.setMapFull(false);
-		System.out.println("These are sent in heartbeat "+allotedId+" "+fileName+" "+JobStatus.COMPLETE); //remove
+		WorkerTasksStatus.getIdListForCheck().remove(allotedId);
+		for(ConcurrentHashMap.Entry<String, TaskDetails> status: WorkerTasksStatus.getTaskStatusMap().entrySet()){
+             
+			System.out.println("Key: "+status.getKey()+" Latest fileRun: "+status.getValue().getFileName()+" Current Status: "+status.getValue().getStatus());
+ 
+		}
 
 	}
 

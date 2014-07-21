@@ -14,7 +14,9 @@ import java.net.InetAddress;
 import java.net.NetworkInterface;
 import java.net.SocketException;
 import java.net.UnknownHostException;
+import java.util.ArrayList;
 import java.util.Collections;
+import java.util.HashSet;
 import java.util.concurrent.ConcurrentHashMap;
 import java.util.concurrent.atomic.AtomicInteger;
 
@@ -32,20 +34,28 @@ public class WorkerTasksStatus {
 	
 	private static Boolean mapFull = false;
 	private static Boolean reduceFull = false;
-    
-
+	
+	public static ConcurrentHashMap<String,String> idListForCheck =  new ConcurrentHashMap<String, String>();
 	
 	public WorkerTasksStatus() {
 
 	}
 	
+	
+	
+	public static ConcurrentHashMap<String, String> getIdListForCheck() {
+		return idListForCheck;
+	}
+
+
+
 	public WorkerTasksStatus(int workerId,int numberOfMaps, int numberOfReduces) {
 		WorkerTasksStatus.numberOfMaps = numberOfMaps;
 		WorkerTasksStatus.numberOfReduces = numberOfReduces;
 		WorkerTasksStatus.workerId = workerId;
 	}
 
-	/* The key here is a String with job Id eg. 1_m1 or 2_r2 etc 
+	/* The key here is a String with job Id eg. ip_m1 or ip_r2 etc 
 	 * The count of this hashmap will not exceed the mappers and reducers per
 	 * system as described in the config file
 	 */ 
@@ -124,15 +134,15 @@ public class WorkerTasksStatus {
     public static void initialTaskMapCreator() throws UnknownHostException, SocketException{
     	
     	String ip = InetAddress.getLocalHost().getHostAddress().toString();
-    	ip="128.237.186.178";
+    	ip ="128.237.186.178";  // REMOVE THIS HARDCODED 
     	for(int i=0; i<numberOfMaps;i++){
     		String jobId = ip+"_m"+(i+1);
-    		TaskDetails taskDetails = new TaskDetails(ip, jobId,  null, JobStatus.AVAILABLE);
+    		TaskDetails taskDetails = new TaskDetails(ip, jobId,  "", JobStatus.AVAILABLE);
     		putInStatusMap(jobId, taskDetails);
     	}
     	for(int i=0; i<numberOfReduces;i++){
     		String jobId = ip+"_r"+(i+1);
-    		TaskDetails taskDetails = new TaskDetails(ip, jobId,  null, JobStatus.AVAILABLE);
+    		TaskDetails taskDetails = new TaskDetails(ip, jobId,  "", JobStatus.AVAILABLE);
     		putInStatusReduce(jobId, taskDetails);
     	}
     }
@@ -185,5 +195,7 @@ public class WorkerTasksStatus {
 		return numberOfReducesCurrentlyRunning;
 	}
 
+	
+	
 	
 }

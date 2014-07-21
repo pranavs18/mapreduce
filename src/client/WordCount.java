@@ -8,29 +8,22 @@ import worker.Mapper;
 
 public class WordCount extends Mapper  {
 	
-	public WordCount(String fileChunkName) {
-		super(fileChunkName);
-		
-	}
-
 
 	private static final long serialVersionUID = 1L;
    
-	public void map(String key, String value)  {
+	
+	public void map(String key, String value, Mapper mapper)  {
         String frequency = "1";
         String[] words = value.split("\\s+");
         for (String k : words) {
-            if (k.trim().length() > 0) {
-                mapResult.writeToFile(k.trim(), frequency);
+        	k = k.trim();
+            if (k.length() > 0) {
+                mapper.writeToFile(k, frequency);
             }
         }
         
-        try {
-        	System.out.println( "MAPPER LAUNCHED....WELCOME...distributedtest");
-			Thread.sleep(10000);
-		} catch (InterruptedException e) {
-			e.printStackTrace();
-		}
+        	//System.out.println( "MAPPER LAUNCHED....WELCOME...distributedtest");
+			
     }
 	
 	

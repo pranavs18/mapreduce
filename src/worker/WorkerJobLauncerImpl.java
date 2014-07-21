@@ -26,37 +26,38 @@ public class WorkerJobLauncerImpl extends UnicastRemoteObject implements MasterT
 			throws RemoteException, NotBoundException, FileNotFoundException,
 			IOException {
 		int i;	
-		if((i =WorkerTasksStatus.getIncreasedMapperNumber())<=WorkerTasksStatus.getNumberOfMaps()){
+		if((i =WorkerTasksStatus.getIncreasedMapperNumber())<=WorkerTasksStatus.getNumberOfMaps() && !(WorkerTasksStatus.getIdListForCheck().containsKey(mapperId))){
 			if(i >= WorkerTasksStatus.getNumberOfMaps()){
 				WorkerTasksStatus.setMapFull(true);
 			}
 			else{
 				WorkerTasksStatus.setMapFull(false);
 			}
+			WorkerTasksStatus.getIdListForCheck().put(mapperId, "Entered");
 			TaskDetails mapDetails  = new TaskDetails(InetAddress.getLocalHost().getHostAddress(), mapperId, fileChunkName, JobStatus.RUNNING);
 			System.out.println("These are sent in heartbeat "+mapperId+" "+fileChunkName+" "+JobStatus.RUNNING); //remove
 			WorkerTasksStatus.putInStatusMap(mapperId, mapDetails);
 			try {
 				Thread.sleep(200);
 			} catch (InterruptedException e) {
-				// TODO Auto-generated catch block
 				e.printStackTrace();
 			}
+
 			/* Start new Worker thread */
-			
+
 			WorkerMapRunner mapLauncher = new WorkerMapRunner(fileChunkName, mapperId, config);
 			new Thread(mapLauncher).start();	
 		}
 		else{
-			
+
 			WorkerTasksStatus.getDecreasedMapperNumber();
 			System.out.println("Workers Maps Full");
 			return false;
 		}
-		
-		
+
+
 		return true;
 	}
-	
+
 
 }

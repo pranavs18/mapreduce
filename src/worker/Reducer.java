@@ -3,19 +3,18 @@ package worker;
 import java.io.Serializable;
 import java.util.ArrayList;
 
-public abstract class Reducer <KeyIn, ValueIn, KeyOut, ValueOut> implements Serializable {
+public class Reducer  implements Serializable {
 
 
 	private static final long serialVersionUID = 1L;
-	public ArrayList<Pair<KeyOut, ValueOut>> reducerResult;
+	protected Reducer reducerResult;
+	protected String mapperOutPutFile;
 	
-	public Reducer(){
-		reducerResult = new ArrayList<Pair<KeyOut, ValueOut>>();
+	protected Reducer(String mapperOutPutFile){
+		this.mapperOutPutFile = mapperOutPutFile;
 	}
 	
-	public abstract void reduce(KeyIn key, ArrayList<ValueIn> value);
-	
-	public ArrayList<Pair<KeyOut, ValueOut>> ReducerResult() {
-        return reducerResult;
-    }
+	public Reducer(){
+		
+	}
 }
