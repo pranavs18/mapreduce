@@ -13,23 +13,30 @@ import java.util.ArrayList;
 import java.util.Collections;
 
 
-public class Mapper extends MapReduceConfiguration implements Serializable {
+public class MapReduce extends MapReduceConfiguration implements Serializable {
 
 
 	private static final long serialVersionUID = 1L;
-	protected Mapper mapResult;
+	protected MapReduce mapResult;
 	protected String fileChunkName;
 	protected String inputPath;
+	protected String outputPath;
 	protected int reducers;
-	
-	protected Mapper(String fileChunkName, String inputPath , int reducers){
+	private int hashvalue;
+	private String tail;
+	protected MapReduce(String fileChunkName, String inputPath , String outputPath, int reducers){
 		this.fileChunkName = fileChunkName;
 		this.inputPath= inputPath;
 		this.reducers = reducers;
+		this.outputPath = outputPath;
 	}
 	
-	public Mapper(){
+	public MapReduce(){
 		
+	}
+	
+	protected MapReduce(String tail){
+		this.tail = tail;
 	}
 	
 	public void writeToFile(String key, String value)  {
@@ -47,9 +54,9 @@ public class Mapper extends MapReduceConfiguration implements Serializable {
 
 				} 
 			}
-		 int hashValue = createPartition(key, this.reducers);
+		 hashvalue = createPartition(key, this.reducers);
 				 
-	     path = path + File.separator + fileChunkName + "_mapper" + "_" + hashValue + ".txt";
+	     path = path + File.separator + fileChunkName + "_mapper" + "_" + hashvalue + ".txt";
 		 
 		 File outputFile = new File(path);
 		 FileWriter bw = null;
@@ -68,6 +75,37 @@ public class Mapper extends MapReduceConfiguration implements Serializable {
 			}
 		}
 		
+	}
+	
+	public void writeReducerOutput(String key, String value){
+         String path = this.outputPath;	 
+		 File dir = new File(path);
+			if (!dir.exists()) {
+				boolean result = dir.mkdirs();
+
+				if (result) {
+					System.out.println("Final output folder is created");
+
+				} 
+			}
+			 path = path + File.separator + fileChunkName + "finalOutput" + "_" +tail;
+			 
+			 File outputFile = new File(path);
+			 FileWriter bw = null;
+			 try {
+				
+				 bw = new FileWriter(outputFile,true);
+				 bw.write(key + " " + value + "\n");
+				 
+			} catch (IOException e) {
+				e.printStackTrace();
+			} finally {
+				try {
+					bw.close();
+				} catch (IOException e) {
+					e.printStackTrace();
+				}
+			}
 	}
 	
 	private static int createPartition(String Key, int totalNumberOfReducers){

@@ -457,7 +457,7 @@ public class RemoteSplitterImpl extends UnicastRemoteObject implements SlaveRemo
 	public Boolean ReceiveChunks(String path, String fileName,
 			byte[] buffer) throws IOException {
 		 
-		System.out.println(path);
+		System.out.println("Receiving file...." + path);
 		File dir = new File(path);
 		if (!dir.exists()) {
 			boolean result = dir.mkdirs();
@@ -470,11 +470,11 @@ public class RemoteSplitterImpl extends UnicastRemoteObject implements SlaveRemo
 		String newChunkName = path + File.separator + fileName;
 		File file = new File(newChunkName);
 
-
-		byte temp[] = buffer;
+        byte temp[] = new byte[buffer.length];
+		temp = buffer;
 		System.out.println(file.getCanonicalPath() + " ..." + file.getName());
-		BufferedOutputStream output = new BufferedOutputStream(new FileOutputStream(newChunkName));
-		output.write(temp,0,temp.length);
+		BufferedOutputStream output = new BufferedOutputStream(new FileOutputStream(file));
+		output.write(temp,0,buffer.length);
 		output.flush();
 		output.close();
 		System.out.println(fileName + " chunk tranferred");
