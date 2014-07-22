@@ -22,7 +22,7 @@ import java.util.Queue;
 import java.util.Set;
 import java.util.concurrent.ConcurrentHashMap;
 
-import worker.Mapper;
+import worker.MapReduce;
 
 
 public class StartMapReduceJob extends UnicastRemoteObject implements MapReduceStarterInterface{
@@ -220,12 +220,13 @@ public class StartMapReduceJob extends UnicastRemoteObject implements MapReduceS
 						}
 					}	
 				}
-				
-				if(!trasferInfo.containsKey(config.getSplitIP())){
+				System.out.println("Transfer Info"+trasferInfo);
+			
+				if(!trasferInfo.containsKey(this.config.getSplitIP())){
 					
 					for(ConcurrentHashMap.Entry<String, HashSet<String>> str : trasferInfo.entrySet()){
-						trasferInfo.put(config.getSplitIP(),trasferInfo.get(str));
-						trasferInfo.remove(str);
+						trasferInfo.put(this.config.getSplitIP(),trasferInfo.get(str.getKey()));
+						trasferInfo.remove(str.getKey());
 						break;						
 					}
 				}

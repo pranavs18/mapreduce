@@ -55,8 +55,11 @@ public class FileTransferAfterSort implements Runnable{
 					input.read(buffer,0,buffer.length);
 					input.close();  	
 					System.out.println("Transferring...." + files[i].getName());
+					System.out.println("Transferring to machine " +ip);
 					SlaveRemoteInterface obj = (SlaveRemoteInterface) Naming.lookup("//"+ ip +":9876/Remote");
-					obj.ReceiveChunks(".."+File.separator+"dfs"+File.separator+"intermediate", fileName, buffer);
+					//obj.ReceiveChunks(".."+File.separator+"dfs"+File.separator+"intermediate" + File.separator + fileName, files[i].getName(), buffer);
+					obj.ReceiveChunks("../dfs/redinput/"+ fileName, files[i].getName(), buffer);
+				    
 				}
 			}
 		}
