@@ -184,9 +184,6 @@ public class StartMapReduceJob extends UnicastRemoteObject implements MapReduceS
 						//
 
 						String outputPathIp = config.getOutputPath();
-
-
-
 						check = true;
 
 					} catch (Exception e) {

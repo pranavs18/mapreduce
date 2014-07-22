@@ -72,8 +72,8 @@ public class WorkerJobLauncerImpl extends UnicastRemoteObject implements MasterT
 
 	@Override
 	public void sortIntermediateFiles(MapReduceConfiguration config) throws IOException {
-	    System.out.println(" LOCAL SORTING BEGINS");
-		String filePath = config.getInputPath();
+	   System.out.println(" LOCAL SORTING BEGINS");
+	   String filePath = config.getInputPath();
 	   System.out.println("sorting..." + filePath);
 	   int index = filePath.lastIndexOf("/");
 	   String fileName = filePath.substring(index+1, filePath.length()-4);
