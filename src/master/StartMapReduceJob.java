@@ -167,6 +167,7 @@ public class StartMapReduceJob extends UnicastRemoteObject implements MapReduceS
 						}
 
 
+
 					}
 					if(MappersNotCompleted == true){
 						MappersNotCompleted = false;
@@ -181,8 +182,6 @@ public class StartMapReduceJob extends UnicastRemoteObject implements MapReduceS
 					MasterToWorkerInterface sortFiles = (MasterToWorkerInterface)Naming.lookup("rmi://"+workerIp+":9876/job");
 					sortFiles.sortIntermediateFiles(this.config);
 				}
-
-
 
 				/* Transfer file to the corresponding reducers. 
 				 * The number of reduce will always be the max of either userProvided number 
@@ -248,17 +247,6 @@ public class StartMapReduceJob extends UnicastRemoteObject implements MapReduceS
 				else{
 					return false;
 				}
-
-
-
-				//Launch the reducer job - copy all _zero files to one location of reducer and _one files to other location of reducer
-				// Read the sorted files, bring them into memory 
-				// run the reducer function on it
-				//
-
-				String outputPathIp = config.getOutputPath();
-
-
 
 				check = true;
 

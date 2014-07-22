@@ -19,5 +19,8 @@ public class Reducer  implements Serializable {
 		
 	}
 	
+	public void writeToFile(String key, String value){
+		
+	}
 	
 }

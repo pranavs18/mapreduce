@@ -31,18 +31,20 @@ public class WorkerTasksStatus {
 	private static int workerId;
 	private static AtomicInteger numberOfMapsCurrentlyRunning = new AtomicInteger(0);
 	private static AtomicInteger numberOfReducesCurrentlyRunning = new AtomicInteger(0);
-	
+
 	private static Boolean mapFull = false;
 	private static Boolean reduceFull = false;
-	
+
 	public static ConcurrentHashMap<String,String> idListForCheck =  new ConcurrentHashMap<String, String>();
-	
+
+	private static AtomicInteger workerAfterSortCount = new AtomicInteger(0);
+
 	public WorkerTasksStatus() {
 
 	}
-	
-	
-	
+
+
+
 	public static ConcurrentHashMap<String, String> getIdListForCheck() {
 		return idListForCheck;
 	}
@@ -60,92 +62,92 @@ public class WorkerTasksStatus {
 	 * system as described in the config file
 	 */ 
 
-     public static ConcurrentHashMap<String, TaskDetails> getTaskStatusMap() {
+	public static ConcurrentHashMap<String, TaskDetails> getTaskStatusMap() {
 		return taskStatusMap;
 	}
 
 	public static ConcurrentHashMap<String, TaskDetails> getTaskStatusReduce() {
 		return taskStatusReduce;
 	}
-	
-	
-	
+
+
+
 	public static int getWorkerId() {
 		return workerId;
 	}
 
 	/* Checks for correctness of query and adds to map (Assumption: Master will
 	 * only send a job if a mapper is in available status)*/
-    public static String putInStatusMap(String jobId, TaskDetails taskDetails){
-    	int availability = 0;
-    	String returnValue = "";
- 
-    	for(ConcurrentHashMap.Entry<String, TaskDetails> entry : taskStatusMap.entrySet()){
-    		if((entry.getValue().getStatus() == JobStatus.AVAILABLE) || entry.getValue().getStatus() == JobStatus.COMPLETE){
-    			++availability;
-    		}
-    	}
-    	if((taskStatusMap.size()<=numberOfMaps) || availability>0){
+	public static String putInStatusMap(String jobId, TaskDetails taskDetails){
+		int availability = 0;
+		String returnValue = "";
 
-    		taskStatusMap.put(jobId, taskDetails);
-    		returnValue = "success";
-    	}
-    	else{
-    		returnValue = "mapfullcapacity";
-    	}
+		for(ConcurrentHashMap.Entry<String, TaskDetails> entry : taskStatusMap.entrySet()){
+			if((entry.getValue().getStatus() == JobStatus.AVAILABLE) || entry.getValue().getStatus() == JobStatus.COMPLETE){
+				++availability;
+			}
+		}
+		if((taskStatusMap.size()<=numberOfMaps) || availability>0){
+
+			taskStatusMap.put(jobId, taskDetails);
+			returnValue = "success";
+		}
+		else{
+			returnValue = "mapfullcapacity";
+		}
 		return returnValue;
-    }
-	
-    public static TaskDetails getInStatusMap(String jobId){
-    	 return taskStatusMap.get(jobId);
-    }
-    
-    /* Checks for correctness of query and adds to map (Assumption: Master will
+	}
+
+	public static TaskDetails getInStatusMap(String jobId){
+		return taskStatusMap.get(jobId);
+	}
+
+	/* Checks for correctness of query and adds to map (Assumption: Master will
 	 * only send a job if a reduce is in available status)*/
-    public static String putInStatusReduce(String jobId, TaskDetails taskDetails){
-    	int availability = 0;
-    	String returnValue = "";
- 
-    	for(ConcurrentHashMap.Entry<String, TaskDetails> entry : taskStatusReduce.entrySet()){
-    		if((entry.getValue().getStatus() == JobStatus.AVAILABLE) || entry.getValue().getStatus() == JobStatus.COMPLETE){
-    			++availability;
-    		}
-    	}
-    	if((taskStatusReduce.size()<=numberOfReduces) || availability>0){
+	public static String putInStatusReduce(String jobId, TaskDetails taskDetails){
+		int availability = 0;
+		String returnValue = "";
 
-    		taskStatusReduce.put(jobId, taskDetails);
-    		returnValue = "success";
-    	}
-    	else{
-    		returnValue = "reducefullcapacity";
-    	}
+		for(ConcurrentHashMap.Entry<String, TaskDetails> entry : taskStatusReduce.entrySet()){
+			if((entry.getValue().getStatus() == JobStatus.AVAILABLE) || entry.getValue().getStatus() == JobStatus.COMPLETE){
+				++availability;
+			}
+		}
+		if((taskStatusReduce.size()<=numberOfReduces) || availability>0){
+
+			taskStatusReduce.put(jobId, taskDetails);
+			returnValue = "success";
+		}
+		else{
+			returnValue = "reducefullcapacity";
+		}
 		return returnValue;
-    }
-    
-    public static TaskDetails getInStatusReduce(String jobId){
-   	 return taskStatusReduce.get(jobId);
-   }
-    
-    /* Creates an initial map with default values
-     * Warning: This is to be used only during worker node startup. It can potentially destroy the maps
-     * if called later.
-     */
-   
-    public static void initialTaskMapCreator() throws UnknownHostException, SocketException{
-    	
-    	String ip = InetAddress.getLocalHost().getHostAddress().toString();
-     
-    	for(int i=0; i<numberOfMaps;i++){
-    		String jobId = ip+"_m"+(i+1);
-    		TaskDetails taskDetails = new TaskDetails(ip, jobId,  "", JobStatus.AVAILABLE);
-    		putInStatusMap(jobId, taskDetails);
-    	}
-    	for(int i=0; i<numberOfReduces;i++){
-    		String jobId = ip+"_r"+(i+1);
-    		TaskDetails taskDetails = new TaskDetails(ip, jobId,  "", JobStatus.AVAILABLE);
-    		putInStatusReduce(jobId, taskDetails);
-    	}
-    }
+	}
+
+	public static TaskDetails getInStatusReduce(String jobId){
+		return taskStatusReduce.get(jobId);
+	}
+
+	/* Creates an initial map with default values
+	 * Warning: This is to be used only during worker node startup. It can potentially destroy the maps
+	 * if called later.
+	 */
+
+	public static void initialTaskMapCreator() throws UnknownHostException, SocketException{
+
+		String ip = InetAddress.getLocalHost().getHostAddress().toString();
+
+		for(int i=0; i<numberOfMaps;i++){
+			String jobId = ip+"_m"+(i+1);
+			TaskDetails taskDetails = new TaskDetails(ip, jobId,  "", JobStatus.AVAILABLE);
+			putInStatusMap(jobId, taskDetails);
+		}
+		for(int i=0; i<numberOfReduces;i++){
+			String jobId = ip+"_r"+(i+1);
+			TaskDetails taskDetails = new TaskDetails(ip, jobId,  "", JobStatus.AVAILABLE);
+			putInStatusReduce(jobId, taskDetails);
+		}
+	}
 
 	public static int getNumberOfMaps() {
 		return numberOfMaps;
@@ -154,15 +156,15 @@ public class WorkerTasksStatus {
 	public static int getNumberOfReduces() {
 		return numberOfReduces;
 	}
-    
-	
+
+
 	public static int getIncreasedMapperNumber() {
 		return numberOfMapsCurrentlyRunning.addAndGet(1);
 	}
 	public static int getDecreasedMapperNumber() {
 		return numberOfMapsCurrentlyRunning.decrementAndGet();
 	}
-	
+
 	public static int getIncreasedReducerNumber() {
 		return numberOfReducesCurrentlyRunning.addAndGet(1);
 	}
@@ -195,7 +197,15 @@ public class WorkerTasksStatus {
 		return numberOfReducesCurrentlyRunning;
 	}
 
-	
-	
-	
+
+	public static int getAddedWorkerAfterSortCount(){
+
+		return workerAfterSortCount.addAndGet(1);
+
+	}
+
+	public static void resetWoerAfterSortCount(){
+
+		workerAfterSortCount.set(0);	
+	}	
 }

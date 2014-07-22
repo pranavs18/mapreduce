@@ -3,6 +3,7 @@ package distributedFS;
 import generics.ChunkProperties;
 import generics.MapReduceConfiguration;
 import generics.MasterToNameNodeInterface;
+import generics.SlaveRemoteInterface;
 import generics.fakeDistributedFile;
 
 import java.io.BufferedInputStream;
@@ -17,8 +18,6 @@ import java.rmi.server.UnicastRemoteObject;
 import java.util.ArrayList;
 import java.util.Set;
 import java.util.concurrent.ConcurrentHashMap;
-
-import worker.SlaveRemoteInterface;
 
 public class RemoteCallee extends UnicastRemoteObject implements MasterToNameNodeInterface {
 	

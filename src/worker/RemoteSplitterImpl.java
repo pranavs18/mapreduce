@@ -3,6 +3,7 @@ package worker;
 import generics.Archiver;
 import generics.ChunkProperties;
 import generics.MapReduceConfiguration;
+import generics.SlaveRemoteInterface;
 import generics.fakeDistributedFile;
 
 import java.io.BufferedInputStream;
@@ -450,6 +451,36 @@ public class RemoteSplitterImpl extends UnicastRemoteObject implements SlaveRemo
 			System.out.println("Chunk Transfer failed");
 		
 		return ipAddresstoTransfer;
+	}
+
+	@Override
+	public Boolean ReceiveChunks(String path, String fileName,
+			byte[] buffer) throws IOException {
+		 
+		System.out.println(path);
+		File dir = new File(path);
+		if (!dir.exists()) {
+			boolean result = dir.mkdirs();
+
+			if (result) {
+				System.out.println("Folder is created");
+
+			} 
+		}
+		String newChunkName = path + File.separator + fileName;
+		File file = new File(newChunkName);
+
+
+		byte temp[] = buffer;
+		System.out.println(file.getCanonicalPath() + " ..." + file.getName());
+		BufferedOutputStream output = new BufferedOutputStream(new FileOutputStream(newChunkName));
+		output.write(temp,0,temp.length);
+		output.flush();
+		output.close();
+		System.out.println(fileName + " chunk tranferred");
+		
+		
+		return true;
 	}
 	
 }

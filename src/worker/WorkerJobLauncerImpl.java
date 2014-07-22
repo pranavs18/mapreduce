@@ -17,9 +17,12 @@ import java.rmi.RemoteException;
 import java.rmi.server.UnicastRemoteObject;
 import java.util.ArrayList;
 import java.util.Collections;
+import java.util.HashSet;
+import java.util.concurrent.ConcurrentHashMap;
 import java.util.concurrent.Semaphore;
 
 import master.JobStatus;
+import master.TransferRMIRequestLauncher;
 
 
 public class WorkerJobLauncerImpl extends UnicastRemoteObject implements MasterToWorkerInterface{
@@ -69,39 +72,67 @@ public class WorkerJobLauncerImpl extends UnicastRemoteObject implements MasterT
 		return true;
 	}
 
+	public Boolean launchTransfer(MapReduceConfiguration config, ConcurrentHashMap<String, HashSet<String>> intermediateFileNameInfo) throws RemoteException, NotBoundException, FileNotFoundException,
+	IOException {
+		ArrayList<Thread> threads = new ArrayList<Thread>();
+		for(ConcurrentHashMap.Entry<String, HashSet<String>> info : intermediateFileNameInfo.entrySet()){
+		
+			FileTransferAfterSort fileTrasnfer = new FileTransferAfterSort(info.getKey(), info.getValue(), config);
+			Thread transferThread = new Thread(fileTrasnfer);
+			transferThread.start();
+			threads.add(transferThread);
+		}
+		for(Thread t : threads){
+			try {
+				t.join();
+			} catch (InterruptedException e) {
+				e.printStackTrace();
+			}
+		}
+		
+		if(WorkerTasksStatus.getAddedWorkerAfterSortCount()>intermediateFileNameInfo.size()){
+			return true;
+		}
+		else{
+			return false;
+		}
+
+	}
+
 
 	@Override
 	public void sortIntermediateFiles(MapReduceConfiguration config) throws IOException {
-	    System.out.println(" LOCAL SORTING BEGINS");
+
+		System.out.println(" LOCAL SORTING BEGINS");
 		String filePath = config.getInputPath();
-	   System.out.println("sorting..." + filePath);
-	   int index = filePath.lastIndexOf("/");
-	   String fileName = filePath.substring(index+1, filePath.length()-4);
-	   System.out.println("Sorting... " + fileName);
-	   String directoryPath = ".." + File.separator + "dfs" + File.separator + "intermediate" + File.separator + fileName;
-	   System.out.println("File location ... " + directoryPath);
-	   File folder = new File(directoryPath);
-	   File[] files = folder.listFiles();
-	   
-	   for(File file:files){
-		   ArrayList<String> temp = new ArrayList<String>();
-		   System.out.println("Current file "+ file.getName());
+		System.out.println("sorting..." + filePath);
+		int index = filePath.lastIndexOf("/");
+		String fileName = filePath.substring(index+1, filePath.length()-4);
+		System.out.println("Sorting... " + fileName);
+		String directoryPath = ".." + File.separator + "dfs" + File.separator + "intermediate" + File.separator + fileName;
+		System.out.println("File location ... " + directoryPath);
+		File folder = new File(directoryPath);
+		File[] files = folder.listFiles();
+
+		for(File file:files){
+			ArrayList<String> temp = new ArrayList<String>();
+			System.out.println("Current file "+ file.getName());
 			BufferedReader reader = new BufferedReader(new FileReader(file));
 			String line;
-	        while((line=reader.readLine())!=null){
-	            temp.add(line);
-	        }
-	        Collections.sort(temp);
-	        reader.close();
-	        
-	        BufferedWriter writer = new BufferedWriter(new FileWriter(file));
-	        for(String val : temp){
-	                writer.write(val);      
-	                writer.newLine();
-	        }
-	        writer.close();
-	   }
-		
+			while((line=reader.readLine())!=null){
+				temp.add(line);
+			}
+			Collections.sort(temp);
+			reader.close();
+
+			BufferedWriter writer = new BufferedWriter(new FileWriter(file));
+			for(String val : temp){
+				writer.write(val);      
+				writer.newLine();
+			}
+			writer.close();
+		}
+
 	}
 
 }
