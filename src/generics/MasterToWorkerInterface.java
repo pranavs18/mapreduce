@@ -8,6 +8,7 @@ import java.rmi.RemoteException;
 
 public interface MasterToWorkerInterface extends Remote  {
 	
-	public Boolean launchMapJob(String fileChunkName, String mapperId, MapReduceConfiguration config) throws RemoteException, NotBoundException, FileNotFoundException, IOException;;
-
+	public Boolean launchMapJob(String fileChunkName, String mapperId, MapReduceConfiguration config) throws RemoteException, NotBoundException, FileNotFoundException, IOException;
+    public void sortIntermediateFiles(MapReduceConfiguration config) throws IOException;   
+	
 }

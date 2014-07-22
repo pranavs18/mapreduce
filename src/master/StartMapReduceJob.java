@@ -19,6 +19,8 @@ import java.util.HashSet;
 import java.util.Set;
 import java.util.concurrent.ConcurrentHashMap;
 
+import worker.Mapper;
+
 
 public class StartMapReduceJob extends UnicastRemoteObject implements MapReduceStarterInterface{
 
@@ -26,7 +28,8 @@ public class StartMapReduceJob extends UnicastRemoteObject implements MapReduceS
 	 * 
 	 */
 	private static final long serialVersionUID = 1L;
-
+	HashSet<String >workerIpAddresses;
+	protected MapReduceConfiguration config;
 	protected StartMapReduceJob() throws RemoteException {
 
 	}
@@ -38,6 +41,7 @@ public class StartMapReduceJob extends UnicastRemoteObject implements MapReduceS
 
 		/* Here we first call an rmi function asking name node for the map of splits and their respective locations(IP) */
 		Boolean check = null;
+		this.config = config;
 		System.out.println("Reached here");
 		try {
 			MasterToNameNodeInterface fileChunkMapRequest = (MasterToNameNodeInterface)Naming.lookup("rmi://"+MasterGlobalInformation.getNameNodeIp()+":23392/split");
@@ -45,7 +49,7 @@ public class StartMapReduceJob extends UnicastRemoteObject implements MapReduceS
 			try {
 				Set<String> setOfworkerIpAddresses = MasterGlobalInformation.getAllWorkerMapReduceDetails().keySet();
 				System.out.println("Key Set : "+setOfworkerIpAddresses);
-				HashSet<String >workerIpAddresses = new HashSet<String>();
+				workerIpAddresses = new HashSet<String>();
 				for(String s: setOfworkerIpAddresses){
 					workerIpAddresses.add(s);
 
@@ -180,7 +184,16 @@ public class StartMapReduceJob extends UnicastRemoteObject implements MapReduceS
 				}
 
 				/* If code reaches here all the map jobs are complete */
-
+				//RMI call to sort the files stores on each worker machine 
+				for(String workerIp:workerIpAddresses){
+					MasterToWorkerInterface sortFiles = (MasterToWorkerInterface)Naming.lookup("rmi://"+workerIp+":9876/job");
+				    sortFiles.sortIntermediateFiles(this.config);
+				}
+				// Launch the reducer job - copy all _zero files to one location of reducer and _one files to other location of reducer
+				// Read the sorted files, bring them into memory 
+				// run the reducer function on it
+				//  
+				
 				check = true;
 			} catch (Exception e) {
 

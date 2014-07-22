@@ -8,13 +8,16 @@ public class Reducer  implements Serializable {
 
 	private static final long serialVersionUID = 1L;
 	protected Reducer reducerResult;
-	protected String mapperOutPutFile;
+	protected String mapperOutPutFolder;
 	
-	protected Reducer(String mapperOutPutFile){
-		this.mapperOutPutFile = mapperOutPutFile;
+	protected Reducer(String mapperOutPutFolder){
+		
+		this.mapperOutPutFolder = mapperOutPutFolder;
 	}
 	
 	public Reducer(){
 		
 	}
+	
+	
 }

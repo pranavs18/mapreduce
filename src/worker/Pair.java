@@ -14,6 +14,10 @@ public class Pair<Key,Value> implements Serializable {
 		this.setValue(v);
 	}
 
+	public Pair() {
+		
+	}
+
 	public Key getKey() {
 		return key;
 	}

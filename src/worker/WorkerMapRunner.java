@@ -28,6 +28,7 @@ public class WorkerMapRunner implements Runnable{
 		this.fileName = fileName;
 		this.allotedId = allotedId;
 		this.mapReduceConfig = mapReduceConfig;
+		
 	}
 
 
@@ -44,7 +45,7 @@ public class WorkerMapRunner implements Runnable{
 			Class<?> mapClass = Class.forName("client.WordCount");
 			String fileInputPath = ".."+File.separator+"dfs"+File.separator+"chunks"+File.separator+fileName;	
 			System.out.println("Searching for a file at... " +fileInputPath);
-			Mapper mpr = new Mapper(fileName);
+			Mapper mpr = new Mapper(fileName, mapReduceConfig.getInputPath(), mapReduceConfig.getReducers());
 
 
 			Object mapObject = mapClass.newInstance();

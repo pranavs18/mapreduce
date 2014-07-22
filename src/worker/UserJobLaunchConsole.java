@@ -108,7 +108,7 @@ public class UserJobLaunchConsole{
 				s = "";
 				s = br.readLine();
 				if(s.equals("")){
-					s="1";
+					s="2";
 				}
 				config.setReducers(Integer.parseInt(s));
 

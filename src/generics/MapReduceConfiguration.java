@@ -17,12 +17,13 @@ public class MapReduceConfiguration implements Serializable{
 	 * size and and will use all available
 	 * Mappers.
 	 */
-	private int reducers = 1;
+	private int reducers = 2;
 	private String splitIP;
 	/* These fields are used by master to to determine the Type of object */ 
 	private String mapperClass = null;
 	private String reducerClass = null;
 
+	
 	/* These fields are used to set the input key and Value Types
 	 * Default is String
 	 */

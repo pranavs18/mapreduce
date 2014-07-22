@@ -55,7 +55,7 @@ public class RemoteSplitterImpl extends UnicastRemoteObject implements SlaveRemo
 	
 		File file = new File(filename);
 		int numberofLines = 0;
-		int chunkSize = 25000;
+		int chunkSize = 25;
 		int chunkNumber = 1;
 		if(!file.exists())
 			return chunkContainer;
