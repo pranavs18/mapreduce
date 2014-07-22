@@ -41,12 +41,12 @@ public class WorkerMapRunner implements Runnable{
 			System.out.println("Reached Launcher"); //remove
 
 
-			Class<?> params[] = {String.class,String.class, Mapper.class};
+			Class<?> params[] = {String.class,String.class, MapReduce.class};
 			Class<?> mapClass = Class.forName("client.WordCount");
 			String fileInputPath = ".."+File.separator+"dfs"+File.separator+"chunks"+File.separator+fileName;	
 			System.out.println("Searching for a file at... " +fileInputPath);
 
-			Mapper mpr = new Mapper(fileName, mapReduceConfig.getInputPath(), mapReduceConfig.getReducers());
+			MapReduce mpr = new MapReduce(fileName, mapReduceConfig.getInputPath(), mapReduceConfig.getOutputPath(), mapReduceConfig.getReducers());
 
 
 

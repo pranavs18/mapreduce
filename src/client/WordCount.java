@@ -3,16 +3,16 @@ package client;
 
 import java.util.ArrayList;
 
-import worker.Mapper;
-import worker.Reducer;
+import worker.MapReduce;
 
- public class WordCount extends Mapper  {
+
+public class WordCount extends MapReduce {
 	
 
- private static final long serialVersionUID = 1L;
+	private static final long serialVersionUID = 1L;
    
 	
- public void map(String key, String value, Mapper mapper)  {
+	public void map(String key, String value, MapReduce mapper)  {
         String frequency = "1";
         String[] words = value.split("\\s+");
         for (String k : words) {
@@ -21,18 +21,19 @@ import worker.Reducer;
                 mapper.writeToFile(k, frequency);
             }
         }
-    } 
+			
+    }
 	
 	
-public void reduce(String key, ArrayList<String> values, Reducer reducerResult) {
+	 public void reduce(String key, ArrayList<String> values, MapReduce reducerResult) {
          
-         Integer totalCount = 0;
-         for (String count : values) {
+         Integer sum = 0;
+         for (String value : values) {
             
-                 totalCount += Integer.parseInt(count);
+                 sum += Integer.parseInt(value);
              
          }
-         reducerResult.writeToFile(key, totalCount.toString());
+         reducerResult.writeReducerOutput(key, sum.toString());
      }
     
 	
