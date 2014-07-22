@@ -1,7 +1,7 @@
 package worker;
 
 import java.io.Serializable;
-import java.util.ArrayList;
+
 
 public class Reducer  implements Serializable {
 

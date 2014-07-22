@@ -7,8 +7,6 @@ import generics.MasterToNameNodeInterface;
 import generics.MasterToWorkerInterface;
 import generics.TaskDetails;
 import generics.WorkerMessageToMaster;
-import generics.fakeDistributedFile;
-
 import java.io.IOException;
 import java.net.MalformedURLException;
 import java.rmi.Naming;
@@ -22,14 +20,10 @@ import java.util.Queue;
 import java.util.Set;
 import java.util.concurrent.ConcurrentHashMap;
 
-import worker.MapReduce;
 
 
 public class StartMapReduceJob extends UnicastRemoteObject implements MapReduceStarterInterface{
 
-	/**
-	 * 
-	 */
 	private static final long serialVersionUID = 1L;
 	HashSet<String >workerIpAddresses;
 	protected MapReduceConfiguration config;
@@ -248,7 +242,29 @@ public class StartMapReduceJob extends UnicastRemoteObject implements MapReduceS
 				else{
 					return false;
 				}
+				
+				
+				/* Start Reducers here */	
+				ArrayList<Thread> redthreads = new ArrayList<Thread>(); 
+				for(String str: requiredWorkerIps){
+					ReduceLauncher reduce = new ReduceLauncher(config, str);
+					Thread transferThread = new Thread(reduce);
+					transferThread.start();
+					redthreads.add(transferThread);
+				}
+				for(Thread t : redthreads){
+					t.join();
+				}
 
+				
+				if(MasterGlobalInformation.getIncreasedReducerSuccessCount()>requiredWorkerIps.size()){
+					MasterGlobalInformation.resetReducerCount();
+				}
+				else{
+					return false;
+				}
+				
+				
 				check = true;
 
 			} catch (Exception e) {
@@ -260,7 +276,10 @@ public class StartMapReduceJob extends UnicastRemoteObject implements MapReduceS
 			System.out.println("URL not found or not bound");
 			check = false;
 		}
-
+		
+		MasterGlobalInformation.resetReducerCount();
+		MasterGlobalInformation.resetTransferCount();
+		MasterGlobalInformation.getMasterStaticChunkMap().clear();
 		return check;
 	}
 

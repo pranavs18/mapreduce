@@ -12,8 +12,14 @@ public class MasterGlobalInformation {
 	private static int maxMapperPerSystem = 4;
 	private static int maxReducesPerSystem = 2;
 	private static String nameNodeIp = "";
+	
 	private static AtomicInteger connectionNumber = new AtomicInteger(0);
+	
+	/* Count to give transfer success */
 	private static AtomicInteger transferSuccessCount = new AtomicInteger(0);
+	
+	/* Count to give reducer chunk map */
+	private static AtomicInteger reducerSuccessCount = new AtomicInteger(0);
 	
 	/* used to get worker information from all available workers and we would need to append the values here*/
 	public static ConcurrentHashMap<String, WorkerMessageToMaster> allWorkerMapReduceDetails = new ConcurrentHashMap<String,WorkerMessageToMaster>();
@@ -70,6 +76,17 @@ public class MasterGlobalInformation {
 		
 	}
 	
+public static int getIncreasedReducerSuccessCount(){
+		
+		return reducerSuccessCount.addAndGet(1);
+		
+	}
+	
+	public static void resetReducerCount(){
+		
+		reducerSuccessCount.set(0);
+		
+	}
 	
 	
 }

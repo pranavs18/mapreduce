@@ -29,7 +29,9 @@ public class FileTransferAfterSort implements Runnable{
 		try {
 			transfer();
 		} catch (IOException | NotBoundException e) {
+			
 			System.out.println("Exception occured while transfering sorted files");
+			e.printStackTrace();
 		}
 	}
 
@@ -57,9 +59,10 @@ public class FileTransferAfterSort implements Runnable{
 					System.out.println("Transferring...." + files[i].getName());
 					System.out.println("Transferring to machine " +ip);
 					SlaveRemoteInterface obj = (SlaveRemoteInterface) Naming.lookup("//"+ ip +":9876/Remote");
+
 					//obj.ReceiveChunks(".."+File.separator+"dfs"+File.separator+"intermediate" + File.separator + fileName, files[i].getName(), buffer);
 					obj.ReceiveChunks("../dfs/redinput/"+ fileName, files[i].getName(), buffer);
-				    
+
 				}
 			}
 		}

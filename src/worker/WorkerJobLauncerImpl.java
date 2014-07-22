@@ -195,4 +195,13 @@ public class WorkerJobLauncerImpl extends UnicastRemoteObject implements MasterT
 		return true;
 	}
 
+	@Override
+	public Boolean launchReduceJob(MapReduceConfiguration config)
+			throws RemoteException, NotBoundException, FileNotFoundException,
+			IOException {
+		// TODO Auto-generated method stub
+		return null;
+	}
+
+
 }

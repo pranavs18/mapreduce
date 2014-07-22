@@ -16,16 +16,12 @@ import java.io.FileOutputStream;
 import java.io.FileWriter;
 import java.io.IOException;
 import java.io.InputStream;
-import java.io.ObjectInputStream;
-import java.io.ObjectOutputStream;
 import java.net.InetAddress;
-import java.net.Socket;
 import java.rmi.Naming;
 import java.rmi.NotBoundException;
 import java.rmi.RemoteException;
 import java.rmi.server.UnicastRemoteObject;
 import java.util.ArrayList;
-import java.util.Arrays;
 import java.util.Enumeration;
 import java.util.LinkedList;
 import java.util.Queue;
@@ -47,13 +43,13 @@ public class RemoteSplitterImpl extends UnicastRemoteObject implements SlaveRemo
 
 	@SuppressWarnings("resource")
 	public ConcurrentHashMap<String, ChunkProperties > splitFileIntoChunks(String filename , MapReduceConfiguration config, Set<String> workerIps , String splitIp) throws RemoteException,IOException{
-		
+
 		System.out.println(" Splitting files into chunks.....Please wait");
-	    ConcurrentHashMap<String, ChunkProperties> chunkContainer = new ConcurrentHashMap<String, ChunkProperties>();
+		ConcurrentHashMap<String, ChunkProperties> chunkContainer = new ConcurrentHashMap<String, ChunkProperties>();
 		ConcurrentHashMap<String,ArrayList<String>> chunkTracker = new ConcurrentHashMap<String,ArrayList<String>>();
 		fakeDistributedFile fdf = new fakeDistributedFile();
 		//ChunkProperties cp = new ChunkProperties();
-	
+
 		File file = new File(filename);
 		int numberofLines = 0;
 		int chunkSize = 25;
@@ -88,7 +84,6 @@ public class RemoteSplitterImpl extends UnicastRemoteObject implements SlaveRemo
 			} 
 		}
 		String newChunkName = newChunkDirectory + File.separator + chunkFileName  + chunkNumber + ".txt";
-		int chunkID = chunkNumber;
 		String uniquechunkName = chunkFileName + chunkNumber;
 		BufferedWriter bw = null;
 		while (scanner.hasNextLine()) {
@@ -112,14 +107,14 @@ public class RemoteSplitterImpl extends UnicastRemoteObject implements SlaveRemo
 				chunkNumber++;
 				System.out.println("Chunk Number created..." + chunkNumber);
 				try {
-					
+
 					fdf.setIpAddress(InetAddress.getLocalHost().getHostAddress());
 					fdf.setFilename(filename);
 					fdf.setReplicas(0);
 					fdf.setChunkID(uniquechunkName);
 					fdf.setChunkPath(newChunkName);
 					//cp.setFdf(fdf);
-					
+
 				} catch (IOException e) {
 					e.printStackTrace();
 				}
@@ -193,7 +188,7 @@ public class RemoteSplitterImpl extends UnicastRemoteObject implements SlaveRemo
 	public ConcurrentHashMap<String,ArrayList<String>> fetchChunks(String chunkDirectory, Set<String> workerIps, String splitIp) throws IOException, NotBoundException{
 
 
-		
+
 		File folder = new File(chunkDirectory);
 		System.out.println(folder.getCanonicalPath());
 		File[] listOfFiles = folder.listFiles();
@@ -213,18 +208,18 @@ public class RemoteSplitterImpl extends UnicastRemoteObject implements SlaveRemo
 		SlaveRemoteInterface obj;
 		//String chunkName = fileNames.peek();
 		System.out.println("Total chunks..." + fileNames);
-		
+
 		//chunkTracker.put(chunkName,al);
 		for(String s:workerIps){
 			String ipAddress= null;
 			if(!s.equals(splitIp)){
-                ipAddress = s;
-                ArrayList<String> al = new ArrayList<String>();
-                al.add(ipAddress);
-                if(!al.contains(splitIp))
-                	al.add(splitIp);
+				ipAddress = s;
+				ArrayList<String> al = new ArrayList<String>();
+				al.add(ipAddress);
+				if(!al.contains(splitIp))
+					al.add(splitIp);
 				for(int i=0;i< partitionSize;i++){
-                    
+
 					String Name = fileNames.remove();
 					if(chunkTracker.contains(Name)){
 						//chunkTracker.get(Name).add(ipAddress);
@@ -252,16 +247,16 @@ public class RemoteSplitterImpl extends UnicastRemoteObject implements SlaveRemo
 				ArrayList<String> al = new ArrayList<String>();
 				al.add(splitIp);
 				if(numberofSlaves == 1){
-				for(int i=0;i<partitionSize;i++){
+					for(int i=0;i<partitionSize;i++){
 
-					String Name = fileNames.remove();
-					if(chunkTracker.contains(Name)){
-						//chunkTracker.get(Name).add(ipAddress);
+						String Name = fileNames.remove();
+						if(chunkTracker.contains(Name)){
+							//chunkTracker.get(Name).add(ipAddress);
+						}
+						else {
+							chunkTracker.put(Name, al);
+						}
 					}
-					else {
-						chunkTracker.put(Name, al);
-					}
-			  }
 				}
 				for(String name:fileNames){
 					chunkTracker.put(name, al);
@@ -300,7 +295,7 @@ public class RemoteSplitterImpl extends UnicastRemoteObject implements SlaveRemo
 	}
 
 	public void transferJar(String jarName, byte buffer[]) throws IOException{
-		
+
 		File file = new File("src"+File.separator+jarName);
 		byte temp[] = buffer;
 		System.out.println("Absolute path of jar file: "+file.getAbsolutePath());
@@ -322,7 +317,7 @@ public class RemoteSplitterImpl extends UnicastRemoteObject implements SlaveRemo
 
 			String fileName = "src"+File.separator+jarName.substring(0, jarName.length()-4)+File.separator +entry.getName();
 			String binFile = "bin"+File.separator+jarName.substring(0, jarName.length()-4)+File.separator +entry.getName();
-			
+
 			File dir = new File("src"+File.separator+jarName.substring(0, jarName.length()-4));
 			File bin = new File("bin"+File.separator+jarName.substring(0, jarName.length()-4));
 			if (!dir.exists()) {
@@ -333,7 +328,7 @@ public class RemoteSplitterImpl extends UnicastRemoteObject implements SlaveRemo
 
 				} 
 			}
-			
+
 			if (!bin.exists()) {
 				Boolean result = bin.mkdirs();
 
@@ -342,10 +337,10 @@ public class RemoteSplitterImpl extends UnicastRemoteObject implements SlaveRemo
 
 				} 
 			}
-			
-			
+
+
 			File f = new File(fileName);
-            File b = new File(binFile);
+			File b = new File(binFile);
 			if (!fileName.endsWith("/")) {
 				InputStream is = jar.getInputStream(entry);
 				FileOutputStream fos = new FileOutputStream(f);
@@ -369,15 +364,16 @@ public class RemoteSplitterImpl extends UnicastRemoteObject implements SlaveRemo
 
 				fos.close();
 				is.close();
+				jar.close();
 			}
 		}
 	}
 
 
 
-	
+
 	public boolean transferChunkOnRequest(String Name, byte[] buffer) throws IOException{
-		
+
 		boolean transfer = false;
 		String path = ".."+File.separator+"dfs"+File.separator+"chunks";
 		File dir = new File(path);
@@ -391,7 +387,7 @@ public class RemoteSplitterImpl extends UnicastRemoteObject implements SlaveRemo
 		}
 		String newChunkName = path + File.separator + Name;
 		File file = new File(newChunkName);
-	
+
 		byte temp[] = buffer;
 		System.out.println(file.getCanonicalPath() + " ..." + file.getName());
 		BufferedOutputStream output = new BufferedOutputStream(new FileOutputStream(newChunkName));
@@ -400,12 +396,12 @@ public class RemoteSplitterImpl extends UnicastRemoteObject implements SlaveRemo
 		output.close();
 		System.out.println(Name + " chunk tranferred");
 		transfer = true;
-	    return transfer;
+		return transfer;
 	}
-	
+
 	public String transferChunktoSlave(String newChunkName, String fileName, ArrayList<String> visitedIPs , Set<String> workerIps, String splitIp) throws FileNotFoundException, IOException, NotBoundException{
 		String ipAddresstoTransfer = null;
-		
+
 		for(String v:visitedIPs){
 			for(String w:workerIps ){
 				if(!v.equals(w)){
@@ -416,29 +412,29 @@ public class RemoteSplitterImpl extends UnicastRemoteObject implements SlaveRemo
 		}
 		if(ipAddresstoTransfer == null){
 			ipAddresstoTransfer = visitedIPs.get(0);
-		    System.out.println("Transferred machine IP" + ipAddresstoTransfer);
+			System.out.println("Transferred machine IP" + ipAddresstoTransfer);
 		}
-		
-		
-        String path = ".." + File.separator + "dfs" + File.separator + "chunks";
-        File folder = new File(path);
-        File[] listOfFiles = folder.listFiles();
-        System.out.println("Total files found..." + listOfFiles.length);
-        File file = null;
-        
-        for(File f:listOfFiles){
-        	if(!f.getName().equals(newChunkName))
-        		continue;
-        	else if(f.getName().equals(newChunkName)){
-        		System.out.println("\n File to be transferred found in the DFS...\n Transferring now.... ");
-        		file = new File(newChunkName);
-        		break;
-        	}
-            
-        		
-        }
-        
-        byte buffer[] = new byte[(int)file.length()];
+
+
+		String path = ".." + File.separator + "dfs" + File.separator + "chunks";
+		File folder = new File(path);
+		File[] listOfFiles = folder.listFiles();
+		System.out.println("Total files found..." + listOfFiles.length);
+		File file = null;
+
+		for(File f:listOfFiles){
+			if(!f.getName().equals(newChunkName))
+				continue;
+			else if(f.getName().equals(newChunkName)){
+				System.out.println("\n File to be transferred found in the DFS...\n Transferring now.... ");
+				file = new File(newChunkName);
+				break;
+			}
+
+
+		}
+
+		byte buffer[] = new byte[(int)file.length()];
 		BufferedInputStream input = new BufferedInputStream(new FileInputStream(path+File.separator+newChunkName));
 		input.read(buffer,0,buffer.length);
 		input.close();  	
@@ -449,15 +445,17 @@ public class RemoteSplitterImpl extends UnicastRemoteObject implements SlaveRemo
 			System.out.println("Chunk " + newChunkName + " transferred from the machine with IP ADDRESS " + ipAddresstoTransfer);
 		else
 			System.out.println("Chunk Transfer failed");
-		
+
 		return ipAddresstoTransfer;
 	}
 
 	@Override
 	public Boolean ReceiveChunks(String path, String fileName,
 			byte[] buffer) throws IOException {
+
 		 
 		System.out.println("Receiving file...." + path);
+
 		File dir = new File(path);
 		if (!dir.exists()) {
 			boolean result = dir.mkdirs();
@@ -468,19 +466,21 @@ public class RemoteSplitterImpl extends UnicastRemoteObject implements SlaveRemo
 			} 
 		}
 		String newChunkName = path + File.separator + fileName;
+		System.out.println("New Chunk Name: "+newChunkName);
 		File file = new File(newChunkName);
 
         byte temp[] = new byte[buffer.length];
 		temp = buffer;
+
 		System.out.println(file.getCanonicalPath() + " ..." + file.getName());
 		BufferedOutputStream output = new BufferedOutputStream(new FileOutputStream(file));
 		output.write(temp,0,buffer.length);
 		output.flush();
 		output.close();
 		System.out.println(fileName + " chunk tranferred");
-		
-		
+
+		output.close();
 		return true;
 	}
-	
+
 }

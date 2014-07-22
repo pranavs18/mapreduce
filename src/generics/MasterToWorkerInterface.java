@@ -16,4 +16,5 @@ public interface MasterToWorkerInterface extends Remote  {
 	public void sortIntermediateFiles(MapReduceConfiguration config) throws IOException;
 	public Boolean launchTransfer(MapReduceConfiguration config, ConcurrentHashMap<String, HashSet<String>> intermediateFileNameInfo) throws RemoteException, NotBoundException, FileNotFoundException, IOException;
 	public boolean launchReduceJob(MapReduceConfiguration config) throws IOException, ClassNotFoundException, InstantiationException, IllegalAccessException, NoSuchMethodException, SecurityException, IllegalArgumentException, InvocationTargetException;
+
 }
