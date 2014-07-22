@@ -14,32 +14,32 @@ public class Master {
 				MasterGlobalInformation.setMaxMapperPerSystem(Integer.parseInt(args[0]));
 				MasterGlobalInformation.setMaxReducesPerSystem(Integer.parseInt(args[1]));
 
-			}
-		//	System.setProperty("java.rmi.server.hostname", "128.237.186.178");
-			Registry registry;
-			try {
-				registry = LocateRegistry.createRegistry(23390);
-				StartMapReduceJob startJob = new StartMapReduceJob();
-				registry.rebind("launcher", startJob);
-				System.out.println("object bounded " + startJob);
-			} catch (RemoteException e) {
-				System.out.println("Could not bind Objects to regstry");
-			}
-			
 
-			MasterHeartBeatReceiver hearbeatReceiver = new MasterHeartBeatReceiver();
-			MasterNameNodeHeartBeatReceiver namenodeHeartBeatReceiver = new MasterNameNodeHeartBeatReceiver();
-			new Thread(hearbeatReceiver).start();
-			new Thread(namenodeHeartBeatReceiver).start();
-		}
-		
-		else{
-			System.out.println("There should be either 2 arguments for max mappers and reduces "
-					+ "or no arguments to use default values");
-		}
-		
+				Registry registry;
+				try {
+					registry = LocateRegistry.createRegistry(23390);
+					StartMapReduceJob startJob = new StartMapReduceJob();
+					registry.rebind("launcher", startJob);
+					System.out.println("object bounded " + startJob);
+				} catch (RemoteException e) {
+					System.out.println("Could not bind Objects to regstry");
+				}
 
+
+				MasterHeartBeatReceiver hearbeatReceiver = new MasterHeartBeatReceiver();
+				MasterNameNodeHeartBeatReceiver namenodeHeartBeatReceiver = new MasterNameNodeHeartBeatReceiver();
+				new Thread(hearbeatReceiver).start();
+				new Thread(namenodeHeartBeatReceiver).start();
+			}
+
+			else{
+				System.out.println("There should be either 2 arguments for max mappers and reduces "
+						+ "or no arguments to use default values");
+			}
+
+
+
+		}
 
 	}
-
 }

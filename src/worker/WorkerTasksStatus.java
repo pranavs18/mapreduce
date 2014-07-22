@@ -134,7 +134,7 @@ public class WorkerTasksStatus {
     public static void initialTaskMapCreator() throws UnknownHostException, SocketException{
     	
     	String ip = InetAddress.getLocalHost().getHostAddress().toString();
-    	ip ="128.237.186.178";  // REMOVE THIS HARDCODED 
+     
     	for(int i=0; i<numberOfMaps;i++){
     		String jobId = ip+"_m"+(i+1);
     		TaskDetails taskDetails = new TaskDetails(ip, jobId,  "", JobStatus.AVAILABLE);

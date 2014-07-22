@@ -69,6 +69,7 @@ public class WorkerJobLauncerImpl extends UnicastRemoteObject implements MasterT
 		return true;
 	}
 
+
 	@Override
 	public void sortIntermediateFiles(MapReduceConfiguration config) throws IOException {
 	    System.out.println(" LOCAL SORTING BEGINS");
@@ -102,7 +103,5 @@ public class WorkerJobLauncerImpl extends UnicastRemoteObject implements MasterT
 	   }
 		
 	}
-
-	
 
 }

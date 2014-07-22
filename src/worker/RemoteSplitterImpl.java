@@ -134,7 +134,7 @@ public class RemoteSplitterImpl extends UnicastRemoteObject implements SlaveRemo
 
 
 		Archiver jarMaker = new Archiver();
-		File directory = new File (config.getUserJavaFilePath());  
+		File directory = new File (config.getUserPackagePath());  
 		String jarName = config.getUserProgramPackageName()+".jar";
 		File newJarCreated = new File("."+File.separator+"src"+File.separator+jarName);
 		File[] filesInDirectory = directory.listFiles();

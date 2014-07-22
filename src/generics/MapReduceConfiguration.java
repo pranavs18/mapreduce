@@ -17,8 +17,8 @@ public class MapReduceConfiguration implements Serializable{
 	 * size and and will use all available
 	 * Mappers.
 	 */
-	private int reducers = 2;
-	private String splitIP;
+	private int reducers = 1;
+
 	/* These fields are used by master to to determine the Type of object */ 
 	private String mapperClass = null;
 	private String reducerClass = null;
@@ -49,17 +49,17 @@ public class MapReduceConfiguration implements Serializable{
 	private String userProgramPackageName = "";
 
 	/* Path of user defined functions */
-	private String userJavaFilePath = "";
+	private String userPackagePath = "";
 	
 	/* Master Ip */
 	 private String MasterIp;
 	
-	 /* Worker Ip */
-	 private String WorkerIpForSplit;
+	 /* Worker Ip that contains the file to be split */
+	 private String splitIP;
 	 
-	 /*Dfs Path */
-	 private String dfsPath;
-	
+	 /*Worker Ip on which the output is to be saved */
+	 private String outPutIp;
+	 
 	
 	
 	/* Getters and setter of fields above */
@@ -105,12 +105,14 @@ public class MapReduceConfiguration implements Serializable{
 		this.userProgramPackageName = userProgramPackageName;
 	}
 
-	public String getUserJavaFilePath() {
-		return userJavaFilePath;
+	
+
+	public String getUserPackagePath() {
+		return userPackagePath;
 	}
 
-	public void setUserJavaFilePath(String userJavaFilePath) {
-		this.userJavaFilePath = userJavaFilePath;
+	public void setUserPackagePath(String userPackagePath) {
+		this.userPackagePath = userPackagePath;
 	}
 
 	public String getMasterIp() {
@@ -121,20 +123,13 @@ public class MapReduceConfiguration implements Serializable{
 		MasterIp = masterIp;
 	}
 
-	public String getWorkerIpForSplit() {
-		return WorkerIpForSplit;
+
+	public String getOutPutIp() {
+		return outPutIp;
 	}
 
-	public void setWorkerIpForSplit(String workerIpForSplit) {
-		WorkerIpForSplit = workerIpForSplit;
-	}
-
-	public String getDfsPath() {
-		return dfsPath;
-	}
-
-	public void setDfsPath(String dfsPath) {
-		this.dfsPath = dfsPath;
+	public void setOutPutIp(String outPutIp) {
+		this.outPutIp = outPutIp;
 	}
 
 	public String getMapperClass() {
