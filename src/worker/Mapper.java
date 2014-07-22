@@ -38,14 +38,12 @@ public class Mapper extends MapReduceConfiguration implements Serializable {
 		 
 		 String path = ".." + File.separator + "dfs" + File.separator + "intermediate" + File.separator + parentFileName;
 		 
-		 
-		// System.out.println("Creating intermediate mapper output files at path...." + path);
 		 File dir = new File(path);
 			if (!dir.exists()) {
 				boolean result = dir.mkdirs();
 
 				if (result) {
-					//System.out.println("Intermediate Map Folder is created");
+					System.out.println("Intermediate Map Folder is created");
 
 				} 
 			}
@@ -59,7 +57,6 @@ public class Mapper extends MapReduceConfiguration implements Serializable {
 			
 			 bw = new FileWriter(outputFile,true);
 			 bw.write(key + " " + value + "\n");
-			//System.out.println("Mapper file created");
 			 
 		} catch (IOException e) {
 			e.printStackTrace();
@@ -73,7 +70,7 @@ public class Mapper extends MapReduceConfiguration implements Serializable {
 		
 	}
 	
-	public static int createPartition(String Key, int totalNumberOfReducers){
+	private static int createPartition(String Key, int totalNumberOfReducers){
 		// From the data structures class, using the hashcode of the key is a good hash function as it is always unique
 		// but can sometimes lead to negative values which we have handled here
 		int code = Key.hashCode();
