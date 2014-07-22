@@ -15,7 +15,7 @@ public class Master {
 				MasterGlobalInformation.setMaxReducesPerSystem(Integer.parseInt(args[1]));
 
 			}
-			System.setProperty("java.rmi.server.hostname", "128.237.186.178");
+		//	System.setProperty("java.rmi.server.hostname", "128.237.186.178");
 			Registry registry;
 			try {
 				registry = LocateRegistry.createRegistry(23390);
