@@ -13,6 +13,7 @@ public class MasterGlobalInformation {
 	private static int maxReducesPerSystem = 2;
 	private static String nameNodeIp = "";
 	private static AtomicInteger connectionNumber = new AtomicInteger(0);
+	private static AtomicInteger transferSuccessCount = new AtomicInteger(0);
 	
 	/* used to get worker information from all available workers and we would need to append the values here*/
 	public static ConcurrentHashMap<String, WorkerMessageToMaster> allWorkerMapReduceDetails = new ConcurrentHashMap<String,WorkerMessageToMaster>();
@@ -56,6 +57,19 @@ public class MasterGlobalInformation {
 			ConcurrentHashMap<String, ChunkProperties> masterStaticChunkMap) {
 		MasterGlobalInformation.masterStaticChunkMap = masterStaticChunkMap;
 	}
+	 
+	public static int getIncreasedTransferSuccessCount(){
+		
+		return transferSuccessCount.addAndGet(1);
+		
+	}
+	
+	public static void resetTransferCount(){
+		
+		transferSuccessCount.set(0);
+		
+	}
+	
 	
 	
 }
