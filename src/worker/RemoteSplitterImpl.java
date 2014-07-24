@@ -52,7 +52,7 @@ public class RemoteSplitterImpl extends UnicastRemoteObject implements SlaveRemo
 
 		File file = new File(filename);
 		int numberofLines = 0;
-		int chunkSize = 25;
+		int chunkSize = 500;
 		int chunkNumber = 1;
 		if(!file.exists())
 			return chunkContainer;
@@ -204,23 +204,28 @@ public class RemoteSplitterImpl extends UnicastRemoteObject implements SlaveRemo
 		System.out.println("Chunks found " + numberofChunks);
 		int numberofSlaves = workerIps.size();
 		int partitionSize = numberofChunks/numberofSlaves;
+		
 		System.out.println("Partition size  " + partitionSize);
+		
 		SlaveRemoteInterface obj;
-		//String chunkName = fileNames.peek();
+		
+		
 		System.out.println("Total chunks..." + fileNames);
 
 		//chunkTracker.put(chunkName,al);
-		for(String s:workerIps){
-			String ipAddress= null;
+		for(String s : workerIps){
+			String ipAddress = null;
 			if(!s.equals(splitIp)){
 				ipAddress = s;
 				ArrayList<String> al = new ArrayList<String>();
 				al.add(ipAddress);
 				if(!al.contains(splitIp))
 					al.add(splitIp);
+				
 				for(int i=0;i< partitionSize;i++){
 
 					String Name = fileNames.remove();
+					
 					if(chunkTracker.contains(Name)){
 						//chunkTracker.get(Name).add(ipAddress);
 					}
@@ -228,6 +233,7 @@ public class RemoteSplitterImpl extends UnicastRemoteObject implements SlaveRemo
 						chunkTracker.put(Name, al);
 						System.out.println("chunk Map "+ Name + " " + chunkTracker.get(Name));
 					}
+					
 					String fileName = chunkDirectory + File.separator + Name;
 					System.out.println("File found at location " + folder.getAbsolutePath());
 					File file = new File(fileName);
@@ -364,7 +370,6 @@ public class RemoteSplitterImpl extends UnicastRemoteObject implements SlaveRemo
 
 				fos.close();
 				is.close();
-				jar.close();
 			}
 		}
 	}

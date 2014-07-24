@@ -1,16 +1,11 @@
 package worker;
 
-import generics.Archiver;
 import generics.MapReduceConfiguration;
 import generics.MapReduceStarterInterface;
-
-import java.io.File;
-import java.io.FileInputStream;
 import java.io.IOException;
 import java.rmi.Naming;
 import java.rmi.NotBoundException;
-import java.rmi.registry.LocateRegistry;
-import java.rmi.registry.Registry;
+
 
 
 

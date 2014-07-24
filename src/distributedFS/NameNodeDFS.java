@@ -9,6 +9,7 @@ package distributedFS;
  * 
  ************************************************************************************************/
 
+import generics.SlaveRemoteInterface;
 import generics.fakeDistributedFile;
 
 import java.io.IOException;
@@ -19,8 +20,6 @@ import java.rmi.registry.LocateRegistry;
 import java.rmi.registry.Registry;
 import java.util.ArrayList;
 import java.util.concurrent.ConcurrentHashMap;
-
-import worker.SlaveRemoteInterface;
 
 
 public class NameNodeDFS extends Thread implements Runnable {
@@ -44,9 +43,12 @@ public class NameNodeDFS extends Thread implements Runnable {
 		Registry reg = LocateRegistry.createRegistry(23392);
 		reg.rebind("split", rc);
 		
-	   // System.setProperty("java.security.policy","C:/Users/PRANAV/Documents/mapreduce/policy.txt");
+
 		System.setSecurityManager(new java.rmi.RMISecurityManager());
-		//System.setProperty("java.rmi.server.hostname", "128.237.186.178");
+	
+
+	    System.setProperty("java.security.policy","/Users/VSK/Documents/Git/mapreduce/policy.txt");
+		System.setSecurityManager(new java.rmi.RMISecurityManager());
 
 		new Thread(nnhb).start();
 	}

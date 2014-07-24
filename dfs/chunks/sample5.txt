@@ -1,0 +1,50 @@
+Static HTML dumps are now available here, but are not current.
+See also:
+
+mw:Alternative parsers lists some other not working options for getting static HTML dumps
+Wikipedia:Snapshots
+Wikipedia:TomeRaider database
+http://sdict.com hosts a January 2007 snapshot in the open source Sdictionary .dct format
+http://ahuv.net/wikipedia hosts October 2010 processed snapshot in the freeware MDict .mdx format
+
+
+Kiwix[edit]
+Kiwix - last update of English Wikipedia was February 2014
+Okawix[edit]
+Provides Wikipedia pages with images.
+
+Aard Dictionary[edit]
+Offline Wikipedia reader. No images. Cross-Platform for Windows, Mac, Linux, Android, Maemo. Runs on rooted Nook and Sony PRS-T1 eBooks readers.
+
+E-book[edit]
+The wiki-as-ebook store provides ebooks created from a large set of Wikipedia articles with grayscale images for e-book-readers (2013).
+
+Wikiviewer for Rockbox[edit]
+The wikiviewer plugin for rockbox permits viewing converted Wikipedia dumps on many Rockbox devices. It needs a custom build and conversion of the wiki dumps using the instructions available at http://www.rockbox.org/tracker/4755 .The conversion recompresses the file and splits it into 1 GB files and an index file which all need to be in the same folder on the device or micro sd card.
+
+Old dumps[edit]
+The static version of Wikipedia created by Wikimedia: http://static.wikipedia.org/ Feb. 11, 2013 - This is apparently offline now. There was no content.
+Wiki2static (site down as of October 2005) was an experimental program set up by User:Alfio to generate html dumps, inclusive of images, search function and alphabetical index. At the linked site experimental dumps and the script itself can be downloaded. As an example it was used to generate these copies of English WikiPedia 24 April 04, Simple WikiPedia 1 May 04(old database) format and English WikiPedia 24 July 04Simple WikiPedia 24 July 04, WikiPedia Francais 27 Juillet 2004 (new format). BozMo uses a version to generate periodic static copies at fixed reference.
+Dynamic HTML generation from a local XML database dump[edit]
+Instead of converting a database dump file to many pieces of static HTML, one can also use a dynamic HTML generator. Browsing a wiki page is just like browsing a Wiki site, but the content is fetched and converted from a local dump file upon request from the browser.
+
+XOWA[edit]
+XOWA is a free, open-source application that lets you download Wikipedia to your computer. Access all of Wikipedia offline -- without an internet connection! It is currently in the beta stage of development, but is functional. It is available for download here.
+
+Features[edit]
+Displays all articles from Wikipedia without an internet connection.
+Download a complete, recent copy of English Wikipedia.
+Display 4.4+ million articles in full HTML formatting.
+Show images within an article. Access 3.7+ million images using the offline image databases.
+Works with any Wikimedia wiki, including Wikipedia, Wiktionary, Wikisource, Wikiquote, Wikivoyage (also some non-wmf dumps)
+Works with any non-English language wiki such as French Wikipedia, German Wikisource, Dutch Wikivoyage, etc.
+Works with other specialized wikis such as Wikidata, Wikimedia Commons, Wikispecies, or any other MediaWiki generated dump
+Set up over 660+ other wikis including:
+English Wiktionary
+English Wikisource
+English Wikiquote
+English Wikivoyage
+Non-English wikis, such as French Wiktionary, German Wikisource, Dutch Wikivoyage
+Wikidata
+Wikimedia Commons
+Wikispecies

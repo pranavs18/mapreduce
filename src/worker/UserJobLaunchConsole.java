@@ -30,33 +30,51 @@ public class UserJobLaunchConsole{
 		System.out.println("The User Console will allow you to start map-reduce jobs, list running map-reduce jobs /");
 		int n=0;
 		while(true){
-			System.out.println("Press \n 1 - Launch a map-reduce job \n 2 - Kill a map-reduce job \n 3 - List the map-reduce jobs \n 4 - Stop the master node");
+			/*String strckr = "";
+			do{
+				System.out.println("Press \n 1 - Launch a map-reduce job \n 2 - List the map-reduce jobs \n 4 - Stop the master node");
+				BufferedReader br = new BufferedReader(new InputStreamReader(System.in));
+
+				strckr = br.readLine();
+				if(UserJobLaunchConsole.isInteger(strckr) == true){
+					n = Integer.parseInt(strckr);
+				}
+				else{
+					System.out.println("Please enter the correct choice");
+				}
+			}while(UserJobLaunchConsole.isInteger(strckr) == false);*/
+
 			BufferedReader br = new BufferedReader(new InputStreamReader(System.in));
-			n = Integer.parseInt(br.readLine());
 			String s = "";
-			switch(n){
-			case 1:{
-				/* User would need to enter the required details to run a Job. The classes entered need
-				 * to be precompiled and must exist in the classpath
-				 */
-				MapReduceConfiguration config = new MapReduceConfiguration();
+			//
+			//
+			//			switch(n){
+			//			case 1:{
+			/* User would need to enter the required details to run a Job. The classes entered need
+			 * to be precompiled and must exist in the classpath
+			 */
+			MapReduceConfiguration config = new MapReduceConfiguration();
 
-				/* Ask and set job details */
-				do{
-					System.out.println("\nEnter Job name");
-					s = br.readLine();
-					s = "Split";
+			/* Ask and set job details */
+			do{
+				System.out.println("\nEnter Job name");
+				s = br.readLine();
+
+				if(!s.equals("")){
+					//s = "Split";
 					config.setJobName(s);
-					if(s.equals("")){
-						System.out.println("You need to enter a job name to proceed");
-					}
-				}while(s.equals(""));
+				}
+				else{
+					System.out.println("Please enter a job name");
+				}
+			}while(s.equals(""));
 
-				do{
-					System.out.println("\nEnter path of your map reduce package \n/dfs/Enter_directory");
-					s="";
-					s = br.readLine();
-					s = "/dfs/client";
+			do{
+				System.out.println("\nEnter path of your map reduce package \n/dfs/Enter_directory");
+				s="";
+				s = br.readLine();
+				if(!s.equals("")&& s.contains(File.separator)){
+					//s = "/dfs/client";
 					config.setUserPackagePath(".."+s);
 					if(s.lastIndexOf(File.separator) == s.length()-1){
 						s = s.substring(0, s.length() -1);
@@ -64,19 +82,21 @@ public class UserJobLaunchConsole{
 					if(!s.contains(File.separator+"dfs")){
 						System.out.println("Not in dfs directory. Please add a dfs path");
 					}
-					if(s.equals("")){
-						System.out.println("Please enter a dfs path");
-					}
-				}while((!s.contains(File.separator+"dfs")) || s.equals(""));
+				}
+				else{
+					System.out.println("Please enter a path");
+				}
+			}while((!s.contains(File.separator+"dfs")) || s.equals(""));
 
 
 
-				do{
-					System.out.println("\nEnter input file Path  \n/dfs/Path_to_inputfile");
-					System.out.println("You can ignore Ip if the file is in this system");
-					s = "";
-					s = br.readLine();
-					s = "/dfs/Input/pranav.txt";  //remove
+			do{
+				System.out.println("\nEnter input file Path  \n/dfs/Path_to_inputfile");
+				System.out.println("You can ignore Ip if the file is in this system");
+				s = "";
+				s = br.readLine();
+				if(!s.equals("") && s.contains(File.separator)){
+					//s = "/dfs/Input/pranav.txt";  //remove
 					if(s.lastIndexOf(File.separator) == s.length()-1){
 						s = s.substring(0, s.length() -1);
 					}
@@ -96,17 +116,21 @@ public class UserJobLaunchConsole{
 					if(!s.contains(File.separator+"dfs")){
 						System.out.println("Not in dfs directory. Please add a dfs path");
 					}
-					if(s.equals("")){
-						System.out.println("Please enter a dfs path");
-					}
-				}while((!s.contains(File.separator+"dfs")) || s.equals(""));
 
-				do{
-					System.out.println("\nEnter output file Path  \n(/dfs/Enter_directory");
-					System.out.println("You can ignore Ip if the file is in this system");
-					s = "";
-					s = br.readLine();
-					s = "/dfs/myOutputFolder";  //remove
+				}
+				else{
+					System.out.println("Please enter a path");
+				}
+			}while((!s.contains(File.separator+"dfs")) || s.equals(""));
+
+			do{
+				System.out.println("\nEnter output file Path  \n(/dfs/Enter_directory");
+				System.out.println("You can ignore Ip if the file is in this system");
+				s = "";
+				s = br.readLine();
+				if(!s.equals("") && s.contains(File.separator)){
+
+					//s = "/dfs/myOutputFolder";  //remove
 					if(s.lastIndexOf(File.separator) == s.length()-1){
 						s = s.substring(0, s.length() -1);
 					}
@@ -118,7 +142,7 @@ public class UserJobLaunchConsole{
 
 					}
 					else{
-
+						
 						config.setOutPutIp(s.substring(0,s.indexOf(File.separator)));
 						config.setOutputPath(".."+s.substring(s.indexOf(File.separator),s.length()));
 
@@ -126,95 +150,61 @@ public class UserJobLaunchConsole{
 					if(!s.contains(File.separator+"dfs")){
 						System.out.println("Not in dfs directory. Please add a dfs path");
 					}
-					if(s.equals("")){
-						System.out.println("Please enter a dfs path");
-					}
-				}while((!s.contains(File.separator+"dfs")) || s.equals(""));
-
-				System.out.println("\nEnter Map class name");
-				s = "";
-				s = br.readLine();
-				s= "client.WordCount";//remove
-				config.setMapperClass(s);
-				int indexOfLastDot = s.lastIndexOf(".");
-				s = s.substring(0, indexOfLastDot);
-				config.setUserProgramPackageName(s);
-
-				System.out.println("\nEnter Reduce class name");
-				s = "";
-				s = br.readLine();
-				s="client.WordCount"; //remove
-				config.setReducerClass("client.WordCount");
-
-				System.out.println("\nEnter Input key Type (Integer, UserDefined classes ...)");
-				System.out.println("You can leave it blank to use default type String");
-				s = "";
-				s = br.readLine();
-				if(!s.equals("")){
-					config.setInputKeyType(s);
+				}
+				else{
+					System.out.println("Please provide a path");
 				}
 
-				System.out.println("\nEnter Input value Type (String, Integer, UserDefined classes ...)");
-				System.out.println("You can leave it blank to use default type Integer");
+			}while((!s.contains(File.separator+"dfs")) || s.equals(""));
+
+			System.out.println("\nEnter Map class name");
+			s = "";
+			s = br.readLine();
+			//s= "client.SameSizeWords";//remove
+			config.setMapperClass(s);
+			int indexOfLastDot = s.lastIndexOf(".");
+			s = s.substring(0, indexOfLastDot);
+			config.setUserProgramPackageName(s);
+
+			System.out.println("\nEnter Reduce class name");
+			s = "";
+			s = br.readLine();
+			//s="client.SameSizeWords"; //remove
+			config.setReducerClass(s);
+
+			do{
+				System.out.println("\nEnter number of reducers");
+				System.out.println("You can leave it blank to use default value 1");
+
+
 				s = "";
 				s = br.readLine();
-				if(!s.equals("")){
-					config.setInputValueType(s);
+				if(s.equals("")){
+					s="1";
+				}
+				if(UserJobLaunchConsole.isInteger(s) == true){
+					config.setReducers(Integer.parseInt(s));
 				}
 
-				System.out.println("\nEnter Output key Type (String, Integer, UserDefined classes ...)");
-				System.out.println("You can leave it blank to use default type String");
-				s = "";
-				s = br.readLine();
-				if(!s.equals("")){
-					config.setOutputKeyType(s);
+				else{
+					System.out.println("Please Enter an integer");
 				}
-
-				System.out.println("\nEnter Output value Type (String, Integer, UserDefined classes ...)");
-				System.out.println("You can leave it blank to use default type Integer");
-				s = "";
-				s = br.readLine();
-				if(!s.equals("")){
-					config.setOutputValueType(s);
-				}
+			}while(UserJobLaunchConsole.isInteger(s) == false);
 
 
-				do{
-					System.out.println("\nEnter number of reducers");
-					System.out.println("You can leave it blank to use default value 2");
+			MapReduceJobClient newJob = new MapReduceJobClient(config);
 
+			/* Running Job in a new Thread */
+			Thread jobThread = new Thread(newJob); 
+			jobThread.start();
 
-					s = "";
-					s = br.readLine();
-					if(s.equals("")){
-						s="1";
-					}
-					if(UserJobLaunchConsole.isInteger(s) == true){
-						config.setReducers(Integer.parseInt(s));
-					}
-
-					else{
-						System.out.println("Please Enter an integer");
-					}
-				}while(UserJobLaunchConsole.isInteger(s) == false);
-				MapReduceJobClient newJob = new MapReduceJobClient(config);
-				/* Running Job in a new Thread */
-				Thread jobThread = new Thread(newJob); 
-				jobThread.start();
-
-			}
-
-			case 2:{
-
-			}
-
-			case 3:{
-
-			}
-
-			}
 		}
 
+
+
 	}
+	//}
+
+	//}
 
 }

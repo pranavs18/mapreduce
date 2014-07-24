@@ -1,0 +1,50 @@
+As expected, the output:
+
+$ bin/hadoop dfs -cat /usr/joe/wordcount/output/part-00000 
+Bye 1 
+Goodbye 1 
+Hadoop 1 
+Hello 2 
+World 2 
+hadoop 1 
+Run it once more, this time switch-off case-sensitivity:
+
+$ bin/hadoop jar /usr/joe/wordcount.jar org.myorg.WordCount -Dwordcount.case.sensitive=false /usr/joe/wordcount/input /usr/joe/wordcount/output -skip /user/joe/wordcount/patterns.txt
+
+Sure enough, the output:
+
+$ bin/hadoop dfs -cat /usr/joe/wordcount/output/part-00000 
+bye 1 
+goodbye 1 
+hadoop 2 
+hello 2 
+world 2 
+Highlights
+The second version of WordCount improves upon the previous one by using some features offered by the MapReduce framework:
+
+Demonstrates how applications can access configuration parameters in the configure method of the Mapper (and Reducer) implementations (lines 28-43).
+Demonstrates how the DistributedCache can be used to distribute read-only data needed by the jobs. Here it allows the user to specify word-patterns to skip while counting (line 104).
+Demonstrates the utility of the Tool interface and the GenericOptionsParser to handle generic Hadoop command-line options (lines 87-116, 119).
+Demonstrates how applications can use Counters (line 68) and how they can set application-specific status information via the Reporter instance passed to the map (and reduce) method (line 72).
+Java and JNI are trademarks or registered trademarks of Sun Microsystems, Inc. in the United States and other countries.
+
+ 
+Last Published: 08/04/2013 08:13:21
+Copyright © 2008 The Apache Software Foundation.
+Apache > Hadoop > Core > docs > r1.2.1
+Hadoop Hadoop
+   
+ProjectWikiHadoop 1.2.1 Documentation
+Last Published: 08/04/2013 08:13:21
+ 
+Getting Started
+Guides
+MapReduce
+HDFS
+HDFS Users
+HDFS Architecture
+Permissions
+Quotas
+Synthetic Load Generator
+Offline Image Viewer
+HFTP

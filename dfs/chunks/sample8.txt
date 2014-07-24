@@ -1,0 +1,50 @@
+ProjectWikiHadoop 1.2.1 Documentation
+Last Published: 08/04/2013 08:13:21
+ 
+Getting Started
+Guides
+MapReduce
+MapReduce Tutorial
+Hadoop Streaming
+Hadoop Commands
+DistCp
+DistCp Version 2
+Vaidya
+Hadoop Archives
+Gridmix
+Rumen
+Capacity Scheduler
+Fair Scheduler
+Hod Scheduler
+HDFS
+Common
+Miscellaneous
+
+PDF -icon
+PDF
+MapReduce Tutorial
+Purpose
+Prerequisites
+Overview
+Inputs and Outputs
+Example: WordCount v1.0
+Source Code
+Usage
+Walk-through
+MapReduce - User Interfaces
+Payload
+Mapper
+Reducer
+Partitioner
+Reporter
+OutputCollector
+Job Configuration
+Task Execution & Environment
+Memory Management
+Map Parameters
+Shuffle/Reduce Parameters
+Directory Structure
+Task JVM Reuse
+Configured Parameters
+Task Logs
+Distributing Libraries

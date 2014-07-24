@@ -1,0 +1,50 @@
+The default behavior of file-based InputFormat implementations, typically sub-classes of FileInputFormat, is to split the input into logical InputSplit instances based on the total size, in bytes, of the input files. However, the FileSystem blocksize of the input files is treated as an upper bound for input splits. A lower bound on the split size can be set via mapred.min.split.size.
+
+Clearly, logical splits based on input-size is insufficient for many applications since record boundaries must be respected. In such cases, the application should implement a RecordReader, who is responsible for respecting record-boundaries and presents a record-oriented view of the logical InputSplit to the individual task.
+
+TextInputFormat is the default InputFormat.
+
+If TextInputFormat is the InputFormat for a given job, the framework detects input-files with the .gz extensions and automatically decompresses them using the appropriate CompressionCodec. However, it must be noted that compressed files with the above extensions cannot be split and each compressed file is processed in its entirety by a single mapper.
+
+InputSplit
+InputSplit represents the data to be processed by an individual Mapper.
+
+Typically InputSplit presents a byte-oriented view of the input, and it is the responsibility of RecordReader to process and present a record-oriented view.
+
+FileSplit is the default InputSplit. It sets map.input.file to the path of the input file for the logical split.
+
+RecordReader
+RecordReader reads <key, value> pairs from an InputSplit.
+
+Typically the RecordReader converts the byte-oriented view of the input, provided by the InputSplit, and presents a record-oriented to the Mapper implementations for processing. RecordReader thus assumes the responsibility of processing record boundaries and presents the tasks with keys and values.
+
+Job Output
+OutputFormat describes the output-specification for a MapReduce job.
+
+The MapReduce framework relies on the OutputFormat of the job to:
+
+Validate the output-specification of the job; for example, check that the output directory doesn't already exist.
+Provide the RecordWriter implementation used to write the output files of the job. Output files are stored in a FileSystem.
+TextOutputFormat is the default OutputFormat.
+
+OutputCommitter
+OutputCommitter describes the commit of task output for a MapReduce job.
+
+The MapReduce framework relies on the OutputCommitter of the job to:
+
+Setup the job during initialization. For example, create the temporary output directory for the job during the initialization of the job. Job setup is done by a separate task when the job is in PREP state and after initializing tasks. Once the setup task completes, the job will be moved to RUNNING state.
+Cleanup the job after the job completion. For example, remove the temporary output directory after the job completion. Job cleanup is done by a separate task at the end of the job. Job is declared SUCCEDED/FAILED/KILLED after the cleanup task completes.
+Setup the task temporary output. Task setup is done as part of the same task, during task initialization.
+Check whether a task needs a commit. This is to avoid the commit procedure if a task does not need commit.
+Commit of the task output. Once task is done, the task will commit it's output if required.
+Discard the task commit. If the task has been failed/killed, the output will be cleaned-up. If task could not cleanup (in exception block), a separate task will be launched with same attempt-id to do the cleanup.
+FileOutputCommitter is the default OutputCommitter. Job setup/cleanup tasks occupy map or reduce slots, whichever is free on the TaskTracker. And JobCleanup task, TaskCleanup tasks and JobSetup task have the highest priority, and in that order.
+
+Task Side-Effect Files
+In some applications, component tasks need to create and/or write to side-files, which differ from the actual job-output files.
+
+In such cases there could be issues with two instances of the same Mapper or Reducer running simultaneously (for example, speculative tasks) trying to open and/or write to the same file (path) on the FileSystem. Hence the application-writer will have to pick unique names per task-attempt (using the attemptid, say attempt_200709221812_0001_m_000000_0), not just per task.
+
+To avoid these issues the MapReduce framework, when the OutputCommitter is FileOutputCommitter, maintains a special ${mapred.output.dir}/_temporary/_${taskid} sub-directory accessible via ${mapred.work.output.dir} for each task-attempt on the FileSystem where the output of the task-attempt is stored. On successful completion of the task-attempt, the files in the ${mapred.output.dir}/_temporary/_${taskid} (only) are promoted to ${mapred.output.dir}. Of course, the framework discards the sub-directory of unsuccessful task-attempts. This process is completely transparent to the application.
+
+The application-writer can take advantage of this feature by creating any side-files required in ${mapred.work.output.dir} during execution of a task via FileOutputFormat.getWorkOutputPath(), and the framework will promote them similarly for succesful task-attempts, thus eliminating the need to pick unique paths per task-attempt.

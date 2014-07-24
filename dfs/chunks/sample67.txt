@@ -1,0 +1,50 @@
+[MESOS-1193] Check failed: promises.contains(containerId) crashes slave
+This was observed with four slaves on one machine, one framework (Marathon) and around 100 tasks per slave.
+
+I0404 17:58:58.298075...
+
+Projects
+HTTP Server
+Abdera
+Accumulo
+ACE
+ActiveMQ
+Airavata
+Allura
+Ambari
+Ant
+Any23
+APR
+Archiva
+Aries
+Avro
+Axis
+Bigtop
+Bloodhound
+Buildr
+BVal
+Camel
+Cassandra
+Cayenne
+Chemistry
+Chukwa
+Clerezza
+CloudStack
+Cocoon
+Commons
+Continuum
+Cordova
+CouchDB
+Creadur
+Crunch
+cTAKES
+Curator
+CXF
+DB
+Deltacloud
+DeltaSpike
+DirectMemory
+Directory
+Empire-db
+Etch
+Felix

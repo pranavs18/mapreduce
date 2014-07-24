@@ -1,0 +1,50 @@
+
+@TheASF: The Apache Software Foundation Announces #Apacheô #Tezô as a Top-Level Project http://t.co/P6cJ5nbcMQ #OpenSource #BigData #Hadoop #YARN
+@TheASF: The Apache Software Foundation Announces #Apacheô #Log4jô v2 http://t.co/zhk0cTIzAf #OpenSource #logging #library #Java #plugin
+@TheASF: Join #Apache @OSCON: Booth 13 + presos on #HTTP Server #Cassandra #Mesos #Cordova #CloudStack #CouchDB #Hadoop #Spark #TrafficServer & more!
+r1612633 importing geronimo jaxrs 2 and versioning it 7 (tomee) ó rmannibucau
+r1612632 HDFS-6720. Remove KeyProvider in EncryptionZoneManager. (wang) (hadoop) ó wang
+r1612631 HADOOP-10818. native client: refactor URI code to be clearer (cmccabe) (hadoop) ó cmccabe
+r1612630 fixing NOTICE (geronimo) ó rmannibucau
+r1612629 Merge r1612626 from trunk. YARN-2295. Refactored DistributedShell to use public APIs of protocol records. Contributed by Li Lu (hadoop) ó jianhe
+[PDFBOX-2226] IndexOutOfBoundsException when merging many PDFs in memory
+An IndexOutOfBoundsException occurs when attempting to merge many (at least 10) PDF documents together. All PDFs exist in byte arrays...
+
+[AURORA-595] test_cluster_option test case failing 
+Test src.test.python.apache.aurora.common.test_cluster_option ..... FAILURE
+
+E AttributeError: CaptureFixture instance has no attribute '_outerr'
+
+[LUCENE-5825] Allowing the benchmarking algorithm to choose PostingsFormat
+The algorithm file for benchmarking should allow PostingsFormat to be configurable.
+
+[SENTRY-354] Test for update.distrib phase overriding
+NOTE: I left the Fix Version blank because I think this should go into 1.5.0, i.e. after 1.4.0 is branched,...
+
+[MESOS-1193] Check failed: promises.contains(containerId) crashes slave
+This was observed with four slaves on one machine, one framework (Marathon) and around 100 tasks per slave.
+
+I0404 17:58:58.298075...
+
+Projects
+HTTP Server
+Abdera
+Accumulo
+ACE
+ActiveMQ
+Airavata
+Allura
+Ambari
+Ant
+Any23
+APR
+Archiva
+Aries
+Avro
+Axis
+Bigtop
+Bloodhound
+Buildr
+BVal
+Camel
+Cassandra

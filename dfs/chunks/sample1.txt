@@ -1,0 +1,50 @@
+This dataset was collected and prepared by the CALO Project (A Cognitive Assistant that Learns and Organizes). It contains data from about 150 users, mostly senior management of Enron, organized into folders. The corpus contains a total of about 0.5M messages. This data was originally made public, and posted to the web, by the Federal Energy Regulatory Commission during its investigation.
+
+The email dataset was later purchased by Leslie Kaelbling at MIT, and turned out to have a number of integrity problems. A number of folks at SRI, notably Melinda Gervasio, worked hard to correct these problems, and it is thanks to them (not me) that the dataset is available. The dataset here does not include attachments, and some messages have been deleted ìas part of a redaction effort due to requests from affected employeesî. Invalid email addresses were converted to something of the form user@enron.com whenever possible (i.e., recipient is specified in some parse-able format like ìDoe, Johnî or ìMary K. Smithî) and to no_address@enron.com when no recipient was specified.
+I get a number of questions about this corpus each week, which I am unable to answer, mostly because they deal with preparation issues and such that I just donít know about. If you ask me a question and I donít answer, please donít feel slighted.
+
+I am distributing this dataset as a resource for researchers who are interested in improving current email tools, or understanding how email is currently used. This data is valuable; to my knowledge it is the only substantial collection of ìrealî email that is public. The reason other datasets are not public is because of privacy concerns. In using this dataset, please be sensitive to the privacy of the people involved (and remember that many of these people were certainly not involved in any of the actions which precipitated the investigation.)
+
+Downloads
+
+Download is ìabout 400Mb, tarred and gzippedî.
+
+Article Search API - NYTimes.com
+Offsite ó With the Article Search API, you can search New York Times articles from 1981 to today, retrieving headlines, abstracts, lead paragraphs, links to associated multimedia and other article metadata. Along with standard keyword searching, the API also offers faceted searching. The available facets include Times-specific fields such as sections, taxonomic classifiers and ...
+Text Messages sent on 9/11/2001 (wikileaks.org)
+Offsite ó 9/11 tragedy pager intercepts. The following are more than half a million national US pager intercepts released by wikileaks.org. This covers the September 11 tragedy from 3am on the same day (Tuesday) until 3am the following day, a 24 hour period surrounding the attacks in New York and Washington. The fields presented are: Date Time Pager-Network Pager-number ...
+Enron Email Dataset
+Offsite ó From the CALO Project at Carnegie-Mellon University a massive dataset of emails recovered from discovery documents in the Enron trials About This dataset was collected and prepared by the CALO Project (A Cognitive Assistant that Learns and Organizes). It contains data from about 150 users, mostly senior management of Enron, organized into folders. The corpus contains a ...
+Email Data Sets
+Offsite ó Due to privacy issues, it is very hard to get a hold of large and realistic email corpora. Here you can find a few email data sets, as well as a dataset of news groups text ñ annotated with personal names spans. The email corpora given here were extracted from the Enron corpus, made public by the Federal agency Regulatory commission. As a second type of informal text, ...
+Document Metadata Based on a Sample of Web Documents from the Open Directory
+Offsite ó DMOZ100k06 is a large research data set about document metadata based on a random sample of 100,000 web documents from the Open Directory combined with data retrieved from the social bookmarking service delicious.com, the content rating system ICRA, and the search engine Google. The data set is freely available for other research. Michael G. Noll
+Reuters Spotlight - Article and Media API
+Offsite ó The Reuters Spotlight service provides Reuters.com content in the form of multimedia articles, pictures, videos and text news through a set standards based consumer XML APIs. The Spotlight service also provides an option to receive the content automatically annotated with rich semantic metadata.
+German English Parallel Corpus &amp;quot;de-news&amp;quot;, Daily News 1996-2000
+Offsite ó
+English-language Wikipedia[edit]
+Dumps from any Wikimedia Foundation project: http://dumps.wikimedia.org/
+English Wikipedia dumps in SQL and XML: http://dumps.wikimedia.org/enwiki/
+pages-articles.xml.bz2 ñ Current revisions only, no talk or user pages. (This is probably the one you want. The size of the 13 February 2014 dump is approximately 9.85 GB compressed, 44 GB uncompressed).
+As these files are quite large, please consider using a BitTorrent download to reduce the load on our servers. See meta:data dump torrents for more information and links to torrent files.
+Additionally, there are numerous benefits using BitTorrent over a HTTP/FTP download. In an HTTP/FTP download, there is no way to compute the checksum of a file during downloading. Because of that limitation, data corruption is harder to prevent when downloading a large file. With BitTorrent downloads, the checksum of each block/chunk is computed using a SHA-1 hash during the download. If the computed hash doesn't match with the stored hash in the *.torrent file, that particular block/chunk is avoided. As a result, a BitTorrent download is generally more secure against data corruption than a regular HTTP/FTP download.[1]
+pages-meta-current.xml.bz2 ñ Current revisions only, all pages (including talk)
+abstract.xml.gz ñ page abstracts
+all-titles-in-ns0.gz ñ Article titles only (with redirects)
+SQL files for the pages and links are also available
+All revisions, all pages: These files expand to multiple terabytes of text. Please only download these if you know you can cope with this quantity of data. Go to Latest Dumps and look out for all the files that have 'pages-meta-history' in their name.
+To download a subset of the database in XML format, such as a specific category or a list of articles see: Special:Export, usage of which is described at Help:Export.
+Wiki front-end software: MediaWiki [1].
+Database backend software: You want to download MySQL.
+Image dumps: See below.
+Other languages[edit]
+In the http://dumps.wikimedia.org/ directory you will find the latest SQL and XML dumps for the projects, not just English. For example, (others exist, just select the appropriate language code and the appropriate project):
+
+Chinese Wikipedia dumps: http://dumps.wikimedia.org/zhwiki/
+English Wikipedia dumps: http://dumps.wikimedia.org/enwiki/
+French Wikipedia dumps: http://dumps.wikimedia.org/frwiki/
+German Wikipedia dumps: http://dumps.wikimedia.org/dewiki/
+Italian Wikipedia dumps: http://dumps.wikimedia.org/itwiki/
+Japanese Wikipedia dumps: http://dumps.wikimedia.org/jawiki/
+Polish Wikipedia dumps: http://dumps.wikimedia.org/plwiki/

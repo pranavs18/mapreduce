@@ -1,0 +1,50 @@
+Refreshing Service Level Authorization Configuration
+The service-level authorization configuration for the NameNode and JobTracker can be changed without restarting either of the Hadoop master daemons. The cluster administrator can change ${HADOOP_CONF_DIR}/hadoop-policy.xml on the master nodes and instruct the NameNode and JobTracker to reload their respective configurations via the -refreshServiceAcl switch to dfsadmin and mradmin commands respectively.
+
+Refresh the service-level authorization configuration for the NameNode:
+
+$ bin/hadoop dfsadmin -refreshServiceAcl
+
+Refresh the service-level authorization configuration for the JobTracker:
+
+$ bin/hadoop mradmin -refreshServiceAcl
+
+Of course, one can use the security.refresh.policy.protocol.acl property in ${HADOOP_CONF_DIR}/hadoop-policy.xml to restrict access to the ability to refresh the service-level authorization configuration to certain users/groups.
+
+Examples
+Allow only users alice, bob and users in the mapreduce group to submit jobs to the MapReduce cluster:
+
+<property>
+     <name>security.job.submission.protocol.acl</name>
+     <value>alice,bob mapreduce</value>
+</property>
+Allow only DataNodes running as the users who belong to the group datanodes to communicate with the NameNode:
+
+<property>
+     <name>security.datanode.protocol.acl</name>
+     <value>datanodes</value>
+</property>
+Allow any user to talk to the HDFS cluster as a DFSClient:
+
+<property>
+     <name>security.client.protocol.acl</name>
+     <value>*</value>
+</property>
+ 
+Last Published: 08/04/2013 08:13:21
+Copyright © 2008 The Apache Software Foundation.
+Apache > Hadoop > Core > docs > r1.2.1
+Hadoop Hadoop
+   
+ProjectWikiHadoop 1.2.1 Documentation
+Last Published: 08/04/2013 08:13:21
+ 
+Getting Started
+Guides
+MapReduce
+HDFS
+Common
+Deployment Layout
+File System Shell
+Service Level Authorization
+Native Libraries

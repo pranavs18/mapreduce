@@ -9,8 +9,10 @@ import java.lang.reflect.InvocationTargetException;
 import java.lang.reflect.Method;
 import java.net.InetAddress;
 import java.net.UnknownHostException;
+import java.util.ArrayList;
 import java.util.concurrent.ConcurrentHashMap;
 
+import sun.security.krb5.Config;
 import master.JobStatus;
 import generics.MapReduceConfiguration;
 import generics.TaskDetails;
@@ -39,10 +41,11 @@ public class WorkerMapRunner implements Runnable{
 			/* read a file and Use reflections to run Map function */
 			/* Store the output in a file in key Value pair */
 			System.out.println("Reached Launcher"); //remove
-
-
+			
+			ArrayList<String> a = new ArrayList<String>();
+			
 			Class<?> params[] = {String.class,String.class, MapReduce.class};
-			Class<?> mapClass = Class.forName("client.WordCount");
+			Class<?> mapClass = Class.forName(mapReduceConfig.getMapperClass());
 			String fileInputPath = ".."+File.separator+"dfs"+File.separator+"chunks"+File.separator+fileName;	
 			System.out.println("Searching for a file at... " +fileInputPath);
 

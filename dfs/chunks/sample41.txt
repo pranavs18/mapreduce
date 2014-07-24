@@ -1,0 +1,50 @@
+ 
+Last Published: 08/04/2013 08:13:21
+Copyright © 2008 The Apache Software Foundation.
+Apache > Hadoop > Core > docs > r1.2.1
+Hadoop Hadoop
+   
+ProjectWikiHadoop 1.2.1 Documentation
+Last Published: 08/04/2013 08:13:21
+ 
+Getting Started
+Guides
+MapReduce
+HDFS
+Common
+Deployment Layout
+File System Shell
+Service Level Authorization
+Native Libraries
+Miscellaneous
+
+PDF -icon
+PDF
+Service Level Authorization Guide
+Purpose
+Prerequisites
+Overview
+Configuration
+Enable Service Level Authorization
+Hadoop Services and Configuration Properties
+Access Control Lists
+Refreshing Service Level Authorization Configuration
+Examples
+Purpose
+This document describes how to configure and manage Service Level Authorization for Hadoop.
+
+Prerequisites
+Make sure Hadoop is installed, configured and setup correctly. For more information see:
+
+Single Node Setup for first-time users.
+Cluster Setup for large, distributed clusters.
+Overview
+Service Level Authorization is the initial authorization mechanism to ensure clients connecting to a particular Hadoop service have the necessary, pre-configured, permissions and are authorized to access the given service. For example, a MapReduce cluster can use this mechanism to allow a configured list of users/groups to submit jobs.
+
+The ${HADOOP_CONF_DIR}/hadoop-policy.xml configuration file is used to define the access control lists for various Hadoop services.
+
+Service Level Authorization is performed much before to other access control checks such as file-permission checks, access control on job queues etc.
+
+Configuration
+This section describes how to configure service-level authorization via the configuration file {HADOOP_CONF_DIR}/hadoop-policy.xml.
+

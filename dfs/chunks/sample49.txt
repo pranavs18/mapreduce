@@ -1,0 +1,50 @@
+Featured Projects ªApache TomEE Apache OpenMeetings Apache Tobago
+The ASF is made up of nearly 150
+top level projects which cover a wide range of technologies. Chances are if you are looking for a rewarding experience in Open Source, you are going to find it here.
+Apache TomEE
+Apache TomEE is an all-Apache Java EE 6 Web Profile stack for Apache Tomcat
+Apache TomEE Web Profile delivers Servlets, JSP, JSF, JTA, JPA, CDI, Bean Validation and EJB Lite. Apache TomEE Plus has all the features of TomEE with the addition of JAX-RS (RESTfull Services), JAX-WS (Web Services), JMS (Java Message Service) and JCA (the Java Connector Architecture). The additional functionality is delivered via Apache CXF, Apache ActiveMQ and the Geronimo Connector library
+Latest News
+If you would like to keep up with news and announcements from the foundation and all its projects, you can subscribe to the Apache Announcements List or follow the Foundation Blog.
+
+The Apache Software Foundation Announces Apacheô Tezô as a Top-Level Project
+Highly-efficient Open Source framework for Apache HadoopÆ YARN-powered data processing applications in use at Microsoft, NASA, Netflix, and Yahoo, among others. 
+
+Forest Hill, MD ñ22 July 2014ñ The Apache Software Foundation (ASF), the all-volunteer developers, stewards, and incubators of more than 170 Open Source projects and initiatives, announced today that...
+The Apache Software Foundation Announces Apacheô Log4jô v2
+Framework for widely-used Open Source Java-based logging library now faster and more extensible, with new plugin architecture.
+
+Forest Hill, MD ñ22 July 2014ñ The Apache Software Foundation (ASF), the all-volunteer developers, stewards, and incubators of more than 170 Open Source projects and initiatives, announced today the General Availability of Apacheô...
+Travel Assistance Applications Now Open for ApacheCon Europe: Budapest 17-21 November 2014
+The Apache Software Foundation (ASF)'s Travel Assistance Committee (TAC) is now accepting applications for ApacheCon Europe 2014, taking place 17-21 November in Budapest, Hungary.
+
+The TAC is seeking individuals from the Apache community at-large, users, developers, educators, students, Committers, and Members, who would like to attend ApacheCon, but need some...
+The Apache Software Foundation Announces Apacheô Tezô as a Top-Level Project
+> This announcement is also available online at http://s.apache.org/keG
+ 
+Highly-efficient Open Source framework for Apache HadoopÆ YARN-powered data processing applications in use at Microsoft, NASA, Netflix, and Yahoo, among others. 
+ 
+Forest Hill, MD ñ22 July 2014ñ The Apache Software Foundation (ASF), the all-volunteer developers, stewards, and incubators of...
+The Apache Software Foundation Announces Apacheô Log4jô v2
+> This announcement is also available online at http://s.apache.org/wm
+ 
+Framework for widely-used Open Source Java-based logging library now faster and more extensible, with new plugin architecture. 
+ 
+Forest Hill, MD ñ22 July 2014ñ The Apache Software Foundation (ASF), the all-volunteer developers, stewards, and incubators of more than 170 Open...
+[ANNOUNCE] Apache Jackrabbit Oak 1.0.2 released
+The Apache Jackrabbit community is pleased to announce the release of Apache Jackrabbit Oak 1.0.2. The release is available for download at:
+ 
+http://jackrabbit.apache.org/downloads.html
+ 
+See the full release notes below for details about this release.
+ 
+Release Notes -- Apache Jackrabbit Oak -- Version 1.0.2
+ 
+Introduction ------------
+ ...
+Latest Activity
+This is an overview of activity going on with our projects. SVN commits, bug reports, tweets, you name it.
+
+@TheASF: The Apache Software Foundation Announces #Apacheô #Tezô as a Top-Level Project http://t.co/P6cJ5nbcMQ #OpenSource #BigData #Hadoop #YARN
+@TheASF: The Apache Software Foundation Announces #Apacheô #Log4jô v2 http://t.co/zhk0cTIzAf #OpenSource #logging #library #Java #plugin
+@TheASF: Join #Apache @OSCON: Booth 13 + presos on #HTTP Server #Cassandra #Mesos #Cordova #CloudStack #CouchDB #Hadoop #Spark #TrafficServer & more!

@@ -2,11 +2,14 @@ package worker;
 
 import generics.MapReduceConfiguration;
 import generics.MasterToWorkerInterface;
+import generics.SlaveRemoteInterface;
 import generics.TaskDetails;
 
+import java.io.BufferedInputStream;
 import java.io.BufferedReader;
 import java.io.BufferedWriter;
 import java.io.File;
+import java.io.FileInputStream;
 import java.io.FileNotFoundException;
 import java.io.FileReader;
 import java.io.FileWriter;
@@ -14,6 +17,7 @@ import java.io.IOException;
 import java.lang.reflect.InvocationTargetException;
 import java.lang.reflect.Method;
 import java.net.InetAddress;
+import java.rmi.Naming;
 import java.rmi.NotBoundException;
 import java.rmi.RemoteException;
 import java.rmi.server.UnicastRemoteObject;
@@ -21,6 +25,7 @@ import java.util.ArrayList;
 import java.util.Collections;
 import java.util.HashSet;
 import java.util.Map;
+import java.util.Map.Entry;
 import java.util.TreeMap;
 import java.util.concurrent.ConcurrentHashMap;
 import java.util.concurrent.Semaphore;
@@ -80,7 +85,7 @@ public class WorkerJobLauncerImpl extends UnicastRemoteObject implements MasterT
 	IOException {
 		ArrayList<Thread> threads = new ArrayList<Thread>();
 		for(ConcurrentHashMap.Entry<String, HashSet<String>> info : intermediateFileNameInfo.entrySet()){
-		
+
 			FileTransferAfterSort fileTrasnfer = new FileTransferAfterSort(info.getKey(), info.getValue(), config);
 			Thread transferThread = new Thread(fileTrasnfer);
 			transferThread.start();
@@ -93,7 +98,7 @@ public class WorkerJobLauncerImpl extends UnicastRemoteObject implements MasterT
 				e.printStackTrace();
 			}
 		}
-		
+
 		if(WorkerTasksStatus.getAddedWorkerAfterSortCount()>intermediateFileNameInfo.size()){
 			return true;
 		}
@@ -117,52 +122,55 @@ public class WorkerJobLauncerImpl extends UnicastRemoteObject implements MasterT
 		System.out.println("File location ... " + directoryPath);
 		File folder = new File(directoryPath);
 		File[] files = folder.listFiles();
-        if(files.length > 0){  
-		for(File file:files){
-			ArrayList<String> temp = new ArrayList<String>();
-			System.out.println("Current file "+ file.getName());
-			BufferedReader reader = new BufferedReader(new FileReader(file));
-			String line;
-			while((line=reader.readLine())!=null){
-				temp.add(line);
-			}
-			Collections.sort(temp);
-			reader.close();
+		if(files.length > 0){  
+			for(File file:files){
+				ArrayList<String> temp = new ArrayList<String>();
+				System.out.println("Current file "+ file.getName());
+				BufferedReader reader = new BufferedReader(new FileReader(file));
+				String line;
+				while((line=reader.readLine())!=null){
+					temp.add(line);
+				}
+				Collections.sort(temp);
+				reader.close();
 
-			BufferedWriter writer = new BufferedWriter(new FileWriter(file));
-			for(String val : temp){
-				writer.write(val);      
-				writer.newLine();
+				BufferedWriter writer = new BufferedWriter(new FileWriter(file));
+				for(String val : temp){
+					writer.write(val);      
+					writer.newLine();
+				}
+				writer.close();
 			}
-			writer.close();
 		}
-        }
 	}
-	
-	
+
+
 	public boolean launchReduceJob(MapReduceConfiguration config) throws IOException, ClassNotFoundException, InstantiationException, IllegalAccessException, NoSuchMethodException, SecurityException, IllegalArgumentException, InvocationTargetException{
 		int index = config.getInputPath().lastIndexOf("/");
 		String inputFile = config.getInputPath().substring(index+1, config.getInputPath().length()-4);
 		String path = ".." + File.separator+"dfs" + File.separator + "redinput" + File.separator + inputFile;
 		File dir = new File(path);
 		File[] files = dir.listFiles();
-	    String tail= files[0].getName().substring(files[0].getName().lastIndexOf("_"), files[0].getName().lastIndexOf("."));
-	    	
-	    
+		for(int i = 0; i<files.length;i++){
+			System.out.println(files[i].getName());
+		}
+		String tail= files[0].getName().substring(files[0].getName().lastIndexOf("_"), files[0].getName().lastIndexOf("."));
+
+
 		Map<String, ArrayList<String>> map = new TreeMap<String, ArrayList<String>>();
 		System.out.println("REDUCER LAUNCHED"); //remove
 
-		MapReduce mpr = new MapReduce();
-       
-		Class<?> params[] = {String.class,String.class, MapReduce.class};
-		Class<?> mapClass = Class.forName("client.WordCount");
+		MapReduce mpr = new MapReduce(config.getInputPath(), config.getOutputPath(), config.getReducers(), tail,inputFile, config);
+
+		Class<?> params[] = {String.class,ArrayList.class, MapReduce.class};
+		Class<?> mapClass = Class.forName(config.getReducerClass());
 		Object mapObject = mapClass.newInstance();
 		Method method = mapClass.getDeclaredMethod("reduce",params);
 		method.setAccessible(true);
-		
+
 		for(File file:files){
-			
-			ArrayList<String> al = new ArrayList<String>();
+
+
 			BufferedReader buf = null;
 			try {
 				buf = new BufferedReader(new FileReader(file));
@@ -177,31 +185,47 @@ public class WorkerJobLauncerImpl extends UnicastRemoteObject implements MasterT
 				String key = words[0];
 				String value = words[1];
 				if(!map.containsKey(key)){
-				 al.add(value);
-				 map.put(key, al);
+					ArrayList<String> al = new ArrayList<String>();
+					al.add(value);
+					map.put(key, al);
 				}
 				else{
 					map.get(key).add(value);
 				}
-				Object[] arguments= {key,map.get(key)};
-				method.invoke(mapObject, arguments);
-				map.remove(key);
+
 			}
+
 			buf.close();
+
 		}
 		
+		for(Entry<String, ArrayList<String>> str:map.entrySet()){
+
+			Object[] arguments= {str.getKey().toString(),str.getValue(), mpr};
+			method.invoke(mapObject, arguments);	
+		}
 		
-		
+		int index1 = config.getInputPath().lastIndexOf("/");
+		String name = config.getInputPath().substring(index+1, config.getInputPath().length()-4);
+		File file = new File(config.getOutputPath() + File.separator + "finalOutput" + "_"+name+"_"+tail+ ".txt");
+		System.out.println("File path : "+config.getOutputPath() + File.separator + "finalOutput" + "_"+name+"_"+tail+ ".txt");
+		byte buffer[] = new byte[(int)file.length()];
+		BufferedInputStream input = new BufferedInputStream(new FileInputStream(config.getOutputPath() + File.separator + "finalOutput" + "_"+name+"_"+tail+ ".txt"));
+		input.read(buffer,0,buffer.length);
+		input.close();  	
+		System.out.println("Transferring...." + file.getName());
+		System.out.println("Transferring to machine " + config.getSplitIP());
+		SlaveRemoteInterface obj = null;
+		try {
+			obj = (SlaveRemoteInterface) Naming.lookup("//"+ config.getSplitIP() +":9876/Remote");
+		} catch (NotBoundException e) {
+			e.printStackTrace();
+		}
+
+		//obj.ReceiveChunks(".."+File.separator+"dfs"+File.separator+"intermediate" + File.separator + fileName, files[i].getName(), buffer);
+		obj.ReceiveChunks(config.getOutputPath(),  "/finalOutput" + "_"+name+"_"+tail+ ".txt", buffer);
+
 		return true;
 	}
-
-	@Override
-	public Boolean launchReduceJob(MapReduceConfiguration config)
-			throws RemoteException, NotBoundException, FileNotFoundException,
-			IOException {
-		// TODO Auto-generated method stub
-		return null;
-	}
-
 
 }

@@ -1,0 +1,50 @@
+To access any article in XML, one at a time, access Special:Export/Title of the article.
+
+Read more about this at Special:Export.
+
+Please be aware that live mirrors of Wikipedia that are dynamically loaded from the Wikimedia servers are prohibited. Please see Wikipedia:Mirrors and forks.
+
+Please do not use a web crawler[edit]
+Please do not use a web crawler to download large numbers of articles. Aggressive crawling of the server can cause a dramatic slow-down of Wikipedia.
+
+Sample blocked crawler email[edit]
+IP address nnn.nnn.nnn.nnn was retrieving up to 50 pages per second from wikipedia.org addresses. Robots.txt has a rate limit of one per second set using the Crawl-delay setting. Please respect that setting. If you must exceed it a little, do so only during the least busy times shown in our site load graphs at http://stats.wikimedia.org/EN/ChartsWikipediaZZ.htm. It's worth noting that to crawl the whole site at one hit per second will take several weeks. The originating IP is now blocked or will be shortly. Please contact us if you want it unblocked. Please don't try to circumvent it ñ we'll just block your whole IP range.
+If you want information on how to get our content more efficiently, we offer a variety of methods, including weekly database dumps which you can load into MySQL and crawl locally at any rate you find convenient. Tools are also available which will do that for you as often as you like once you have the infrastructure in place. More details are available at http://en.wikipedia.org/wiki/Wikipedia:Database_download.
+Instead of an email reply you may prefer to visit #mediawiki at irc.freenode.net to discuss your options with our team.
+Note that the robots.txt currently has a commented out Crawl-delay:
+
+ ## *at least* 1 second please. preferably more :D
+ ## we're disabling this experimentally 11-09-2006
+ #Crawl-delay: 1
+Please be sure to use an intelligent non-zero delay regardless.
+
+Doing Hadoop MapReduce on the Wikipedia current database dump[edit]
+You can do Hadoop MapReduce queries on the current database dump, but you will need an extension to the InputRecordFormat to have each <page> </page> be a single mapper input. A working set of java methods (jobControl, mapper, reducer, and XmlInputRecordFormat) is available at Hadoop on the Wikipedia
+
+Doing SQL queries on the current database dump[edit]
+You can do SQL queries on the current database dump (as a replacement for the disabled Special:Asksql page).
+
+Database schema[edit]
+SQL schema[edit]
+See also: mw:Manual:Database layout
+
+The sql file used to initialize a MediaWiki database can be found here.
+
+XML schema[edit]
+The XML schema for each dump is defined at the top of the file. And also described in the MediaWiki export help page.
+
+Help parsing dumps for use in scripts[edit]
+Wikipedia:Computer help desk/ParseMediaWikiDump describes the Perl Parse::MediaWikiDump library, which can parse XML dumps.
+Wikipedia preprocessor (wikiprep.pl) is a Perl script that preprocesses raw XML dumps and builds link tables, category hierarchies, collects anchor text for each article etc.
+Wikipedia SQL dump parser is a .NET library to read MySQL dumps without the need to use MySQL database
+Dictionary Builder is a Java program that can parse XML dumps and extract entries in files
+Help importing dumps into MySQL[edit]
+See:
+
+mw:Manual:Importing XML dumps
+m:Data_dumps
+Static HTML tree dumps for mirroring or CD distribution[edit]
+MediaWiki 1.5 includes routines to dump a wiki to HTML, rendering the HTML with the same parser used on a live wiki. As the following page states, putting one of these dumps on the web unmodified will constitute a trademark violation. They are intended for private viewing in an intranet or desktop installation.
+
+If you want to draft a traditional website in Mediawiki and dump it to HTML format, you might want to try mw2html by User:Connelly.
+If you'd like to help develop dump-to-static HTML tools, please drop us a note on the developers' mailing list.

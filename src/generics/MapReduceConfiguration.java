@@ -1,7 +1,7 @@
 package generics;
 
 import java.io.Serializable;
-import java.net.InetAddress;
+
 
 public class MapReduceConfiguration implements Serializable{
 	

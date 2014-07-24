@@ -8,7 +8,7 @@
 package generics; 
 
 import java.io.Serializable;
-import java.util.ArrayList;
+
 
 public class fakeDistributedFile implements Serializable{
 

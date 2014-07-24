@@ -1,0 +1,50 @@
+34.	        output.collect(key, new IntWritable(sum));
+35.	      }
+36.	    }
+37.	
+38.	    public static void main(String[] args) throws Exception {
+39.	      JobConf conf = new JobConf(WordCount.class);
+40.	      conf.setJobName("wordcount");
+41.	
+42.	      conf.setOutputKeyClass(Text.class);
+43.	      conf.setOutputValueClass(IntWritable.class);
+44.	
+45.	      conf.setMapperClass(Map.class);
+46.	      conf.setCombinerClass(Reduce.class);
+47.	      conf.setReducerClass(Reduce.class);
+48.	
+49.	      conf.setInputFormat(TextInputFormat.class);
+50.	      conf.setOutputFormat(TextOutputFormat.class);
+51.	
+52.	      FileInputFormat.setInputPaths(conf, new Path(args[0]));
+53.	      FileOutputFormat.setOutputPath(conf, new Path(args[1]));
+54.	
+55.	      JobClient.runJob(conf);
+57.	    }
+58.	}
+59.	
+Usage
+Assuming HADOOP_HOME is the root of the installation and HADOOP_VERSION is the Hadoop version installed, compile WordCount.java and create a jar:
+
+$ mkdir wordcount_classes 
+$ javac -classpath ${HADOOP_HOME}/hadoop-${HADOOP_VERSION}-core.jar -d wordcount_classes WordCount.java 
+$ jar -cvf /usr/joe/wordcount.jar -C wordcount_classes/ .
+
+Assuming that:
+
+/usr/joe/wordcount/input - input directory in HDFS
+/usr/joe/wordcount/output - output directory in HDFS
+Sample text-files as input:
+
+$ bin/hadoop dfs -ls /usr/joe/wordcount/input/ 
+/usr/joe/wordcount/input/file01 
+/usr/joe/wordcount/input/file02 
+
+$ bin/hadoop dfs -cat /usr/joe/wordcount/input/file01 
+Hello World Bye World 
+
+$ bin/hadoop dfs -cat /usr/joe/wordcount/input/file02 
+Hello Hadoop Goodbye Hadoop
+
+Run the application:
+

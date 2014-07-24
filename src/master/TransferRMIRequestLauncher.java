@@ -4,10 +4,8 @@ import generics.MapReduceConfiguration;
 import generics.MasterToWorkerInterface;
 
 import java.io.IOException;
-import java.net.MalformedURLException;
 import java.rmi.Naming;
 import java.rmi.NotBoundException;
-import java.rmi.RemoteException;
 import java.util.HashSet;
 import java.util.concurrent.ConcurrentHashMap;
 

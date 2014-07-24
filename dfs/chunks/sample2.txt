@@ -1,0 +1,50 @@
+Portuguese Wikipedia dumps: http://dumps.wikimedia.org/ptwiki/
+Russian Wikipedia dumps: http://dumps.wikimedia.org/ruwiki/
+Spanish Wikipedia dumps: http://dumps.wikimedia.org/eswiki/
+Some other directories (e.g. simple, nostalgia) exist, with the same structure.
+
+Where are the uploaded files (image, audio, video, etc., files)?[edit]
+Images and other uploaded media are available from mirrors in addition to being served directly from Wikimedia servers. Bulk download is currently (as of September 2013) available from mirrors but not offered directly from Wikimedia servers. See the list of current mirrors. You should rsync from the mirror, then fill in the missing images from upload.wikimedia.org; when downloading from upload.wikimedia.org you should throttle yourself to 1 cache miss per second (you can check headers on a response to see if was a hit or miss and then back off when you get a miss) and you shouldn't use more than one or two simultaneous HTTP connections. In any case, make sure you have an accurate user agent string with contact info (email address) so ops can contact you if there's an issue. You should be getting checksums from the mediawiki API and verifying them. The API Etiquette page contains some guidelines, although not all of them apply (for example, because upload.wikimedia.org isn't MediaWiki, there is no maxlag parameter).
+
+Unlike most article text, images are not necessarily licensed under the GFDL & CC-BY-SA-3.0. They may be under one of many free licenses, in the public domain, believed to be fair use, or even copyright infringements (which should be deleted). In particular, use of fair use images outside the context of Wikipedia or similar works may be illegal. Images under most licenses require a credit, and possibly other attached copyright information. This information is included in image description pages, which are part of the text dumps available from dumps.wikimedia.org. In conclusion, download these images at your own risk (Legal)
+
+Dealing with compressed files[edit]
+Compressed dump files are significantly compressed, thus after uncompressed will take up large amounts of drive space. The following are programs that can be used to uncompress bzip2 (.bz2) and .7z files.
+
+Windows
+Windows does not ship with a bzip2 decompressor program. The following can be used to decompress bzip2 files.
+
+bzip2 (command-line) (from here) is available for free under a BSD license.
+7-Zip is available for free under an LGPL license.
+WinRAR
+WinZip
+Mac
+OS X ships with the command-line bzip2 tool.
+
+GNU/Linux
+GNU/Linux ships with the command-line bzip2 tool.
+
+BSD
+Some BSD systems ship with the command-line bzip2 tool as part of the operating system. Others, such as OpenBSD, provide it as a package which must first be installed.
+
+Notes
+Some older versions of bzip2 may not be able to handle files larger than 2 GB, so make sure you have the latest version if you experience any problems.
+Some older archives are compressed with gzip, which is compatible with PKZIP (the most common Windows format).
+Dealing with large files[edit]
+As files grow in size, so does the likelihood they will exceed some limitation of a computing device. Each operating system, file system, hard storage device, and software (application) has a maximum file size limit. Each one of these will likely have a different maximum file size limit, but the lowest limit of all of them will become the file size limit for a storage device.
+
+The older the software in a computing device, the more likely it will have a 2 GB file limit somewhere in the system. This is due to older software using 32-bit integers for file indexing, which limits file sizes to 2^31 bytes (2 GB) (for signed integers), or 2^32 (4 GB) (for unsigned integers). Older C programming libraries have this 2 or 4 GB limitation, but the newer file libraries have been converted to 64-bit integers thus supporting file sizes up to 2^63 or 2^64 bytes (8 or 16 EB).
+
+Before starting a download of a large file, check the storage device to ensure its file system can support files of such a large size, and check the amount of free space to ensure that it can hold the downloaded file.
+
+File system limits[edit]
+There are two limits for a file system: the file system size limit, and the file size limit. In general, since the file size limit is less than the file system limit, the larger file system limits are a moot point. A large percentage of users assume they can create files up to the size of their storage device, but are wrong in their assumption. For example, a 16 GB storage device formatted as FAT32 file system has a file limit of 4 GB for any single file. The following is a list of the most common file systems, and see Comparison of file systems for additional detailed information.
+
+Windows
+FAT16 supports files up to 4 GB. FAT16 is the factory format of smaller USB drives and all SD cards that are 2 GB or smaller.
+FAT32 supports files up to 4 GB. FAT32 is the factory format of larger USB drives and all SDHC cards that are 4 GB or larger.
+exFAT supports files up to 127 PB. exFAT is the factory format of all SDXC cards, but is incompatible with most flavors of UNIX due to licensing problems.
+NTFS supports files up to 16 TB. NTFS is the default file system for Windows computers, including Windows 2000, Windows XP, and all their successors to date.
+ReFS supports files up to 16 EB.
+Mac
+HFS+ supports files up to 8 EB on Mac OS X 10.2+ and iOS. HFS+ is the default file system for Mac computers.

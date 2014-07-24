@@ -1,0 +1,50 @@
+... and many more!
+Update your wiki whenever you want, using Wikimedia's database backups.
+Navigate between offline wikis. Click on "Look up this word in Wiktionary" and instantly view the page in Wiktionary.
+Edit articles to remove vandalism or errors.
+Install to a flash memory card for portability to other machines.
+Run on Windows, Linux and Mac OS X.
+View the HTML for any wiki page.
+Search for any page by title using a Wikipedia-like Search box.
+Browse pages by alphabetical order using Special:AllPages.
+Find a word on a page.
+Access a history of viewed pages.
+Bookmark your favorite pages.
+Downloads images and other files on demand (when connected to the internet)
+Sets up Simple Wikipedia in less than 5 minutes
+Can be customized at many levels: from keyboard shortcuts to HTML layouts to internal options
+Offline wikipedia reader[edit]
+(for Mac OS X, GNU/Linux, FreeBSD/OpenBSD/NetBSD, and other Unices)
+
+The offline-wikipedia project provides a very effective way to get an offline version of Wikipedia. It uses entirely free software. Packages are available for Ubuntu and soon for other Linux distributions.
+
+Main features[edit]
+Very fast searching
+Keyword (actually, title words) based searching
+Search produces multiple possible articles: you can choose amongst them
+LaTeX based rendering for mathematical formulae
+Minimal space requirements: the original .bz2 file plus the index
+Very fast installation (a matter of hours) compared to loading the dump into MySQL
+WikiFilter[edit]
+WikiFilter is a program which allows you to browse over 100 dump files without visiting a Wiki site.
+
+WikiFilter system requirements[edit]
+A recent Windows version (WinXP is fine; Win98 and WinME won't work because they don't have NTFS support)
+A fair bit of hard drive space (To install you will need about 12 - 15 Gigabytes; afterwards you will only need about 10 Gigabytes)
+How to set up WikiFilter[edit]
+Start downloading a Wikipedia database dump file such as an English Wikipedia dump. It is best to use a download manager such as GetRight so you can resume downloading the file even if your computer crashes or is shut down during the download.
+Download XAMPPLITE from [2] (you must get the 1.5.0 version for it to work). Make sure to pick the file whose filename ends with .exe
+Install/extract it to C:\XAMPPLITE.
+Download WikiFilter 2.3 from this site: https://sourceforge.net/projects/wikifilter. You will have a choice of files to download, so make sure that you pick the 2.3 version. Extract it to C:\WIKIFILTER.
+Copy the WikiFilter.so into your C:\XAMPPLITE\apache\modules folder.
+Edit your C:\xampplite\apache\conf\httpd.conf file, and add the following line:
+LoadModule WikiFilter_module "C:/XAMPPLITE/apache/modules/WikiFilter.so"
+When your Wikipedia file has finished downloading, uncompress it into your C:\WIKIFILTER folder. (I used WinRAR http://www.rarlab.com/ demo version ñ BitZipper http://www.bitzipper.com/winrar.html works well too.)
+Run WikiFilter (WikiIndex.exe), and go to your C:\WIKIFILTER folder, and drag and drop the XML file into the window, click Load, then Start.
+After it finishes, exit the window, and go to your C:\XAMPPLITE folder. Run the setup_xampp.bat file to configure xampp.
+When you finish with that, run the Xampp-Control.exe file, and start Apache.
+Browse to http://localhost/wiki and see if it works
+If it doesn't work, see the forums.
+WikiTaxi[edit]
+WikiTaxi is an offline-reader for wikis in MediaWiki format. It enables users to search and browse popular wikis like Wikipedia, Wikiquote, or WikiNews, without being connected to the Internet. WikiTaxi works well with different languages like English, German, Turkish, and others but has a problem with right-to-left language scripts. Doesn't allow to display images though.
+

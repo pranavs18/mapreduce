@@ -1,0 +1,50 @@
+Tajo
+Tapestry
+Tcl
+Thrift
+Tika
+Tiles
+Tomcat
+TomEE
+Traffic Server
+Turbine
+Tuscany
+UIMA
+VCL
+Velocity
+Web Services
+Whirr
+Wicket
+Wink
+Wookie
+Xalan
+Xerces
+XMLBeans
+XML Graphics
+ZooKeeper
+Foundation
+FAQ
+Glossary
+Licenses
+Trademarks
+News
+Press Inquiries
+Public Records
+Mailing Lists
+Sponsorship
+Donations
+Buy Stuff
+Thanks
+Contact
+Foundation Projects
+Attic
+Conferences
+Community Development
+Incubator
+Infrastructure
+Labs
+Legal Affairs
+Public Relations
+Security
+Travel Assistance
+The Apache Blogs

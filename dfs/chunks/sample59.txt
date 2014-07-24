@@ -1,0 +1,50 @@
+Licenses
+Trademarks
+News
+Press Inquiries
+Public Records
+Mailing Lists
+Sponsorship
+Donations
+Buy Stuff
+Thanks
+Contact
+Foundation Projects
+Attic
+Conferences
+Community Development
+Incubator
+Infrastructure
+Labs
+Legal Affairs
+Public Relations
+Security
+Travel Assistance
+The Apache Blogs
+
+The Apache Software Foundation Announces Apacheô Tezô as a Top-Level Project
+Highly-efficient Open Source framework for Apache HadoopÆ YARN-powered data processing applications in use at Microsoft, NASA, Netflix, and Yahoo, among others. 
+
+Forest Hill, MD ñ22 July 2014ñ The Apache Software...
+
+The Apache Software Foundation Announces Apacheô Log4jô v2
+Framework for widely-used Open Source Java-based logging library now faster and more extensible, with new plugin architecture.
+
+Forest Hill, MD ñ22 July 2014ñ The Apache Software Foundation (ASF), the all-volunteer...
+
+Apache Sentry architecture overview
+Apache Sentry architecture overview
+
+Apache Sentry is an authorization module for Hadoop that provides the granular, role-based authorization required to provide precise levels of access to the right users and...
+
+
+Read More ª
+Copyright © 2012 The Apache Software Foundation, Licensed under the Apache License, Version 2.0.
+Apache and the Apache feather logo are trademarks of The Apache Software Foundation.
+The Apache Software Foundation
+The Apache Software Foundation
+
+Community-led development since 1999.
+FoundationProjectsPeopleGet InvolvedDownloadSupport ApacheHome  
+We consider ourselves
+not simply a group of projects sharing a server, but rather a community of developers and users.

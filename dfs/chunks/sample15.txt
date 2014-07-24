@@ -1,0 +1,50 @@
+
+Mapper and Reducer implementations can use the Reporter to report progress or just indicate that they are alive. In scenarios where the application takes a significant amount of time to process individual key/value pairs, this is crucial since the framework might assume that the task has timed-out and kill that task. Another way to avoid this is to set the configuration parameter mapred.task.timeout to a high-enough value (or even set it to zero for no time-outs).
+
+Applications can also update Counters using the Reporter.
+
+OutputCollector
+OutputCollector is a generalization of the facility provided by the MapReduce framework to collect data output by the Mapper or the Reducer (either the intermediate outputs or the output of the job).
+
+Hadoop MapReduce comes bundled with a library of generally useful mappers, reducers, and partitioners.
+
+Job Configuration
+JobConf represents a MapReduce job configuration.
+
+JobConf is the primary interface for a user to describe a MapReduce job to the Hadoop framework for execution. The framework tries to faithfully execute the job as described by JobConf, however:
+
+f Some configuration parameters may have been marked as final by administrators and hence cannot be altered.
+While some job parameters are straight-forward to set (e.g. setNumReduceTasks(int)), other parameters interact subtly with the rest of the framework and/or job configuration and are more complex to set (e.g. setNumMapTasks(int)).
+JobConf is typically used to specify the Mapper, combiner (if any), Partitioner, Reducer, InputFormat, OutputFormat and OutputCommitter implementations. JobConf also indicates the set of input files (setInputPaths(JobConf, Path...) /addInputPath(JobConf, Path)) and (setInputPaths(JobConf, String) /addInputPaths(JobConf, String)) and where the output files should be written (setOutputPath(Path)).
+
+Optionally, JobConf is used to specify other advanced facets of the job such as the Comparator to be used, files to be put in the DistributedCache, whether intermediate and/or job outputs are to be compressed (and how), debugging via user-provided scripts (setMapDebugScript(String)/setReduceDebugScript(String)) , whether job tasks can be executed in a speculative manner (setMapSpeculativeExecution(boolean))/(setReduceSpeculativeExecution(boolean)) , maximum number of attempts per task (setMaxMapAttempts(int)/setMaxReduceAttempts(int)) , percentage of tasks failure which can be tolerated by the job (setMaxMapTaskFailuresPercent(int)/setMaxReduceTaskFailuresPercent(int)) etc.
+
+Of course, users can use set(String, String)/get(String, String) to set/get arbitrary parameters needed by applications. However, use the DistributedCache for large amounts of (read-only) data.
+
+Task Execution & Environment
+The TaskTracker executes the Mapper/ Reducer task as a child process in a separate jvm.
+
+The child-task inherits the environment of the parent TaskTracker. The user can specify additional options to the child-jvm via the mapred.{map|reduce}.child.java.opts configuration parameter in the JobConf such as non-standard paths for the run-time linker to search shared libraries via -Djava.library.path=<> etc. If the mapred.{map|reduce}.child.java.opts parameters contains the symbol @taskid@ it is interpolated with value of taskid of the MapReduce task.
+
+Here is an example with multiple arguments and substitutions, showing jvm GC logging, and start of a passwordless JVM JMX agent so that it can connect with jconsole and the likes to watch child memory, threads and get thread dumps. It also sets the maximum heap-size of the map and reduce child jvm to 512MB & 1024MB respectively. It also adds an additional path to the java.library.path of the child-jvm.
+
+<property> 
+  <name>mapred.map.child.java.opts</name> 
+  <value> 
+     -Xmx512M -Djava.library.path=/home/mycompany/lib -verbose:gc -Xloggc:/tmp/@taskid@.gc 
+     -Dcom.sun.management.jmxremote.authenticate=false -Dcom.sun.management.jmxremote.ssl=false 
+  </value> 
+</property>
+
+<property> 
+  <name>mapred.reduce.child.java.opts</name> 
+  <value> 
+     -Xmx1024M -Djava.library.path=/home/mycompany/lib -verbose:gc -Xloggc:/tmp/@taskid@.gc 
+     -Dcom.sun.management.jmxremote.authenticate=false -Dcom.sun.management.jmxremote.ssl=false 
+  </value> 
+</property>
+
+Memory Management
+Users/admins can also specify the maximum virtual memory of the launched child-task, and any sub-process it launches recursively, using mapred.{map|reduce}.child.ulimit. Note that the value set here is a per process limit. The value for mapred.{map|reduce}.child.ulimit should be specified in kilo bytes (KB). And also the value must be greater than or equal to the -Xmx passed to JavaVM, else the VM might not start.
+
+Note: mapred.{map|reduce}.child.java.opts are used only for configuring the launched child tasks from task tracker. Configuring the memory options for daemons is documented in Configuring the Environment of the Hadoop Daemons.

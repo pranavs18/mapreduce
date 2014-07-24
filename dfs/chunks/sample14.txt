@@ -1,0 +1,50 @@
+
+The number of reduces for the job is set by the user via JobConf.setNumReduceTasks(int).
+
+Overall, Reducer implementations are passed the JobConf for the job via the JobConfigurable.configure(JobConf) method and can override it to initialize themselves. The framework then calls reduce(WritableComparable, Iterator, OutputCollector, Reporter) method for each <key, (list of values)> pair in the grouped inputs. Applications can then override the Closeable.close() method to perform any required cleanup.
+
+Reducer has 3 primary phases: shuffle, sort and reduce.
+
+Shuffle
+Input to the Reducer is the sorted output of the mappers. In this phase the framework fetches the relevant partition of the output of all the mappers, via HTTP.
+
+Sort
+The framework groups Reducer inputs by keys (since different mappers may have output the same key) in this stage.
+
+The shuffle and sort phases occur simultaneously; while map-outputs are being fetched they are merged.
+
+Secondary Sort
+If equivalence rules for grouping the intermediate keys are required to be different from those for grouping keys before reduction, then one may specify a Comparator via JobConf.setOutputValueGroupingComparator(Class). Since JobConf.setOutputKeyComparatorClass(Class) can be used to control how intermediate keys are grouped, these can be used in conjunction to simulate secondary sort on values.
+
+Reduce
+In this phase the reduce(WritableComparable, Iterator, OutputCollector, Reporter) method is called for each <key, (list of values)> pair in the grouped inputs.
+
+The output of the reduce task is typically written to the FileSystem via OutputCollector.collect(WritableComparable, Writable).
+
+Applications can use the Reporter to report progress, set application-level status messages and update Counters, or just indicate that they are alive.
+
+The output of the Reducer is not sorted.
+
+How Many Reduces?
+The right number of reduces seems to be 0.95 or 1.75 multiplied by (<no. of nodes> * mapred.tasktracker.reduce.tasks.maximum).
+
+With 0.95 all of the reduces can launch immediately and start transfering map outputs as the maps finish. With 1.75 the faster nodes will finish their first round of reduces and launch a second wave of reduces doing a much better job of load balancing.
+
+Increasing the number of reduces increases the framework overhead, but increases load balancing and lowers the cost of failures.
+
+The scaling factors above are slightly less than whole numbers to reserve a few reduce slots in the framework for speculative-tasks and failed tasks.
+
+Reducer NONE
+It is legal to set the number of reduce-tasks to zero if no reduction is desired.
+
+In this case the outputs of the map-tasks go directly to the FileSystem, into the output path set by setOutputPath(Path). The framework does not sort the map-outputs before writing them out to the FileSystem.
+
+Partitioner
+Partitioner partitions the key space.
+
+Partitioner controls the partitioning of the keys of the intermediate map-outputs. The key (or a subset of the key) is used to derive the partition, typically by a hash function. The total number of partitions is the same as the number of reduce tasks for the job. Hence this controls which of the m reduce tasks the intermediate key (and hence the record) is sent to for reduction.
+
+HashPartitioner is the default Partitioner.
+
+Reporter
+Reporter is a facility for MapReduce applications to report progress, set application-level status messages and update Counters.

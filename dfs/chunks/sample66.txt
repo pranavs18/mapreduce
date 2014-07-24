@@ -1,0 +1,50 @@
+
+The TAC is seeking individuals from the Apache community at-large, users, developers, educators, students, Committers, and Members, who would like to attend ApacheCon, but need some...
+The Apache Software Foundation Announces Apacheô Tezô as a Top-Level Project
+> This announcement is also available online at http://s.apache.org/keG
+ 
+Highly-efficient Open Source framework for Apache HadoopÆ YARN-powered data processing applications in use at Microsoft, NASA, Netflix, and Yahoo, among others. 
+ 
+Forest Hill, MD ñ22 July 2014ñ The Apache Software Foundation (ASF), the all-volunteer developers, stewards, and incubators of...
+The Apache Software Foundation Announces Apacheô Log4jô v2
+> This announcement is also available online at http://s.apache.org/wm
+ 
+Framework for widely-used Open Source Java-based logging library now faster and more extensible, with new plugin architecture. 
+ 
+Forest Hill, MD ñ22 July 2014ñ The Apache Software Foundation (ASF), the all-volunteer developers, stewards, and incubators of more than 170 Open...
+[ANNOUNCE] Apache Jackrabbit Oak 1.0.2 released
+The Apache Jackrabbit community is pleased to announce the release of Apache Jackrabbit Oak 1.0.2. The release is available for download at:
+ 
+http://jackrabbit.apache.org/downloads.html
+ 
+See the full release notes below for details about this release.
+ 
+Release Notes -- Apache Jackrabbit Oak -- Version 1.0.2
+ 
+Introduction ------------
+ ...
+Latest Activity
+This is an overview of activity going on with our projects. SVN commits, bug reports, tweets, you name it.
+
+@TheASF: The Apache Software Foundation Announces #Apacheô #Tezô as a Top-Level Project http://t.co/P6cJ5nbcMQ #OpenSource #BigData #Hadoop #YARN
+@TheASF: The Apache Software Foundation Announces #Apacheô #Log4jô v2 http://t.co/zhk0cTIzAf #OpenSource #logging #library #Java #plugin
+@TheASF: Join #Apache @OSCON: Booth 13 + presos on #HTTP Server #Cassandra #Mesos #Cordova #CloudStack #CouchDB #Hadoop #Spark #TrafficServer & more!
+r1612633 importing geronimo jaxrs 2 and versioning it 7 (tomee) ó rmannibucau
+r1612632 HDFS-6720. Remove KeyProvider in EncryptionZoneManager. (wang) (hadoop) ó wang
+r1612631 HADOOP-10818. native client: refactor URI code to be clearer (cmccabe) (hadoop) ó cmccabe
+r1612630 fixing NOTICE (geronimo) ó rmannibucau
+r1612629 Merge r1612626 from trunk. YARN-2295. Refactored DistributedShell to use public APIs of protocol records. Contributed by Li Lu (hadoop) ó jianhe
+[PDFBOX-2226] IndexOutOfBoundsException when merging many PDFs in memory
+An IndexOutOfBoundsException occurs when attempting to merge many (at least 10) PDF documents together. All PDFs exist in byte arrays...
+
+[AURORA-595] test_cluster_option test case failing 
+Test src.test.python.apache.aurora.common.test_cluster_option ..... FAILURE
+
+E AttributeError: CaptureFixture instance has no attribute '_outerr'
+
+[LUCENE-5825] Allowing the benchmarking algorithm to choose PostingsFormat
+The algorithm file for benchmarking should allow PostingsFormat to be configurable.
+
+[SENTRY-354] Test for update.distrib phase overriding
+NOTE: I left the Fix Version blank because I think this should go into 1.5.0, i.e. after 1.4.0 is branched,...
+

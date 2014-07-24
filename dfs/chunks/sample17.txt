@@ -1,0 +1,50 @@
+Configured Parameters
+The following properties are localized in the job configuration for each task's execution:
+
+Name	Type	Description
+mapred.job.id	String	The job id
+mapred.jar	String	job.jar location in job directory
+job.local.dir	 String	 The job specific shared scratch space
+mapred.tip.id	 String	 The task id
+mapred.task.id	 String	 The task attempt id
+mapred.task.is.map	 boolean	Is this a map task
+mapred.task.partition	 int	The id of the task within the job
+map.input.file	 String	 The filename that the map is reading from
+map.input.start	 long	 The offset of the start of the map input split
+map.input.length	long	The number of bytes in the map input split
+mapred.work.output.dir	 String	The task's temporary output directory
+Note: During the execution of a streaming job, the names of the "mapred" parameters are transformed. The dots ( . ) become underscores ( _ ). For example, mapred.job.id becomes mapred_job_id and mapred.jar becomes mapred_jar. To get the values in a streaming job's mapper/reducer use the parameter names with the underscores.
+
+Task Logs
+The standard output (stdout) and error (stderr) streams of the task are read by the TaskTracker and logged to ${HADOOP_LOG_DIR}/userlogs
+
+Distributing Libraries
+The DistributedCache can also be used to distribute both jars and native libraries for use in the map and/or reduce tasks. The child-jvm always has its current working directory added to the java.library.path and LD_LIBRARY_PATH. And hence the cached libraries can be loaded via System.loadLibrary or System.load. More details on how to load shared libraries through distributed cache are documented at native_libraries.html
+
+Job Submission and Monitoring
+JobClient is the primary interface by which user-job interacts with the JobTracker.
+
+JobClient provides facilities to submit jobs, track their progress, access component-tasks' reports and logs, get the MapReduce cluster's status information and so on.
+
+The job submission process involves:
+
+Checking the input and output specifications of the job.
+Computing the InputSplit values for the job.
+Setting up the requisite accounting information for the DistributedCache of the job, if necessary.
+Copying the job's jar and configuration to the MapReduce system directory on the FileSystem.
+Submitting the job to the JobTracker and optionally monitoring it's status.
+Job history files are also logged to user specified directory hadoop.job.history.user.location which defaults to job output directory. The files are stored in "_logs/history/" in the specified directory. Hence, by default they will be in mapred.output.dir/_logs/history. User can stop logging by giving the value none for hadoop.job.history.user.location
+
+User can view the history logs summary in specified directory using the following command 
+$ bin/hadoop job -history output-dir 
+This command will print job details, failed and killed tip details. 
+More details about the job such as successful tasks and task attempts made for each task can be viewed using the following command 
+$ bin/hadoop job -history all output-dir 
+User can use OutputLogFilter to filter log files from the output directory listing.
+
+Normally the user creates the application, describes various facets of the job via JobConf, and then uses the JobClient to submit the job and monitor its progress.
+
+Job Authorization
+Job level authorization and queue level authorization are enabled on the cluster, if the configuration mapred.acls.enabled is set to true. When enabled, access control checks are done by (a) the JobTracker before allowing users to submit jobs to queues and administering these jobs and (b) by the JobTracker and the TaskTracker before allowing users to view job details or to modify a job using MapReduce APIs, CLI or web user interfaces.
+
+A job submitter can specify access control lists for viewing or modifying a job via the configuration properties mapreduce.job.acl-view-job and mapreduce.job.acl-modify-job respectively. By default, nobody is given access in these properties.

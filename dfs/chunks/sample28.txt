@@ -1,0 +1,50 @@
+
+Single Node Setup for first-time users.
+Cluster Setup for large, distributed clusters.
+The rest of this document assumes the user is able to set up and run a HDFS with at least one DataNode. For the purpose of this document, both the NameNode and DataNode could be running on the same physical machine.
+
+Web Interface
+NameNode and DataNode each run an internal web server in order to display basic information about the current status of the cluster. With the default configuration, the NameNode front page is at http://namenode-name:50070/. It lists the DataNodes in the cluster and basic statistics of the cluster. The web interface can also be used to browse the file system (using "Browse the file system" link on the NameNode front page).
+
+Shell Commands
+Hadoop includes various shell-like commands that directly interact with HDFS and other file systems that Hadoop supports. The command bin/hdfs dfs -help lists the commands supported by Hadoop shell. Furthermore, the command bin/hdfs dfs -help command-name displays more detailed help for a command. These commands support most of the normal files system operations like copying files, changing file permissions, etc. It also supports a few HDFS specific operations like changing replication of files. For more information see File System Shell Guide.
+
+DFSAdmin Command
+The bin/hadoop dfsadmin command supports a few HDFS administration related operations. The bin/hadoop dfsadmin -help command lists all the commands currently supported. For e.g.:
+
+-report : reports basic statistics of HDFS. Some of this information is also available on the NameNode front page.
+-safemode : though usually not required, an administrator can manually enter or leave Safemode.
+-finalizeUpgrade : removes previous backup of the cluster made during last upgrade.
+-refreshNodes : Updates the set of hosts allowed to connect to namenode. Re-reads the config file to update values defined by dfs.hosts and dfs.host.exclude and reads the entires (hostnames) in those files. Each entry not defined in dfs.hosts but in dfs.hosts.exclude is decommissioned. Each entry defined in dfs.hosts and also in dfs.host.exclude is stopped from decommissioning if it has aleady been marked for decommission. Entires not present in both the lists are decommissioned.
+For command usage, see dfsadmin.
+
+Secondary NameNode
+The NameNode stores modifications to the file system as a log appended to a native file system file, edits. When a NameNode starts up, it reads HDFS state from an image file, fsimage, and then applies edits from the edits log file. It then writes new HDFS state to the fsimage and starts normal operation with an empty edits file. Since NameNode merges fsimage and edits files only during start up, the edits log file could get very large over time on a busy cluster. Another side effect of a larger edits file is that next restart of NameNode takes longer.
+
+The secondary NameNode merges the fsimage and the edits log files periodically and keeps edits log size within a limit. It is usually run on a different machine than the primary NameNode since its memory requirements are on the same order as the primary NameNode. The secondary NameNode is started by bin/start-dfs.sh on the nodes specified in conf/masters file.
+
+The start of the checkpoint process on the secondary NameNode is controlled by two configuration parameters.
+
+fs.checkpoint.period, set to 1 hour by default, specifies the maximum delay between two consecutive checkpoints, and
+fs.checkpoint.size, set to 64MB by default, defines the size of the edits log file that forces an urgent checkpoint even if the maximum checkpoint delay is not reached.
+The secondary NameNode stores the latest checkpoint in a directory which is structured the same way as the primary NameNode's directory. So that the check pointed image is always ready to be read by the primary NameNode if necessary.
+
+For command usage, see secondarynamenode.
+
+Import Checkpoint
+The latest checkpoint can be imported to the NameNode if all other copies of the image and the edits files are lost. In order to do that one should:
+
+Create an empty directory specified in the dfs.name.dir configuration variable;
+Specify the location of the checkpoint directory in the configuration variable fs.checkpoint.dir;
+and start the NameNode with -importCheckpoint option.
+The NameNode will upload the checkpoint from the fs.checkpoint.dir directory and then save it to the NameNode directory(s) set in dfs.name.dir. The NameNode will fail if a legal image is contained in dfs.name.dir. The NameNode verifies that the image in fs.checkpoint.dir is consistent, but does not modify it in any way.
+
+For command usage, see namenode.
+
+Rebalancer
+HDFS data might not always be be placed uniformly across the DataNode. One common reason is addition of new DataNodes to an existing cluster. While placing new blocks (data for a file is stored as a series of blocks), NameNode considers various parameters before choosing the DataNodes to receive these blocks. Some of the considerations are:
+
+Policy to keep one of the replicas of a block on the same node as the node that is writing the block.
+Need to spread different replicas of a block across the racks so that cluster can survive loss of whole rack.
+One of the replicas is usually placed on the same rack as the node writing to the file so that cross-rack network I/O is reduced.
+Spread HDFS data uniformly across the DataNodes in the cluster.

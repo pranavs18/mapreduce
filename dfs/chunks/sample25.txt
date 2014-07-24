@@ -1,0 +1,50 @@
+115.	      return 0;
+116.	    }
+117.	
+118.	    public static void main(String[] args) throws Exception {
+119.	      int res = ToolRunner.run(new Configuration(), new WordCount(), args);
+120.	      System.exit(res);
+121.	    }
+122.	}
+123.	
+Sample Runs
+Sample text-files as input:
+
+$ bin/hadoop dfs -ls /usr/joe/wordcount/input/ 
+/usr/joe/wordcount/input/file01 
+/usr/joe/wordcount/input/file02 
+
+$ bin/hadoop dfs -cat /usr/joe/wordcount/input/file01 
+Hello World, Bye World! 
+
+$ bin/hadoop dfs -cat /usr/joe/wordcount/input/file02 
+Hello Hadoop, Goodbye to hadoop.
+
+Run the application:
+
+$ bin/hadoop jar /usr/joe/wordcount.jar org.myorg.WordCount /usr/joe/wordcount/input /usr/joe/wordcount/output
+
+Output:
+
+$ bin/hadoop dfs -cat /usr/joe/wordcount/output/part-00000 
+Bye 1 
+Goodbye 1 
+Hadoop, 1 
+Hello 2 
+World! 1 
+World, 1 
+hadoop. 1 
+to 1 
+Notice that the inputs differ from the first version we looked at, and how they affect the outputs.
+
+Now, lets plug-in a pattern-file which lists the word-patterns to be ignored, via the DistributedCache.
+
+$ hadoop dfs -cat /user/joe/wordcount/patterns.txt 
+\. 
+\, 
+\! 
+to 
+Run it again, this time with more options:
+
+$ bin/hadoop jar /usr/joe/wordcount.jar org.myorg.WordCount -Dwordcount.case.sensitive=true /usr/joe/wordcount/input /usr/joe/wordcount/output -skip /user/joe/wordcount/patterns.txt
+

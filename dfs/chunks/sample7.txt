@@ -1,0 +1,50 @@
+WikiTaxi system requirements[edit]
+Any Windows version starting from Windows 95 or later. Large File support (greater than 4 GB) for the huge wikis (English only at the time of this writing).
+It also works on Linux with Wine.
+16 MB RAM minimum for the WikiTaxi reader, 128 MB recommended for the importer (more for speed).
+Storage space for the WikiTaxi database. This requires about 11.7 GiB for the English Wikipedia (as of 5 April 2011), 2 GB for German, less for other Wikis. These figures are likely to grow in the future.
+WikiTaxi usage[edit]
+Download WikiTaxi and extract to an empty folder. No installation is otherwise required.
+Download the XML database dump (*.xml.bz2) of your favorite wiki.
+Run WikiTaxi_Importer.exe to import the database dump into a WikiTaxi database. The importer takes care to uncompress the dump as it imports, so make sure to save your drive space and do not uncompress beforehand.
+When the import is finished, start up WikiTaxi.exe and open the generated database file. You can start searching, browsing, and reading immediately.
+After a successful import, the XML dump file is no longer needed and can be deleted to reclaim disk space.
+To update an offline Wiki for WikiTaxi, download and import a more recent database dump.
+For WikiTaxi reading, only two files are required: WikiTaxi.exe and the .taxi database. Copy them to any storage device (memory stick or memory card) or burn them to a CD or DVD and take your Wikipedia with you wherever you go!
+
+BzReader and MzReader (for Windows)[edit]
+BzReader is an offline Wikipedia reader with fast search capabilities. It renders the Wiki text into HTML and doesn't need to decompress the database. Requires Microsoft .NET framework 2.0.
+
+MzReader by Mun206 works with (though is not affiliated with) BzReader, and allows further rendering of wikicode into better HTML, including an interpretation of the monobook skin. It aims to make pages more readable. Requires Microsoft Visual Basic 6.0 Runtime, which is not supplied with the download. Also requires Inet Control and Internet Controls (Internet Explorer 6 ActiveX), which are packaged with the download.
+
+EPWING[edit]
+Offline Wikipedia database in EPWING dictionary format, which is common and an out-dated JIS-standard in Japan, can be read including thumbnail images and tables with some rendering limitations, on any systems where a reader is available (Boookends). There are many free and commercial readers for Windows/Mobile, MacOSX/iOS (Mac, iPhone, iPad), Android, Unix/Linux/BSD, DOS, and Java-based browser applications (EPWING Viewers).
+
+Mirror Building[edit]
+WP-MIRROR[edit]
+WP-MIRROR is a free utility for mirroring any desired set of WMF wikis. That is, it builds a wiki farm that the user can browse locally. WP-MIRROR builds a complete mirror with original size media files. WP-MIRROR is available for download.
+
+See also[edit]
+DBpedia
+WikiReader
+m:Export
+m:Help:Downloading pages
+m:Import
+Meta:Data dumps#Other tools, for related tools, e.g. extractors and "dump readers"
+Wikipedia:Wikipedia-CD/Download
+Wikipedia:Size of Wikipedia
+meta:Mirroring Wikimedia project XML dumps
+meta:Static version tools
+References[edit]
+Jump up ^ Anthony Bellissimo; Brian N. Levine; Prashant Shenoy. "Exploring the Use of BitTorrent as the Basis for a Large Trace Repository". University of Massachusetts (USA). Archived from the original on 2013-12-20. Retrieved 2013-12-20.
+Jump up ^ Large File Support in Linux
+Jump up ^ Android 2.2 and before used YAFFS file system; December 14, 2010.
+External links[edit]
+Wikimedia Downloads.
+Domas visits logs (read this!). Also, old data in the Internet Archive.
+Wikimedia mailing lists archives.
+User:Emijrp/Wikipedia Archive. An effort to find all the Wiki[mp]edia available data, and to encourage people to download it and save it around the globe.
+Script to download all Wikipedia 7z dumps.
+Apache > Hadoop > Core > docs > r1.2.1
+Hadoop Hadoop
+   

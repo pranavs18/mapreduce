@@ -1,0 +1,50 @@
+
+However, irrespective of the job ACLs configured, a job's owner, the superuser and cluster administrators (mapreduce.cluster.administrators) and queue administrators of the queue to which the job was submitted to (mapred.queue.queue-name.acl-administer-jobs) always have access to view and modify a job.
+
+A job view ACL authorizes users against the configured mapreduce.job.acl-view-job before returning possibly sensitive information about a job, like:
+
+job level counters
+task level counters
+tasks's diagnostic information
+task logs displayed on the TaskTracker web UI
+job.xml showed by the JobTracker's web UI
+Other information about a job, like its status and its profile, is accessible to all users, without requiring authorization.
+
+A job modification ACL authorizes users against the configured mapreduce.job.acl-modify-job before allowing modifications to jobs, like:
+
+killing a job
+killing/failing a task of a job
+setting the priority of a job
+These operations are also permitted by the queue level ACL, "mapred.queue.queue-name.acl-administer-jobs", configured via mapred-queue-acls.xml. The caller will be able to do the operation if he/she is part of either queue admins ACL or job modification ACL.
+
+The format of a job level ACL is the same as the format for a queue level ACL as defined in the Cluster Setup documentation.
+
+Job Control
+Users may need to chain MapReduce jobs to accomplish complex tasks which cannot be done via a single MapReduce job. This is fairly easy since the output of the job typically goes to distributed file-system, and the output, in turn, can be used as the input for the next job.
+
+However, this also means that the onus on ensuring jobs are complete (success/failure) lies squarely on the clients. In such cases, the various job-control options are:
+
+runJob(JobConf) : Submits the job and returns only after the job has completed.
+submitJob(JobConf) : Only submits the job, then poll the returned handle to the RunningJob to query status and make scheduling decisions.
+JobConf.setJobEndNotificationURI(String) : Sets up a notification upon job-completion, thus avoiding polling.
+Job Credentials
+In a secure cluster, the user is authenticated via Kerberos' kinit command. Because of scalability concerns, we don't push the client's Kerberos' tickets in MapReduce jobs. Instead, we acquire delegation tokens from each HDFS NameNode that the job will use and store them in the job as part of job submission. The delegation tokens are automatically obtained for the HDFS that holds the staging directories, where the job job files are written, and any HDFS systems referenced by FileInputFormats, FileOutputFormats, DistCp, and the distributed cache. Other applications require to set the configuration "mapreduce.job.hdfs-servers" for all NameNodes that tasks might need to talk during the job execution. This is a comma separated list of file system names, such as "hdfs://nn1/,hdfs://nn2/". These tokens are passed to the JobTracker as part of the job submission as Credentials.
+
+Similar to HDFS delegation tokens, we also have MapReduce delegation tokens. The MapReduce tokens are provided so that tasks can spawn jobs if they wish to. The tasks authenticate to the JobTracker via the MapReduce delegation tokens. The delegation token can be obtained via the API in JobClient.getDelegationToken. The obtained token must then be pushed onto the credentials that is there in the JobConf used for job submission. The API Credentials.addToken can be used for this.
+
+The credentials are sent to the JobTracker as part of the job submission process. The JobTracker persists the tokens and secrets in its filesystem (typically HDFS) in a file within mapred.system.dir/JOBID. The TaskTracker localizes the file as part job localization. Tasks see an environment variable called HADOOP_TOKEN_FILE_LOCATION and the framework sets this to point to the localized file. In order to launch jobs from tasks or for doing any HDFS operation, tasks must set the configuration "mapreduce.job.credentials.binary" to point to this token file.
+
+The HDFS delegation tokens passed to the JobTracker during job submission are are cancelled by the JobTracker when the job completes. This is the default behavior unless mapreduce.job.complete.cancel.delegation.tokens is set to false in the JobConf. For jobs whose tasks in turn spawns jobs, this should be set to false. Applications sharing JobConf objects between multiple jobs on the JobClient side should look at setting mapreduce.job.complete.cancel.delegation.tokens to false. This is because the Credentials object within the JobConf will then be shared. All jobs will end up sharing the same tokens, and hence the tokens should not be canceled when the jobs in the sequence finish.
+
+Apart from the HDFS delegation tokens, arbitrary secrets can also be passed during the job submission for tasks to access other third party services. The APIs JobConf.getCredentials or JobContext.getCredentials() should be used to get the credentials object and then Credentials.addSecretKey should be used to add secrets.
+
+For applications written using the old MapReduce API, the Mapper/Reducer classes need to implement JobConfigurable in order to get access to the credentials in the tasks. A reference to the JobConf passed in the JobConfigurable.configure should be stored. In the new MapReduce API, a similar thing can be done in the Mapper.setup method. The api JobConf.getCredentials() or the api JobContext.getCredentials() should be used to get the credentials reference (depending on whether the new MapReduce API or the old MapReduce API is used). Tasks can access the secrets using the APIs in Credentials
+
+Job Input
+InputFormat describes the input-specification for a MapReduce job.
+
+The MapReduce framework relies on the InputFormat of the job to:
+
+Validate the input-specification of the job.
+Split-up the input file(s) into logical InputSplit instances, each of which is then assigned to an individual Mapper.
+Provide the RecordReader implementation used to glean input records from the logical InputSplit for processing by the Mapper.

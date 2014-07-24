@@ -1,0 +1,50 @@
+65.	        while (tokenizer.hasMoreTokens()) {
+66.	          word.set(tokenizer.nextToken());
+67.	          output.collect(word, one);
+68.	          reporter.incrCounter(Counters.INPUT_WORDS, 1);
+69.	        }
+70.	
+71.	        if ((++numRecords % 100) == 0) {
+72.	          reporter.setStatus("Finished processing " + numRecords + " records " + "from the input file: " + inputFile);
+73.	        }
+74.	      }
+75.	    }
+76.	
+77.	    public static class Reduce extends MapReduceBase implements Reducer<Text, IntWritable, Text, IntWritable> {
+78.	      public void reduce(Text key, Iterator<IntWritable> values, OutputCollector<Text, IntWritable> output, Reporter reporter) throws IOException {
+79.	        int sum = 0;
+80.	        while (values.hasNext()) {
+81.	          sum += values.next().get();
+82.	        }
+83.	        output.collect(key, new IntWritable(sum));
+84.	      }
+85.	    }
+86.	
+87.	    public int run(String[] args) throws Exception {
+88.	      JobConf conf = new JobConf(getConf(), WordCount.class);
+89.	      conf.setJobName("wordcount");
+90.	
+91.	      conf.setOutputKeyClass(Text.class);
+92.	      conf.setOutputValueClass(IntWritable.class);
+93.	
+94.	      conf.setMapperClass(Map.class);
+95.	      conf.setCombinerClass(Reduce.class);
+96.	      conf.setReducerClass(Reduce.class);
+97.	
+98.	      conf.setInputFormat(TextInputFormat.class);
+99.	      conf.setOutputFormat(TextOutputFormat.class);
+100.	
+101.	      List<String> other_args = new ArrayList<String>();
+102.	      for (int i=0; i < args.length; ++i) {
+103.	        if ("-skip".equals(args[i])) {
+104.	          DistributedCache.addCacheFile(new Path(args[++i]).toUri(), conf);
+105.	          conf.setBoolean("wordcount.skip.patterns", true);
+106.	        } else {
+107.	          other_args.add(args[i]);
+108.	        }
+109.	      }
+110.	
+111.	      FileInputFormat.setInputPaths(conf, new Path(other_args.get(0)));
+112.	      FileOutputFormat.setOutputPath(conf, new Path(other_args.get(1)));
+113.	
+114.	      JobClient.runJob(conf);

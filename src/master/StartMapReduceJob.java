@@ -40,7 +40,7 @@ public class StartMapReduceJob extends UnicastRemoteObject implements MapReduceS
 		Boolean check = null;
 		this.config = config;
 		System.out.println("Reached here");
-
+		
 		try {
 			MasterToNameNodeInterface fileChunkMapRequest = (MasterToNameNodeInterface)Naming.lookup("rmi://"+MasterGlobalInformation.getNameNodeIp()+":23392/split");
 
@@ -52,9 +52,14 @@ public class StartMapReduceJob extends UnicastRemoteObject implements MapReduceS
 					workerIpAddresses.add(s);
 
 				}
+				int numberOfReducers = config.getReducers() > workerIpAddresses.size() ? workerIpAddresses.size() : config.getReducers();
+				config.setReducers(numberOfReducers);
 
 				ConcurrentHashMap<String, ChunkProperties> fileChunkMap =  fileChunkMapRequest.sendChunkMap(config,workerIpAddresses, splitIp);
 				MasterGlobalInformation.setMasterStaticChunkMap(fileChunkMap);
+				int numberOfchunks = fileChunkMap.keySet().size();
+				
+		
 
 				/* Start Launching Mappers */
 				int countOfComplete = 0;
@@ -150,17 +155,12 @@ public class StartMapReduceJob extends UnicastRemoteObject implements MapReduceS
 
 								chunkDetails.getValue().setJobStatus("COMPLETE");
 								countOfComplete++;
-
 							}
-
-
 						}
 						if(countOfComplete >=MasterGlobalInformation.getMasterStaticChunkMap().size()){
 							MappersNotCompleted = true;
 							break;
 						}
-
-
 
 					}
 					if(MappersNotCompleted == true){
@@ -172,16 +172,17 @@ public class StartMapReduceJob extends UnicastRemoteObject implements MapReduceS
 
 				/* If code reaches here all the map jobs are complete 
 				   		   Partitioner Logic to Sort the shuffled data */
+				
 				for(String workerIp:workerIpAddresses){
 					MasterToWorkerInterface sortFiles = (MasterToWorkerInterface)Naming.lookup("rmi://"+workerIp+":9876/job");
-					sortFiles.sortIntermediateFiles(this.config);
+					sortFiles.sortIntermediateFiles(config);
 				}
 
 				/* Transfer file to the corresponding reducers. 
 				 * The number of reduce will always be the max of either userProvided number 
 				 * or total number of nodes online, 
 				 */
-				int numberOfReducers = config.getReducers() > workerIpAddresses.size() ? workerIpAddresses.size() : config.getReducers();
+				
 				HashSet<String> requiredWorkerIps = new HashSet<String>();
 				Queue<String> interMediateFileNameExtensionQueue = new LinkedList<String>();
 				for(int i = 0; i< numberOfReducers; i++){
@@ -216,10 +217,10 @@ public class StartMapReduceJob extends UnicastRemoteObject implements MapReduceS
 				}
 				System.out.println("Transfer Info"+trasferInfo);
 			
-				if(!trasferInfo.containsKey(this.config.getSplitIP())){
+				if(!trasferInfo.containsKey(config.getSplitIP())){
 					
 					for(ConcurrentHashMap.Entry<String, HashSet<String>> str : trasferInfo.entrySet()){
-						trasferInfo.put(this.config.getSplitIP(),trasferInfo.get(str.getKey()));
+						trasferInfo.put(config.getSplitIP(),trasferInfo.get(str.getKey()));
 						trasferInfo.remove(str.getKey());
 						break;						
 					}
@@ -245,8 +246,11 @@ public class StartMapReduceJob extends UnicastRemoteObject implements MapReduceS
 				
 				
 				/* Start Reducers here */	
-				ArrayList<Thread> redthreads = new ArrayList<Thread>(); 
-				for(String str: requiredWorkerIps){
+				Set<String> hash = new HashSet<String>();
+				hash = trasferInfo.keySet();
+				ArrayList<Thread> redthreads = new ArrayList<Thread>();
+				for(String str: hash){
+					
 					ReduceLauncher reduce = new ReduceLauncher(config, str);
 					Thread transferThread = new Thread(reduce);
 					transferThread.start();
@@ -255,6 +259,8 @@ public class StartMapReduceJob extends UnicastRemoteObject implements MapReduceS
 				for(Thread t : redthreads){
 					t.join();
 				}
+				
+				
 
 				
 				if(MasterGlobalInformation.getIncreasedReducerSuccessCount()>requiredWorkerIps.size()){

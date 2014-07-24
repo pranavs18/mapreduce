@@ -28,6 +28,7 @@ public class ReduceLauncher implements Runnable{
 			Boolean isJobLaunchSuccessful = launchReduce.launchReduceJob(config);
 			
 			if(isJobLaunchSuccessful == true){
+				System.out.println("Reducer is successful");
 				MasterGlobalInformation.getIncreasedReducerSuccessCount();
 			}
 
@@ -38,7 +39,7 @@ public class ReduceLauncher implements Runnable{
 	}
 	@Override
 	public void run() {
-
+		launchReduce();
 	}
 
 }

@@ -1,0 +1,50 @@
+Linux
+ext2 and ext3 supports files up to 16 GB, but up to 2 TB with larger block sizes. See http://www.suse.com/~aj/linux_lfs.html for more information.
+ext4 supports files up to 16 TB (using 4 KB block size). (limitation removed in e2fsprogs-1.42 (2012))
+XFS supports files up to 8 EB.
+ReiserFS supports files up to 1 EB (8 TB on 32-bit systems).
+JFS supports files up to 4 PB.
+Btrfs supports files up to 16 EB
+NILFS supports files up to 8 EB
+YAFFS2 supports files up to 2 GB.
+FreeBSD
+ZFS supports files up to 16 EB.
+Operating system limits[edit]
+Each operating system has internal file system limits for file size and drive size, which is independent of the file system or physical media. If the operating system has any limits lower than the file system or physical media, then the O/S limits will be the real limit.
+
+Windows
+For Windows 95/98/ME, there is a 4 GB limit for all file sizes.
+For Windows XP, there is a 16 EiB limit for all file sizes.
+For Windows 7, there is a 16 TiB limit for all file sizes.
+For Windows 8/Server 2012, there is a 256 TiB limit for all file sizes.
+Linux
+For 32-bit Kernel 2.4.x systems, there is a 2 TB limit for all file systems.
+For 64-bit Kernel 2.4.x systems, there is an 8 EB limit for all file systems.
+For 32-bit Kernel 2.6.x systems without option CONFIG_LBD, there is a 2 TB limit for all file systems.
+For 32-bit Kernel 2.6.x systems with option CONFIG_LBD and all 64-bit Kernel 2.6.x systems, there is an 8 ZB limit for all file systems.[2]
+Google Android
+Google Android is based upon Linux, which determines its base limits.
+
+Internal Storage:
+For Android 2.3 and later, uses the ext4 file system.[3]
+For Android 2.2 and earlier, uses the YAFFS2 file system.
+External Storage Slots:
+All Android devices should support FAT16, FAT32, ext2 file systems.
+Android 2.3 and later supports ext4 file system.
+Apple iOS (see List of iOS devices)
+All devices support HFS+ for internal storage. No devices have external storage slots.
+Tips[edit]
+Detect corrupted files
+It is a good idea to check the MD5 sums (provided in a file in the download directory) to make sure your download was complete and accurate. You can check this by running the "md5sum" command on the files you downloaded. Given how large the files are, this may take some time to calculate. Due to the technical details of how files are stored, file sizes may be reported differently on different filesystems, and so are not necessarily reliable. Also, you may have experienced corruption during the download, though this is unlikely.
+
+Reformatting external USB drives
+If you plan to download Wikipedia Dump files to one computer and use an external USB Flash Drive or Hard Drive to copy them to other computers, then you will run into the 4 GB FAT32 file size limitation issue. To work around this issue, reformat the >4 GB USB Drive to a file system that supports larger file sizes. If you are working exclusively with Windows XP/Vista/7 computers, then reformat your USB Drive to NTFS file system. Windows ext2 driver
+
+Linux and Unix
+If you seem to be hitting the 2 GB limit, try using wget version 1.10 or greater, cURL version 7.11.1-1 or greater, or a recent version of lynx (using -dump). Also, you can resume downloads (for example wget -c).
+
+Why not just retrieve data from [[w:|wikipedia.org]] at runtime?[edit]
+Suppose you are building a piece of software that at certain points displays information that came from Wikipedia. If you want your program to display the information in a different way than can be seen in the live version, you'll probably need the wikicode that is used to enter it, instead of the finished HTML.
+
+Also if you want to get all of the data, you'll probably want to transfer it in the most efficient way that's possible. The wikipedia.org servers need to do quite a bit of work to convert the wikicode into HTML. That's time consuming both for you and for the wikipedia.org servers, so simply spidering all pages is not the way to go.
+
